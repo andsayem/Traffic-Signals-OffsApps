@@ -45,7 +45,7 @@ class CustomNavBar extends StatelessWidget {
                         item.icon,
                         color: isSelected
                             ? ThemeConstants.signalRed
-                            : Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                            : Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                         size: 24,
                       ),
                       const SizedBox(height: 4),
@@ -56,7 +56,7 @@ class CustomNavBar extends StatelessWidget {
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                           color: isSelected
                               ? ThemeConstants.signalRed
-                              : Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                              : Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                         ),
                       ),
                     ],

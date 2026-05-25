@@ -107,7 +107,7 @@ class SignDetailsScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: _getCategoryColor(sign.category).withOpacity(0.15),
+                        color: _getCategoryColor(sign.category).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -150,7 +150,7 @@ class SignDetailsScreen extends StatelessWidget {
                           const SizedBox(width: 8),
                         ],
                         Text(
-                          "$countryName: " + context.tr('country_info'),
+                          "$countryName: ${context.tr('country_info')}",
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -329,7 +329,7 @@ class SignDetailsScreen extends StatelessWidget {
         dir = await getApplicationDocumentsDirectory();
       }
 
-      if (dir == null) dir = await getTemporaryDirectory();
+      dir ??= await getTemporaryDirectory();
 
       final filePath = "${dir.path}/${sign.id}_sign.png";
       final file = File(filePath);

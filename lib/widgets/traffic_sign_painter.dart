@@ -23,7 +23,7 @@ class TrafficSignWidget extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: _getGlowColor(signId).withOpacity(0.3),
+                  color: _getGlowColor(signId).withValues(alpha: 0.3),
                   blurRadius: size * 0.2,
                   spreadRadius: 2,
                 ),

@@ -83,7 +83,7 @@ class _QuizScreenState extends State<QuizScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.04),
+                  color: Colors.white.withValues(alpha: 0.04),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: Colors.white10),
                 ),
@@ -137,8 +137,8 @@ class _QuizScreenState extends State<QuizScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       decoration: BoxDecoration(
                         color: isSel
-                            ? ThemeConstants.signalRed.withOpacity(0.2)
-                            : Colors.white.withOpacity(0.04),
+                            ? ThemeConstants.signalRed.withValues(alpha: 0.2)
+                            : Colors.white.withValues(alpha: 0.04),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: isSel ? ThemeConstants.signalRed : Colors.white10,
@@ -234,7 +234,7 @@ class _QuizScreenState extends State<QuizScreen> {
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.04),
+                color: Colors.white.withValues(alpha: 0.04),
                 shape: BoxShape.circle,
               ),
               child: TrafficSignWidget(
@@ -266,16 +266,16 @@ class _QuizScreenState extends State<QuizScreen> {
           final isCorrectOption = index == question.correctIndex;
 
           Color cardBorder = Colors.transparent;
-          Color cardBackground = Colors.white.withOpacity(0.04);
+          Color cardBackground = Colors.white.withValues(alpha: 0.04);
           Color textColor = Colors.white;
 
           if (isAnswered) {
             if (isCorrectOption) {
-              cardBackground = ThemeConstants.signalGreen.withOpacity(0.15);
+              cardBackground = ThemeConstants.signalGreen.withValues(alpha: 0.15);
               cardBorder = ThemeConstants.signalGreen;
               textColor = ThemeConstants.signalGreen;
             } else if (isSelected) {
-              cardBackground = ThemeConstants.signalRed.withOpacity(0.15);
+              cardBackground = ThemeConstants.signalRed.withValues(alpha: 0.15);
               cardBorder = ThemeConstants.signalRed;
               textColor = ThemeConstants.signalRed;
             } else {
@@ -336,7 +336,7 @@ class _QuizScreenState extends State<QuizScreen> {
           GlassCard(
             borderRadius: 16,
             padding: const EdgeInsets.all(14),
-            customColor: ThemeConstants.signalBlue.withOpacity(0.08),
+            customColor: ThemeConstants.signalBlue.withValues(alpha: 0.08),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -444,12 +444,12 @@ class _QuizScreenState extends State<QuizScreen> {
               child: GlassCard(
                 borderRadius: 14,
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                customColor: ThemeConstants.signalGreen.withOpacity(0.08),
+                customColor: ThemeConstants.signalGreen.withValues(alpha: 0.08),
                 child: Column(
                   children: [
                     const Icon(Icons.check_circle_rounded, color: ThemeConstants.signalGreen),
                     const SizedBox(height: 6),
-                    Text("$score " + context.tr('correct_answers'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                    Text("$score ${context.tr('correct_answers')}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
@@ -459,12 +459,12 @@ class _QuizScreenState extends State<QuizScreen> {
               child: GlassCard(
                 borderRadius: 14,
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                customColor: ThemeConstants.signalRed.withOpacity(0.08),
+                customColor: ThemeConstants.signalRed.withValues(alpha: 0.08),
                 child: Column(
                   children: [
                     const Icon(Icons.cancel_rounded, color: ThemeConstants.signalRed),
                     const SizedBox(height: 6),
-                    Text("${total - score} " + context.tr('wrong_answers'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                    Text("${total - score} ${context.tr('wrong_answers')}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
@@ -533,7 +533,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 child: GlassCard(
                   borderRadius: 16,
                   padding: const EdgeInsets.all(14),
-                  customBorderColor: isCorrect ? ThemeConstants.signalGreen.withOpacity(0.3) : ThemeConstants.signalRed.withOpacity(0.3),
+                  customBorderColor: isCorrect ? ThemeConstants.signalGreen.withValues(alpha: 0.3) : ThemeConstants.signalRed.withValues(alpha: 0.3),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../providers/app_provider.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
@@ -44,7 +45,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     Switch(
                       value: appProvider.isDarkTheme,
-                      activeColor: ThemeConstants.signalRed,
+                      activeThumbColor: ThemeConstants.signalRed,
                       onChanged: (val) {
                         appProvider.setDarkTheme(val);
                       },
@@ -141,7 +142,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      context.tr('version') + ": 1.0.0+1",
+                      "${context.tr('version')}: 1.0.0+1",
                       style: const TextStyle(fontSize: 12, color: Colors.white54),
                     ),
                     const SizedBox(height: 12),
@@ -155,6 +156,108 @@ class SettingsScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              // Disclaimer Card
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: GlassCard(
+                  borderRadius: 18,
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.info_outline_rounded, color: ThemeConstants.signalYellow, size: 20),
+                          const SizedBox(width: 10),
+                          Text(
+                            "Disclaimer",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: ThemeConstants.signalYellow,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        context.tr('disclaimer'),
+                        style: TextStyle(
+                          fontSize: 12,
+                          height: 1.5,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Sources Card
+              GlassCard(
+                borderRadius: 18,
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.link_rounded, color: ThemeConstants.signalBlue, size: 20),
+                        const SizedBox(width: 10),
+                        Text(
+                          context.tr('sources_title'),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    ...Provider.of<TrafficDataProvider>(context).allCountries.map((c) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: InkWell(
+                        onTap: () => launchUrl(Uri.parse(c.sourceUrl), mode: LaunchMode.externalApplication),
+                        borderRadius: BorderRadius.circular(8),
+                        child: Row(
+                          children: [
+                            Text(c.flagEmoji, style: const TextStyle(fontSize: 16)),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                c.name,
+                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            Flexible(
+                              child: Text(
+                                c.sourceUrl,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: ThemeConstants.signalBlue,
+                                  decoration: TextDecoration.underline,
+                                ),
+                                textAlign: TextAlign.right,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+                    const SizedBox(height: 4),
+                      Text(
+                        context.tr('disclaimer'),
+                        style: TextStyle(
+                          fontSize: 10,
+                          height: 1.4,
+                          color: Colors.white38,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+
               const SizedBox(height: 100),
             ],
           );
@@ -177,7 +280,7 @@ class SettingsScreen extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 6),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? ThemeConstants.signalBlue.withOpacity(0.12) : Colors.transparent,
+          color: isSelected ? ThemeConstants.signalBlue.withValues(alpha: 0.12) : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(

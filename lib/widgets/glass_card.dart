@@ -58,8 +58,8 @@ class GlassCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius),
-          splashColor: (isDark ? Colors.white : Colors.black).withOpacity(0.05),
-          highlightColor: (isDark ? Colors.white : Colors.black).withOpacity(0.02),
+          splashColor: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05),
+          highlightColor: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.02),
           child: cardContent,
         ),
       );

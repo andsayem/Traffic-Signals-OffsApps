@@ -1,5 +1,5 @@
 name: traffic_signal_symbols
-description: "A new Flutter project."
+description: "Traffic Signals & Signs - Learn road rules, traffic signs, and driving safety for 13 countries. Educational reference with vector-rendered signs and interactive quizzes."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -40,6 +40,7 @@ dependencies:
   share_plus: ^7.2.1
   path_provider: ^2.1.2
   flutter_launcher_icons: ^0.14.3
+  url_launcher: ^6.2.6
 
 flutter_icons:
   ios: true

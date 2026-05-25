@@ -77,6 +77,10 @@ class Translations {
       'mandatory_desc': 'Signs directing specific actions that drivers must execute.',
       'information_desc': 'Signs pointing to facilities, parking, or services nearby.',
       'signal_light_desc': 'Standard red, yellow, green, and pedestrian crossing signals.',
+      'overview': 'Overview',
+      'sources_title': 'Information Sources',
+      'source_link': 'Official Source',
+      'disclaimer': 'This app is for educational purposes only. It does not represent any government entity. Traffic rules may vary; always refer to official local authorities for current regulations.',
     },
     'bn': {
       'app_title': 'ট্রাফিক সাইন ও সিগন্যাল',
@@ -151,6 +155,10 @@ class Translations {
       'mandatory_desc': 'চালকদের নির্দিষ্ট নির্দেশ মেনে চলতে বাধ্যকারী সংকেত।',
       'information_desc': 'নিকটস্থ হাসপাতাল, পার্কিং বা সেবার দিকনির্দেশক সংকেত।',
       'signal_light_desc': 'লাল, হলুদ, সবুজ এবং পথচারী পারাপার সংকেত।',
+      'overview': 'সংক্ষিপ্ত বিবরণ',
+      'sources_title': 'তথ্যের উৎস',
+      'source_link': 'সরকারী উৎস',
+      'disclaimer': 'এই অ্যাপটি শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে। এটি কোনো সরকারি সংস্থার প্রতিনিধিত্ব করে না। ট্রাফিক নিয়ম পরিবর্তিত হতে পারে; সর্বদা বর্তমান নিয়মের জন্য সরকারী স্থানীয় কর্তৃপক্ষের সাথে যোগাযোগ করুন।',
     },
     'es': {
       'app_title': 'Señales y Semáforos',
@@ -225,6 +233,10 @@ class Translations {
       'mandatory_desc': 'Señales que dirigen acciones específicas que los conductores deben realizar.',
       'information_desc': 'Señales que indican instalaciones, estacionamiento o servicios cercanos.',
       'signal_light_desc': 'Señales estándar de semáforo en rojo, amarillo, verde y cruce peatonal.',
+      'overview': 'Resumen',
+      'sources_title': 'Fuentes de Información',
+      'source_link': 'Fuente Oficial',
+      'disclaimer': 'Esta aplicación tiene únicamente fines educativos. No representa a ninguna entidad gubernamental. Las normas de tránsito pueden variar; consulte siempre a las autoridades locales oficiales para conocer la normativa vigente.',
     },
     'fr': {
       'app_title': 'Signaux et Panneaux',
@@ -299,6 +311,10 @@ class Translations {
       'mandatory_desc': 'Panneaux ordonnant des actions spécifiques.',
       'information_desc': 'Panneaux indiquant des installations ou services proches.',
       'signal_light_desc': 'Feux standard tricolores et signaux pour piétons.',
+      'overview': 'Aperçu',
+      'sources_title': "Sources d'Information",
+      'source_link': 'Source Officielle',
+      'disclaimer': "Cette application est à but éducatif uniquement. Elle ne représente aucune entité gouvernementale. Les règles de circulation peuvent varier ; référez-vous toujours aux autorités locales officielles pour la réglementation en vigueur.",
     },
     'de': {
       'app_title': 'Verkehrszeichen',
@@ -373,6 +389,10 @@ class Translations {
       'mandatory_desc': 'Vorschriften für bestimmte Fahrtrichtungen oder Aktionen.',
       'information_desc': 'Hinweise auf Parkplätze, Krankenhäuser oder Tankstellen.',
       'signal_light_desc': 'Standard-Ampelfarben und Fußgänger-Ampeln.',
+      'overview': 'Übersicht',
+      'sources_title': 'Informationsquellen',
+      'source_link': 'Offizielle Quelle',
+      'disclaimer': 'Diese App dient ausschließlich Bildungszwecken. Sie repräsentiert keine Regierungsstelle. Verkehrsregeln können abweichen; beachten Sie stets die offiziellen lokalen Behörden für aktuelle Vorschriften.',
     },
     'ja': {
       'app_title': '標識と信号',
@@ -447,6 +467,10 @@ class Translations {
       'mandatory_desc': '特定の通行区分や走行方法を指示する標識。',
       'information_desc': '目的地や施設、駐車場などの案内を示す標識。',
       'signal_light_desc': '赤、黄、青、および歩行者用信号機の表示。',
+      'overview': '概要',
+      'sources_title': '情報源',
+      'source_link': '公式情報源',
+      'disclaimer': 'このアプリは教育目的のみです。政府機関を代表するものではありません。交通ルールは異なる場合があります。最新の規制については、必ず公式の地方当局を参照してください。',
     },
     'ar': {
       'app_title': 'إشارات المرور',
@@ -521,6 +545,10 @@ class Translations {
       'mandatory_desc': 'إشارات تلزم السائقين باتباع اتجاهات أو إجراءات محددة.',
       'information_desc': 'إشارات تدل على المرافق العامة أو المواقف أو الخدمات القريبة.',
       'signal_light_desc': 'إشارات المرور الضوئية القياسية وإشارات المشاة.',
+      'overview': 'نظرة عامة',
+      'sources_title': 'مصادر المعلومات',
+      'source_link': 'المصدر الرسمي',
+      'disclaimer': 'هذا التطبيق لأغراض تعليمية فقط. إنه لا يمثل أي جهة حكومية. قد تختلف قواعد المرور؛ يرجى دائمًا الرجوع إلى السلطات المحلية الرسمية للحصول على اللوائح الحالية.',
     },
     'hi': {
       'app_title': 'यातायात संकेत',
@@ -595,6 +623,10 @@ class Translations {
       'mandatory_desc': 'चालकों को विशिष्ट दिशाओं या नियमों का पालन करने के निर्देश देने वाले संकेत।',
       'information_desc': 'आस-पास की सुविधाओं, पार्किंग या सेवाओं को दर्शाने वाले संकेत।',
       'signal_light_desc': 'मानक लाल, पीला, हरा और पैदल यात्री सिग्नल लाइटें।',
+      'overview': 'अवलोकन',
+      'sources_title': 'सूचना स्रोत',
+      'source_link': 'आधिकारिक स्रोत',
+      'disclaimer': 'यह ऐप केवल शैक्षिक उद्देश्यों के लिए है। यह किसी सरकारी संस्था का प्रतिनिधित्व नहीं करता है। यातायात नियम भिन्न हो सकते हैं; वर्तमान नियमों के लिए हमेशा आधिकारिक स्थानीय अधिकारियों को संदर्भित करें।',
     },
     'it': {
       'app_title': 'Segnali Stradali',
@@ -669,6 +701,10 @@ class Translations {
       'mandatory_desc': 'Segnali che impongono direzioni o comportamenti specifici.',
       'information_desc': 'Segnali che indicano parcheggi, ospedali o servizi vicini.',
       'signal_light_desc': 'Luci semaforiche standard rosse, gialle, verdi e pedonali.',
+      'overview': 'Panoramica',
+      'sources_title': 'Fonti di Informazione',
+      'source_link': 'Fonte Ufficiale',
+      'disclaimer': 'Questa app è solo a scopo educativo. Non rappresenta alcuna entità governativa. Le regole del traffico possono variare; fare sempre riferimento alle autorità locali ufficiali per le normative vigenti.',
     },
     'zh': {
       'app_title': '交通标志与信号',
@@ -743,6 +779,10 @@ class Translations {
       'mandatory_desc': '指示车辆、行人按规定方向、地点行驶的标志。',
       'information_desc': '传递道路方向、距离、停车场等各类服务设施信息的标志。',
       'signal_light_desc': '标准红、黄、绿及行人过街信号灯。',
+      'overview': '概述',
+      'sources_title': '信息来源',
+      'source_link': '官方来源',
+      'disclaimer': '此应用程序仅用于教育目的。它不代表任何政府实体。交通规则可能有所不同；请始终参考官方地方当局以获取现行法规。',
     }
   };
 

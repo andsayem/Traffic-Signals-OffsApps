@@ -259,7 +259,7 @@ class HomeScreen extends StatelessWidget {
                       },
                       padding: const EdgeInsets.all(16),
                       borderRadius: 16,
-                      customColor: ThemeConstants.signalBlue.withOpacity(0.12),
+                      customColor: ThemeConstants.signalBlue.withValues(alpha: 0.12),
                       child: Row(
                         children: [
                           const Icon(
