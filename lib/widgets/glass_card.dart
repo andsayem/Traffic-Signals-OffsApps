@@ -51,20 +51,18 @@ class GlassCard extends StatelessWidget {
       ),
     );
 
-    if (onTap != null) {
-      return Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(borderRadius),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(borderRadius),
-          splashColor: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05),
-          highlightColor: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.02),
-          child: cardContent,
-        ),
-      );
-    }
-
-    return cardContent;
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: onTap != null
+          ? InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(borderRadius),
+              splashColor: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05),
+              highlightColor: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.02),
+              child: cardContent,
+            )
+          : cardContent,
+    );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
 import '../utils/theme_constants.dart';
@@ -67,7 +68,9 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ComparisonScreen()),
+                MaterialPageRoute(
+                  builder: (context) => const ComparisonScreen(),
+                ),
               );
             },
             tooltip: context.tr('compare_countries'),
@@ -89,7 +92,10 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
                 sliver: SliverToBoxAdapter(
                   child: GlassCard(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
                     borderRadius: 16,
                     child: TextField(
                       onChanged: (val) {
@@ -124,7 +130,8 @@ class HomeScreen extends StatelessWidget {
                     sliver: SliverToBoxAdapter(
                       child: Text(
                         "Countries",
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: ThemeConstants.signalRed,
                             ),
@@ -134,30 +141,29 @@ class HomeScreen extends StatelessWidget {
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     sliver: SliverGrid(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 1.25,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final c = provider.filteredCountries[index];
-                          return CountryCard(
-                            country: c,
-                            onTap: () {
-                              provider.addRecentCountry(c.id);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CountryDetailsScreen(country: c),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        childCount: provider.filteredCountries.length,
-                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 1.25,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                          ),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final c = provider.filteredCountries[index];
+                        return CountryCard(
+                          country: c,
+                          onTap: () {
+                            provider.addRecentCountry(c.id);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CountryDetailsScreen(country: c),
+                              ),
+                            );
+                          },
+                        );
+                      }, childCount: provider.filteredCountries.length),
                     ),
                   ),
                 ],
@@ -169,7 +175,8 @@ class HomeScreen extends StatelessWidget {
                     sliver: SliverToBoxAdapter(
                       child: Text(
                         "Road Signs",
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: ThemeConstants.signalBlue,
                             ),
@@ -179,58 +186,54 @@ class HomeScreen extends StatelessWidget {
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     sliver: SliverGrid(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.95,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final s = provider.filteredSigns[index];
-                          return GlassCard(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SignDetailsScreen(
-                                    sign: s,
-                                    countryId: 'usa',
-                                  ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.95,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                          ),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final s = provider.filteredSigns[index];
+                        return GlassCard(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SignDetailsScreen(
+                                  sign: s,
+                                  countryId: 'usa',
                                 ),
-                              );
-                            },
-                            padding: const EdgeInsets.all(12),
-                            borderRadius: 16,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                TrafficSignWidget(
-                                  signId: s.id,
-                                  size: 65,
+                              ),
+                            );
+                          },
+                          padding: const EdgeInsets.all(12),
+                          borderRadius: 16,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TrafficSignWidget(signId: s.id, size: 65),
+                              const SizedBox(height: 10),
+                              Text(
+                                s.name,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  s.name,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        childCount: provider.filteredSigns.length,
-                      ),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        );
+                      }, childCount: provider.filteredSigns.length),
                     ),
                   ),
                 ],
 
-                if (provider.filteredCountries.isEmpty && provider.filteredSigns.isEmpty)
+                if (provider.filteredCountries.isEmpty &&
+                    provider.filteredSigns.isEmpty)
                   SliverFillRemaining(
                     hasScrollBody: false,
                     child: Center(
@@ -238,28 +241,37 @@ class HomeScreen extends StatelessWidget {
                         padding: const EdgeInsets.all(32.0),
                         child: Text(
                           "No countries or road signs match your query",
-                          style: TextStyle(color: isDark ? Colors.white60 : Colors.black54),
+                          style: TextStyle(
+                            color: isDark ? Colors.white60 : Colors.black54,
+                          ),
                         ),
                       ),
                     ),
                   ),
               ] else ...[
                 // Default View (No Search Query)
-                
+
                 // Country Comparison Quick Access Card
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
                   sliver: SliverToBoxAdapter(
                     child: GlassCard(
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const ComparisonScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => const ComparisonScreen(),
+                          ),
                         );
                       },
                       padding: const EdgeInsets.all(16),
                       borderRadius: 16,
-                      customColor: ThemeConstants.signalBlue.withValues(alpha: 0.12),
+                      customColor: ThemeConstants.signalBlue.withValues(
+                        alpha: 0.12,
+                      ),
                       child: Row(
                         children: [
                           const Icon(
@@ -277,7 +289,9 @@ class HomeScreen extends StatelessWidget {
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
-                                    color: isDark ? Colors.white : ThemeConstants.lightTextPrimary,
+                                    color: isDark
+                                        ? Colors.white
+                                        : ThemeConstants.lightTextPrimary,
                                   ),
                                 ),
                                 const SizedBox(height: 2),
@@ -285,7 +299,9 @@ class HomeScreen extends StatelessWidget {
                                   "Compare speed limits, rules & signs",
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: isDark ? Colors.white70 : ThemeConstants.lightTextSecondary,
+                                    color: isDark
+                                        ? Colors.white70
+                                        : ThemeConstants.lightTextSecondary,
                                   ),
                                 ),
                               ],
@@ -312,7 +328,8 @@ class HomeScreen extends StatelessWidget {
                           padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
                           child: Text(
                             context.tr('recent_countries'),
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
                                   color: ThemeConstants.signalRed,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -328,17 +345,24 @@ class HomeScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               final c = recent[index];
                               return Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 4,
+                                ),
                                 child: GlassCard(
                                   onTap: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => CountryDetailsScreen(country: c),
+                                        builder: (context) =>
+                                            CountryDetailsScreen(country: c),
                                       ),
                                     );
                                   },
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
                                   borderRadius: 14,
                                   child: Row(
                                     children: [
@@ -372,8 +396,8 @@ class HomeScreen extends StatelessWidget {
                     child: Text(
                       context.tr('popular_countries'),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -381,30 +405,29 @@ class HomeScreen extends StatelessWidget {
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   sliver: SliverGrid(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.25,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final c = filtered[index];
-                        return CountryCard(
-                          country: c,
-                          onTap: () {
-                            provider.addRecentCountry(c.id);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CountryDetailsScreen(country: c),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      childCount: filtered.length,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1.25,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                        ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final c = filtered[index];
+                      return CountryCard(
+                        country: c,
+                        onTap: () {
+                          provider.addRecentCountry(c.id);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CountryDetailsScreen(country: c),
+                            ),
+                          );
+                        },
+                      );
+                    }, childCount: filtered.length),
                   ),
                 ),
 
@@ -415,8 +438,8 @@ class HomeScreen extends StatelessWidget {
                     child: Text(
                       context.tr('featured_signs'),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -432,7 +455,10 @@ class HomeScreen extends StatelessWidget {
                         final s = featuredSigns[index];
                         return Container(
                           width: 140,
-                          margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 4,
+                          ),
                           child: GlassCard(
                             onTap: () {
                               Navigator.push(
@@ -450,10 +476,7 @@ class HomeScreen extends StatelessWidget {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                TrafficSignWidget(
-                                  signId: s.id,
-                                  size: 60,
-                                ),
+                                TrafficSignWidget(signId: s.id, size: 60),
                                 const SizedBox(height: 12),
                                 Text(
                                   s.name,
@@ -475,10 +498,117 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
 
-              // Safe padding space for bottom navigation bar
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 100),
+              // Disclaimer & Sources Footer
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+                sliver: SliverToBoxAdapter(
+                  child: GlassCard(
+                    borderRadius: 18,
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.info_outline_rounded,
+                              color: ThemeConstants.signalYellow,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "Disclaimer",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                color: ThemeConstants.signalYellow,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          context.tr('disclaimer'),
+                          style: TextStyle(
+                            fontSize: 11,
+                            height: 1.4,
+                            color: isDark ? Colors.white60 : Colors.black54,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.link_rounded,
+                              color: ThemeConstants.signalBlue,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              context.tr('sources_title'),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        ...provider.allCountries.map(
+                          (c) => Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: InkWell(
+                              onTap: () => launchUrl(
+                                Uri.parse(c.sourceUrl),
+                                mode: LaunchMode.externalApplication,
+                              ),
+                              borderRadius: BorderRadius.circular(6),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 2,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      c.flagEmoji,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        c.name,
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        c.sourceUrl,
+                                        style: TextStyle(
+                                          fontSize: 9,
+                                          color: ThemeConstants.signalBlue,
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                        textAlign: TextAlign.right,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
+              // Safe padding space for bottom navigation bar
+              const SliverToBoxAdapter(child: SizedBox(height: 100)),
             ],
           );
         },

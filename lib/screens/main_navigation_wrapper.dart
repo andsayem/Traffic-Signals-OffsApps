@@ -25,11 +25,9 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent, // Handled by AppBackground in individual screens
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      backgroundColor:
+          Colors.transparent, // Handled by AppBackground in individual screens
+      body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: CustomNavBar(
         currentIndex: _currentIndex,
         onTap: (index) {
