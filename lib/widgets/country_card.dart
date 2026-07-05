@@ -39,7 +39,7 @@ class CountryCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: ThemeConstants.signalBlue.withOpacity(0.1),
+                  color: ThemeConstants.signalBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -65,7 +65,7 @@ class CountryCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            context.tr('speed_highway') + ": ${country.speedLimitHighway}",
+            "${context.tr('speed_highway')}: ${country.speedLimitHighway}",
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontSize: 11,
                 ),

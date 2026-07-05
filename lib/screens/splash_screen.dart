@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
       setState(() {
         _activeSignal = 'yellow_signal';
       });
-      
+
       // Yellow Light phase
       _timer = Timer(const Duration(milliseconds: 1000), () {
         if (!mounted) return;
@@ -113,7 +113,9 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               const SizedBox(height: 48),
               const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(ThemeConstants.signalGreen),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  ThemeConstants.signalGreen,
+                ),
               ),
             ],
           ),

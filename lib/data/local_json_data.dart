@@ -10,6 +10,7 @@ class LocalJsonData {
       "speedLimitCity": "30-40 km/h",
       "speedLimitHighway": "80 km/h",
       "alcoholLimit": "Zero Tolerance (0.0%)",
+      "sourceUrl": "https://brta.gov.bd",
       "tips": [
         "Always watch out for non-motorized vehicles (rickshaws) and pedestrians.",
         "Honking is common but should be avoided near schools and hospitals.",
@@ -26,6 +27,7 @@ class LocalJsonData {
       "speedLimitCity": "50 km/h",
       "speedLimitHighway": "100-120 km/h",
       "alcoholLimit": "0.03% (30mg per 100ml)",
+      "sourceUrl": "https://parivahan.gov.in",
       "tips": [
         "Give way to traffic on your right at roundabouts.",
         "Lane discipline is active in metropolitan cities; stick to the correct lanes.",
@@ -42,6 +44,7 @@ class LocalJsonData {
       "speedLimitCity": "25-35 mph (40-55 km/h)",
       "speedLimitHighway": "65-75 mph (105-120 km/h)",
       "alcoholLimit": "0.08% BAC",
+      "sourceUrl": "https://mutcd.fhwa.dot.gov",
       "tips": [
         "In most states, you can turn right on a red light after a complete stop unless signposted otherwise.",
         "Always stop fully for school buses with flashing red lights, regardless of direction.",
@@ -58,6 +61,7 @@ class LocalJsonData {
       "speedLimitCity": "30 mph (48 km/h)",
       "speedLimitHighway": "70 mph (112 km/h)",
       "alcoholLimit": "0.08% BAC (0.05% in Scotland)",
+      "sourceUrl": "https://www.gov.uk/browse/driving/highway-code",
       "tips": [
         "Never cross a solid white line at the center of the road.",
         "Roundabouts operate clockwise. Yield to vehicles coming from your right.",
@@ -74,6 +78,7 @@ class LocalJsonData {
       "speedLimitCity": "40 km/h",
       "speedLimitHighway": "100 km/h",
       "alcoholLimit": "Zero Tolerance (Practically 0.0%)",
+      "sourceUrl": "https://www.npa.go.jp",
       "tips": [
         "You must stop fully before crossing any railway tracks, even if the gates are up.",
         "Turning left on red is illegal unless specifically permitted by a green arrow signal.",
@@ -90,6 +95,7 @@ class LocalJsonData {
       "speedLimitCity": "50 km/h",
       "speedLimitHighway": "Advisory 130 km/h (No general limit)",
       "alcoholLimit": "0.05% (0.0% for novice/young drivers)",
+      "sourceUrl": "https://www.bast.de",
       "tips": [
         "The right-hand rule applies ('Rechts vor Links') at intersections without traffic control.",
         "It is strictly illegal to run out of fuel on the Autobahn.",
@@ -106,6 +112,7 @@ class LocalJsonData {
       "speedLimitCity": "50 km/h",
       "speedLimitHighway": "100-110 km/h",
       "alcoholLimit": "0.08% BAC (0.05% warning limit)",
+      "sourceUrl": "https://tc.canada.ca",
       "tips": [
         "Flashing green light usually indicates a protected left-turn opportunity.",
         "Watch out for wildlife crossing signs, especially in wooded or mountainous regions.",
@@ -122,6 +129,7 @@ class LocalJsonData {
       "speedLimitCity": "50 km/h",
       "speedLimitHighway": "100-110 km/h",
       "alcoholLimit": "0.05% BAC (0.0% for learners)",
+      "sourceUrl": "https://www.nhvr.gov.au",
       "tips": [
         "In Melbourne, watch out for the 'hook turn' rule at intersections with trams.",
         "Seat belts are strictly mandatory for all occupants, with heavy fines for violations.",
@@ -138,6 +146,7 @@ class LocalJsonData {
       "speedLimitCity": "60-80 km/h",
       "speedLimitHighway": "120-140 km/h (has buffer in some emirates)",
       "alcoholLimit": "Zero Tolerance (0.0%)",
+      "sourceUrl": "https://www.moi.gov.ae",
       "tips": [
         "Tailgating is heavily fined. Keep a safe distance.",
         "Do not use hand-held mobile devices while driving. Automated cameras detect this.",
@@ -154,6 +163,7 @@ class LocalJsonData {
       "speedLimitCity": "80 km/h",
       "speedLimitHighway": "120-140 km/h",
       "alcoholLimit": "Zero Tolerance (0.0%)",
+      "sourceUrl": "https://www.moi.gov.sa",
       "tips": [
         "Ensure all passengers wear seat belts at all times.",
         "Drifting (Tafheet) is illegal and carries severe criminal penalties.",
@@ -170,6 +180,7 @@ class LocalJsonData {
       "speedLimitCity": "50 km/h (reduced in rain)",
       "speedLimitHighway": "130 km/h (110 km/h in rain)",
       "alcoholLimit": "0.05% (0.02% for bus drivers)",
+      "sourceUrl": "https://www.securite-routiere.gouv.fr",
       "tips": [
         "Always yield to cars already on roundabouts (marked by 'Vous n'avez pas la priorité').",
         "It is illegal to use headphones or earpieces while driving.",
@@ -186,6 +197,7 @@ class LocalJsonData {
       "speedLimitCity": "50 km/h",
       "speedLimitHighway": "130 km/h",
       "alcoholLimit": "0.05% BAC (0.0% for novice drivers)",
+      "sourceUrl": "https://www.mit.gov.it",
       "tips": [
         "Do not enter ZTL zones without a permit (usually designated by a white circle with a red border).",
         "High beams must be switched off in lit urban areas.",
@@ -202,6 +214,7 @@ class LocalJsonData {
       "speedLimitCity": "30-50 km/h",
       "speedLimitHighway": "120 km/h",
       "alcoholLimit": "0.02% BAC (0.08% is criminal offense)",
+      "sourceUrl": "https://www.gov.cn",
       "tips": [
         "Pedestrians are increasingly given priority, but caution is highly advised.",
         "Right turn on red is generally allowed unless a red arrow points right.",

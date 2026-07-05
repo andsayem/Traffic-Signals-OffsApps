@@ -32,39 +32,36 @@ class GlassCard extends StatelessWidget {
     final borderColor = customBorderColor ?? 
         (isDark ? ThemeConstants.darkBorderColor : ThemeConstants.lightBorderColor);
 
-    Widget cardContent = ClipRRect(
+    return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-        child: Container(
-          padding: padding,
-          decoration: BoxDecoration(
-            color: cardColor,
-            borderRadius: BorderRadius.circular(borderRadius),
-            border: Border.all(
-              color: borderColor,
-              width: 1.5,
-            ),
-          ),
-          child: child,
+        child: Material(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(borderRadius),
+          child: onTap != null
+              ? InkWell(
+                  onTap: onTap,
+                  borderRadius: BorderRadius.circular(borderRadius),
+                  splashColor: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05),
+                  highlightColor: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.02),
+                  child: Container(
+                    padding: padding,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: borderColor, width: 1.5),
+                    ),
+                    child: child,
+                  ),
+                )
+              : Container(
+                  padding: padding,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: borderColor, width: 1.5),
+                  ),
+                  child: child,
+                ),
         ),
       ),
     );
-
-    if (onTap != null) {
-      return Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(borderRadius),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(borderRadius),
-          splashColor: (isDark ? Colors.white : Colors.black).withOpacity(0.05),
-          highlightColor: (isDark ? Colors.white : Colors.black).withOpacity(0.02),
-          child: cardContent,
-        ),
-      );
-    }
-
-    return cardContent;
   }
 }

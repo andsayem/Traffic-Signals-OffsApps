@@ -5,6 +5,7 @@ import 'providers/app_provider.dart';
 import 'providers/traffic_provider.dart';
 import 'providers/quiz_provider.dart';
 import 'services/storage_service.dart';
+import 'ads/ad_service.dart';
 import 'utils/theme_constants.dart';
 import 'screens/splash_screen.dart';
 
@@ -24,6 +25,9 @@ void main() async {
 
   // Initialize SharedPreferences wrapper
   await StorageService.init();
+
+  // Initialize AdMob
+  await AdService.instance.init();
 
   runApp(
     MultiProvider(

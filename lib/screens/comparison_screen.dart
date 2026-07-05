@@ -203,7 +203,7 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
       child: GlassCard(
         padding: const EdgeInsets.all(16),
         borderRadius: 16,
-        customBorderColor: isDifferent ? ThemeConstants.signalYellow.withOpacity(0.5) : null,
+        customBorderColor: isDifferent ? ThemeConstants.signalYellow.withValues(alpha: 0.5) : null,
         child: Column(
           children: [
             Row(

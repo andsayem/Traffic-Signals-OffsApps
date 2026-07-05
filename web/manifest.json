@@ -5,7 +5,7 @@
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Traffic Signals & Signs - Learn road rules, traffic signs, and driving safety for 13 countries. Educational reference - not affiliated with any government entity. Official sources: BRTA, Parivahan, MUTCD, UK Highway Code, NPA, BASt, Transport Canada, NHVR, MOI, Sécurité Routière, MIT, Gov.cn.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

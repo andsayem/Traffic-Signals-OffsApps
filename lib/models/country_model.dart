@@ -8,6 +8,7 @@ class CountryModel {
   final String speedLimitCity;
   final String speedLimitHighway;
   final String alcoholLimit;
+  final String sourceUrl;
   final List<String> tips;
 
   const CountryModel({
@@ -20,6 +21,7 @@ class CountryModel {
     required this.speedLimitCity,
     required this.speedLimitHighway,
     required this.alcoholLimit,
+    required this.sourceUrl,
     required this.tips,
   });
 
@@ -34,6 +36,7 @@ class CountryModel {
       speedLimitCity: json['speedLimitCity'] as String,
       speedLimitHighway: json['speedLimitHighway'] as String,
       alcoholLimit: json['alcoholLimit'] as String,
+      sourceUrl: json['sourceUrl'] as String? ?? '',
       tips: List<String>.from(json['tips'] as List),
     );
   }
@@ -49,6 +52,7 @@ class CountryModel {
       'speedLimitCity': speedLimitCity,
       'speedLimitHighway': speedLimitHighway,
       'alcoholLimit': alcoholLimit,
+      'sourceUrl': sourceUrl,
       'tips': tips,
     };
   }

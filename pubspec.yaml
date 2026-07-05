@@ -1,5 +1,5 @@
 name: traffic_signal_symbols
-description: "A new Flutter project."
+description: "Traffic Signals & Signs - Learn road rules, traffic signs, and driving safety for 13 countries. Educational reference with vector-rendered signs and interactive quizzes. Not affiliated with any government entity. Official sources include: BRTA (Bangladesh), Parivahan (India), MUTCD FHWA (USA), UK Highway Code, NPA (Japan), BASt (Germany), Transport Canada, NHVR (Australia), MOI (UAE & Saudi Arabia), Sécurité Routière (France), MIT (Italy), Gov.cn (China)."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+3
+version: 1.0.0+4
 
 environment:
   sdk: ^3.11.5
@@ -40,6 +40,8 @@ dependencies:
   share_plus: ^7.2.1
   path_provider: ^2.1.2
   flutter_launcher_icons: ^0.14.3
+  url_launcher: ^6.2.6
+  google_mobile_ads: ^9.0.0
 
 flutter_icons:
   ios: true

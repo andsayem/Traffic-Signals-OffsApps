@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/country_model.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
@@ -53,8 +54,8 @@ class CountryDetailsScreen extends StatelessWidget {
               Tab(text: context.tr('signal_light').split(' ').first),
             ],
           ),
-        ),
-        child: Consumer<TrafficDataProvider>(
+      ),
+      child: Consumer<TrafficDataProvider>(
           builder: (context, provider, child) {
             return TabBarView(
               physics: const BouncingScrollPhysics(),
@@ -189,6 +190,52 @@ class CountryDetailsScreen extends StatelessWidget {
               ),
             )),
             
+        // Source Link
+        if (country.sourceUrl.isNotEmpty) ...[
+          const SizedBox(height: 20),
+          InkWell(
+            onTap: () => launchUrl(Uri.parse(country.sourceUrl), mode: LaunchMode.externalApplication),
+            borderRadius: BorderRadius.circular(12),
+            child: GlassCard(
+              padding: const EdgeInsets.all(14),
+              borderRadius: 12,
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.link_rounded,
+                    size: 18,
+                    color: ThemeConstants.signalBlue,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      context.tr('source_link'),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.white70 : Colors.black87,
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    child: Text(
+                      country.sourceUrl,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: ThemeConstants.signalBlue,
+                        decoration: TextDecoration.underline,
+                      ),
+                      textAlign: TextAlign.right,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+
         const SizedBox(height: 40),
       ],
     );
@@ -276,7 +323,7 @@ class CountryDetailsScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.04),
+        color: Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
