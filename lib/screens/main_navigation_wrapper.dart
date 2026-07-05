@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/theme_constants.dart';
 import '../widgets/custom_nav_bar.dart';
 import 'home_screen.dart';
 import 'quiz_screen.dart';
@@ -24,9 +25,10 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor:
-          Colors.transparent, // Handled by AppBackground in individual screens
+          isDark ? ThemeConstants.darkBgEnd : ThemeConstants.lightBgEnd,
       body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: CustomNavBar(
         currentIndex: _currentIndex,

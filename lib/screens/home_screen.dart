@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:traffic_signal_symbols/ads/adaptive_banner_ad_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
@@ -388,7 +389,7 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-
+                SliverToBoxAdapter(child: AdaptiveBannerAdWidget()),
                 // Country Grid
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
@@ -607,8 +608,9 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
               // Safe padding space for bottom navigation bar
-              const SliverToBoxAdapter(child: SizedBox(height: 100)),
+              const SliverToBoxAdapter(child: SizedBox(height: 10)),
             ],
           );
         },
