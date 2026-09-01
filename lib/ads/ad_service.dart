@@ -19,6 +19,12 @@ class AdService with WidgetsBindingObserver {
   // currently visible. Used so app-open doesn't fire on top of one.
   bool _isShowingFullScreenAd = false;
 
+  // Set by SubscriptionProvider whenever Pro status changes — Pro
+  // subscribers see no ads at all.
+  bool _isProUser = false;
+  void setProUser(bool value) => _isProUser = value;
+  bool get isProUser => _isProUser;
+
   String get bannerAdUnitId => AdIds.banner;
   String get _bannerId => AdIds.banner;
   String get _interstitialId => AdIds.interstitial;
@@ -47,8 +53,8 @@ class AdService with WidgetsBindingObserver {
   void _maybeShowAppOpenOnResume() {
     // Skip if an interstitial/app-open ad is already showing
     // (showing one triggers a resume event too — don't double-show),
-    // or if the SDK isn't ready yet.
-    if (_isShowingFullScreenAd || !_initialized) return;
+    // or if the SDK isn't ready yet, or the user is a Pro subscriber.
+    if (_isShowingFullScreenAd || !_initialized || _isProUser) return;
 
     if (isAppOpenReady) {
       showAppOpen();
@@ -192,6 +198,10 @@ class AdService with WidgetsBindingObserver {
   bool get isInterstitialReady => _interstitialAd != null;
 
   void showInterstitial({VoidCallback? onDismissed}) {
+    if (_isProUser) {
+      onDismissed?.call();
+      return;
+    }
     final ad = _interstitialAd;
     if (ad == null) {
       onDismissed?.call();

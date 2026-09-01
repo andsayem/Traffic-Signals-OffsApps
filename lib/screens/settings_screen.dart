@@ -3,11 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:traffic_signal_symbols/ads/adaptive_banner_ad_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../providers/app_provider.dart';
+import '../providers/subscription_provider.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
 import '../utils/theme_constants.dart';
 import '../widgets/app_background.dart';
 import '../widgets/glass_card.dart';
+import 'subscription_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -23,6 +25,83 @@ class SettingsScreen extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             children: [
+              // Go Pro Card
+              Consumer<SubscriptionProvider>(
+                builder: (context, subscription, child) {
+                  if (subscription.isPro) {
+                    return GlassCard(
+                      borderRadius: 18,
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.workspace_premium_rounded, color: ThemeConstants.signalYellow, size: 26),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Text(
+                              "You're a Pro member — thank you!",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                color: isDark ? Colors.white : ThemeConstants.lightTextPrimary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return GlassCard(
+                    onTap: () => SubscriptionScreen.show(context),
+                    borderRadius: 18,
+                    padding: const EdgeInsets.all(16),
+                    customColor: ThemeConstants.signalYellow.withValues(alpha: isDark ? 0.14 : 0.16),
+                    customBorderColor: ThemeConstants.signalYellow.withValues(alpha: 0.4),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [ThemeConstants.signalYellow, ThemeConstants.signalOrange],
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.workspace_premium_rounded, color: Colors.white, size: 22),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Go Pro',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 15,
+                                  color: isDark ? Colors.white : ThemeConstants.lightTextPrimary,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'Remove ads & unlock everything',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: isDark ? Colors.white70 : ThemeConstants.lightTextSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: ThemeConstants.signalOrange),
+                      ],
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 16),
+
               // Theme Toggle Card
               GlassCard(
                 borderRadius: 18,

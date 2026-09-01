@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
+import '../providers/subscription_provider.dart';
 import 'ad_service.dart';
 
 class AdaptiveBannerAdWidget extends StatefulWidget {
@@ -48,6 +50,11 @@ class _AdaptiveBannerAdWidgetState extends State<AdaptiveBannerAdWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isPro = context.watch<SubscriptionProvider>().isPro;
+    if (isPro) {
+      return const SizedBox.shrink();
+    }
+
     if (!_hasRequested) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _loadAd());
     }

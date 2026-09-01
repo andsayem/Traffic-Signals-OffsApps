@@ -8,6 +8,7 @@ class StorageService {
   static const String _keyFavorites = 'favorite_signs';
   static const String _keyRecentCountries = 'recent_countries';
   static const String _keyOnboarded = 'is_onboarded';
+  static const String _keyIsPro = 'is_pro_subscriber';
 
   // Initialize SharedPreferences
   static Future<void> init() async {
@@ -63,6 +64,16 @@ class StorageService {
       list.removeLast(); // Limit to 5
     }
     await _prefs?.setStringList(_keyRecentCountries, list);
+  }
+
+  // Pro subscription status (mirrors the store's entitlement locally so
+  // ads/limits can be gated without an async store check on every screen).
+  static bool isPro() {
+    return _prefs?.getBool(_keyIsPro) ?? false;
+  }
+
+  static Future<void> setPro(bool value) async {
+    await _prefs?.setBool(_keyIsPro, value);
   }
 
   static Future<void> clearAll() async {

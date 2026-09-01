@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'providers/app_provider.dart';
 import 'providers/traffic_provider.dart';
 import 'providers/quiz_provider.dart';
+import 'providers/subscription_provider.dart';
 import 'services/storage_service.dart';
 import 'ads/ad_service.dart';
 import 'utils/theme_constants.dart';
@@ -35,6 +36,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AppProvider()),
         ChangeNotifierProvider(create: (_) => TrafficDataProvider()),
         ChangeNotifierProvider(create: (_) => QuizProvider()),
+        ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
       ],
       child: const MyApp(),
     ),

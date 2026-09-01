@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:traffic_signal_symbols/ads/adaptive_banner_ad_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../providers/subscription_provider.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
 import '../utils/theme_constants.dart';
@@ -12,6 +13,7 @@ import '../widgets/traffic_sign_painter.dart';
 import 'country_details_screen.dart';
 import 'comparison_screen.dart';
 import 'sign_details_screen.dart';
+import 'subscription_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -19,6 +21,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isPro = context.watch<SubscriptionProvider>().isPro;
 
     return AppBackground(
       appBar: AppBar(
@@ -64,6 +67,34 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         actions: [
+          if (!isPro)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: () => SubscriptionScreen.show(context),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [ThemeConstants.signalYellow, ThemeConstants.signalOrange],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.workspace_premium_rounded, color: Colors.white, size: 15),
+                      SizedBox(width: 4),
+                      Text(
+                        'PRO',
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           IconButton(
             icon: const Icon(Icons.compare_arrows_rounded),
             onPressed: () {
