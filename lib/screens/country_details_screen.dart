@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../ads/adaptive_banner_ad_widget.dart';
+import '../ads/ad_service.dart';
 import '../models/country_model.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
@@ -10,14 +12,16 @@ import '../widgets/glass_card.dart';
 import '../widgets/traffic_sign_painter.dart';
 import 'sign_details_screen.dart';
 
-class CountryDetailsScreen extends StatelessWidget {
+class CountryDetailsScreen extends StatefulWidget {
   final CountryModel country;
 
-  const CountryDetailsScreen({
-    super.key,
-    required this.country,
-  });
+  const CountryDetailsScreen({super.key, required this.country});
 
+  @override
+  State<CountryDetailsScreen> createState() => _CountryDetailsScreenState();
+}
+
+class _CountryDetailsScreenState extends State<CountryDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -26,14 +30,14 @@ class CountryDetailsScreen extends StatelessWidget {
       length: 6,
       child: AppBackground(
         appBar: AppBar(
-          title: Text(country.name),
+          title: Text(widget.country.name),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 16.0),
               child: Hero(
-                tag: 'flag-${country.id}',
+                tag: 'flag-${widget.country.id}',
                 child: Text(
-                  country.flagEmoji,
+                  widget.country.flagEmoji,
                   style: const TextStyle(fontSize: 28),
                 ),
               ),
@@ -46,7 +50,11 @@ class CountryDetailsScreen extends StatelessWidget {
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white60,
             tabs: [
-              Tab(text: context.tr('overview') != 'overview' ? context.tr('overview') : 'Overview'),
+              Tab(
+                text: context.tr('overview') != 'overview'
+                    ? context.tr('overview')
+                    : 'Overview',
+              ),
               Tab(text: context.tr('warning').split(' ').first),
               Tab(text: context.tr('regulatory').split(' ').first),
               Tab(text: context.tr('mandatory').split(' ').first),
@@ -54,32 +62,64 @@ class CountryDetailsScreen extends StatelessWidget {
               Tab(text: context.tr('signal_light').split(' ').first),
             ],
           ),
-      ),
-      child: Consumer<TrafficDataProvider>(
-          builder: (context, provider, child) {
-            return TabBarView(
-              physics: const BouncingScrollPhysics(),
-              children: [
-                // Tab 1: Overview (driving info and tips)
-                _buildOverviewTab(context, isDark),
+        ),
+        child: Column(
+          children: [
+            AdaptiveBannerAdWidget(),
+            Expanded(
+              child: Consumer<TrafficDataProvider>(
+                builder: (context, provider, child) {
+                  return TabBarView(
+                    physics: const BouncingScrollPhysics(),
+                    children: [
+                      // Tab 1: Overview (driving info and tips)
+                      _buildOverviewTab(context, isDark),
 
-                // Tab 2: Warning Signs
-                _buildSignsGrid(context, provider, 'warning', country.id),
+                      // Tab 2: Warning Signs
+                      _buildSignsGrid(
+                        context,
+                        provider,
+                        'warning',
+                        widget.country.id,
+                      ),
 
-                // Tab 3: Regulatory Signs
-                _buildSignsGrid(context, provider, 'regulatory', country.id),
+                      // Tab 3: Regulatory Signs
+                      _buildSignsGrid(
+                        context,
+                        provider,
+                        'regulatory',
+                        widget.country.id,
+                      ),
 
-                // Tab 4: Mandatory Signs
-                _buildSignsGrid(context, provider, 'mandatory', country.id),
+                      // Tab 4: Mandatory Signs
+                      _buildSignsGrid(
+                        context,
+                        provider,
+                        'mandatory',
+                        widget.country.id,
+                      ),
 
-                // Tab 5: Information Signs
-                _buildSignsGrid(context, provider, 'information', country.id),
+                      // Tab 5: Information Signs
+                      _buildSignsGrid(
+                        context,
+                        provider,
+                        'information',
+                        widget.country.id,
+                      ),
 
-                // Tab 6: Signal Lights
-                _buildSignsGrid(context, provider, 'signal_light', country.id),
-              ],
-            );
-          },
+                      // Tab 6: Signal Lights
+                      _buildSignsGrid(
+                        context,
+                        provider,
+                        'signal_light',
+                        widget.country.id,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -101,33 +141,33 @@ class CountryDetailsScreen extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    country.flagEmoji,
+                    widget.country.flagEmoji,
                     style: const TextStyle(fontSize: 32),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      country.name,
+                      widget.country.name,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
               Text(
-                country.description,
+                widget.country.description,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      height: 1.4,
-                      color: isDark ? Colors.white70 : Colors.black87,
-                    ),
+                  height: 1.4,
+                  color: isDark ? Colors.white70 : Colors.black87,
+                ),
               ),
               const SizedBox(height: 20),
               const Divider(color: Colors.white24),
               const SizedBox(height: 16),
-              
+
               // Key Stats grid
               GridView.count(
                 shrinkWrap: true,
@@ -137,64 +177,94 @@ class CountryDetailsScreen extends StatelessWidget {
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
                 children: [
-                  _buildStatItem(context, Icons.directions_car_rounded, 'driving_side', country.drivingSide),
-                  _buildStatItem(context, Icons.phone_in_talk_rounded, 'emergency_no', country.emergencyNumber),
-                  _buildStatItem(context, Icons.speed_rounded, 'speed_city', country.speedLimitCity),
-                  _buildStatItem(context, Icons.add_road_rounded, 'speed_highway', country.speedLimitHighway),
-                  _buildStatItem(context, Icons.local_bar_rounded, 'alcohol_limit', country.alcoholLimit),
+                  _buildStatItem(
+                    context,
+                    Icons.directions_car_rounded,
+                    'driving_side',
+                    widget.country.drivingSide,
+                  ),
+                  _buildStatItem(
+                    context,
+                    Icons.phone_in_talk_rounded,
+                    'emergency_no',
+                    widget.country.emergencyNumber,
+                  ),
+                  _buildStatItem(
+                    context,
+                    Icons.speed_rounded,
+                    'speed_city',
+                    widget.country.speedLimitCity,
+                  ),
+                  _buildStatItem(
+                    context,
+                    Icons.add_road_rounded,
+                    'speed_highway',
+                    widget.country.speedLimitHighway,
+                  ),
+                  _buildStatItem(
+                    context,
+                    Icons.local_bar_rounded,
+                    'alcohol_limit',
+                    widget.country.alcoholLimit,
+                  ),
                 ],
               ),
             ],
           ),
         ),
-        
+
         const SizedBox(height: 24),
-        
+
         // Rules & Tips Header
         Text(
           context.tr('general_rules'),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: ThemeConstants.signalRed,
-              ),
+            fontWeight: FontWeight.bold,
+            color: ThemeConstants.signalRed,
+          ),
         ),
         const SizedBox(height: 12),
-        
+
         // Tips List
-        ...country.tips.map((tip) => Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: GlassCard(
-                padding: const EdgeInsets.all(12),
-                borderRadius: 12,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(
-                      Icons.check_circle_outline_rounded,
-                      color: ThemeConstants.signalGreen,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        tip,
-                        style: TextStyle(
-                          fontSize: 13,
-                          height: 1.4,
-                          color: isDark ? Colors.white70 : Colors.black87,
-                        ),
+        ...widget.country.tips.map(
+          (tip) => Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: GlassCard(
+              padding: const EdgeInsets.all(12),
+              borderRadius: 12,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.check_circle_outline_rounded,
+                    color: ThemeConstants.signalGreen,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      tip,
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.4,
+                        color: isDark ? Colors.white70 : Colors.black87,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            )),
-            
+            ),
+          ),
+        ),
+
         // Source Link
-        if (country.sourceUrl.isNotEmpty) ...[
+        if (widget.country.sourceUrl.isNotEmpty) ...[
           const SizedBox(height: 20),
           InkWell(
-            onTap: () => launchUrl(Uri.parse(country.sourceUrl), mode: LaunchMode.externalApplication),
+            onTap: () => launchUrl(
+              Uri.parse(widget.country.sourceUrl),
+              mode: LaunchMode.externalApplication,
+            ),
             borderRadius: BorderRadius.circular(12),
             child: GlassCard(
               padding: const EdgeInsets.all(14),
@@ -219,7 +289,7 @@ class CountryDetailsScreen extends StatelessWidget {
                   ),
                   Flexible(
                     child: Text(
-                      country.sourceUrl,
+                      widget.country.sourceUrl,
                       style: const TextStyle(
                         fontSize: 11,
                         color: ThemeConstants.signalBlue,
@@ -274,14 +344,17 @@ class CountryDetailsScreen extends StatelessWidget {
         final sign = signs[index];
         return GlassCard(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SignDetailsScreen(
-                  sign: sign,
-                  countryId: countryId,
-                ),
-              ),
+            AdService.instance.showInterstitial(
+              onDismissed: () {
+                if (!context.mounted) return;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SignDetailsScreen(sign: sign, countryId: countryId),
+                  ),
+                );
+              },
             );
           },
           padding: const EdgeInsets.all(12),
@@ -291,10 +364,7 @@ class CountryDetailsScreen extends StatelessWidget {
             children: [
               Hero(
                 tag: 'sign-${sign.id}-$countryId',
-                child: TrafficSignWidget(
-                  signId: sign.id,
-                  size: 70,
-                ),
+                child: TrafficSignWidget(signId: sign.id, size: 70),
               ),
               const SizedBox(height: 12),
               Text(

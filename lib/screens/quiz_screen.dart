@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:traffic_signal_symbols/ads/adaptive_banner_ad_widget.dart';
+import '../ads/ad_service.dart';
 import '../models/quiz_model.dart';
 import '../providers/quiz_provider.dart';
 import '../providers/traffic_provider.dart';
@@ -45,6 +46,8 @@ class _QuizScreenState extends State<QuizScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final trafficProvider = Provider.of<TrafficDataProvider>(context);
     final countries = trafficProvider.allCountries;
+
+    AdService.instance.loadInterstitial();
 
     return ListView(
       physics: const BouncingScrollPhysics(),
@@ -184,10 +187,15 @@ class _QuizScreenState extends State<QuizScreen> {
                 height: 52,
                 child: ElevatedButton(
                   onPressed: () {
-                    Provider.of<QuizProvider>(
-                      context,
-                      listen: false,
-                    ).startQuiz(_selectedCountryId, _questionCount);
+                    AdService.instance.showInterstitial(
+                      onDismissed: () {
+                        if (!mounted) return;
+                        Provider.of<QuizProvider>(
+                          context,
+                          listen: false,
+                        ).startQuiz(_selectedCountryId, _questionCount);
+                      },
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ThemeConstants.signalRed,
