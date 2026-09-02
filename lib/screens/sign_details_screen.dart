@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../ads/adaptive_banner_ad_widget.dart';
 import '../models/traffic_sign_model.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
@@ -26,9 +27,7 @@ class SignDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBackground(
-      appBar: AppBar(
-        title: Text(sign.name),
-      ),
+      appBar: AppBar(title: Text(sign.name)),
       child: Consumer<TrafficDataProvider>(
         builder: (context, provider, child) {
           final isFav = provider.isFavorite(sign.id);
@@ -36,7 +35,8 @@ class SignDetailsScreen extends StatelessWidget {
           final countryName = country?.name ?? 'General';
 
           // Get country specific override details if available
-          final countrySpecificText = sign.countrySpecificInfo[countryId] ?? 
+          final countrySpecificText =
+              sign.countrySpecificInfo[countryId] ??
               "This sign follows standard international guidelines in $countryName.";
 
           final relatedSigns = provider.getRelatedSigns(sign);
@@ -45,6 +45,10 @@ class SignDetailsScreen extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
             children: [
+              // Big banner ad below the app bar
+              AdaptiveBannerAdWidget(),
+              const SizedBox(height: 12),
+
               // Large Vector Sign
               Center(
                 child: Hero(
@@ -66,7 +70,9 @@ class SignDetailsScreen extends StatelessWidget {
                   // Favorite Button
                   _buildActionButton(
                     context: context,
-                    icon: isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                    icon: isFav
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_border_rounded,
                     color: isFav ? ThemeConstants.signalRed : Colors.grey,
                     onTap: () => provider.toggleFavorite(sign.id),
                     tooltip: 'Favorite',
@@ -105,9 +111,14 @@ class SignDetailsScreen extends StatelessWidget {
                   children: [
                     // Category Badge
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
-                        color: _getCategoryColor(sign.category).withValues(alpha: 0.15),
+                        color: _getCategoryColor(
+                          sign.category,
+                        ).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -123,13 +134,19 @@ class SignDetailsScreen extends StatelessWidget {
                     const SizedBox(height: 12),
                     Text(
                       sign.name,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge?.copyWith(fontSize: 20),
                     ),
                     const SizedBox(height: 16),
-                    
+
                     _buildInfoSection(context, 'meaning', sign.meaning),
                     const SizedBox(height: 16),
-                    _buildInfoSection(context, 'usage_inst', sign.usageInstructions),
+                    _buildInfoSection(
+                      context,
+                      'usage_inst',
+                      sign.usageInstructions,
+                    ),
                   ],
                 ),
               ),
@@ -146,7 +163,10 @@ class SignDetailsScreen extends StatelessWidget {
                     Row(
                       children: [
                         if (country != null) ...[
-                          Text(country.flagEmoji, style: const TextStyle(fontSize: 20)),
+                          Text(
+                            country.flagEmoji,
+                            style: const TextStyle(fontSize: 20),
+                          ),
                           const SizedBox(width: 8),
                         ],
                         Text(
@@ -175,8 +195,8 @@ class SignDetailsScreen extends StatelessWidget {
                 Text(
                   context.tr('related_signs'),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 SizedBox(
@@ -208,14 +228,14 @@ class SignDetailsScreen extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              TrafficSignWidget(
-                                signId: rel.id,
-                                size: 45,
-                              ),
+                              TrafficSignWidget(signId: rel.id, size: 45),
                               const SizedBox(height: 8),
                               Text(
                                 rel.name,
-                                style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.bold,
+                                ),
                                 textAlign: TextAlign.center,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -253,7 +273,11 @@ class SignDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoSection(BuildContext context, String labelKey, String content) {
+  Widget _buildInfoSection(
+    BuildContext context,
+    String labelKey,
+    String content,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -266,13 +290,7 @@ class SignDetailsScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Text(
-          content,
-          style: const TextStyle(
-            fontSize: 14,
-            height: 1.45,
-          ),
-        ),
+        Text(content, style: const TextStyle(fontSize: 14, height: 1.45)),
       ],
     );
   }
@@ -295,7 +313,8 @@ class SignDetailsScreen extends StatelessWidget {
   }
 
   void _shareSign(BuildContext context) {
-    final text = context.tr('shared_text')
+    final text = context
+        .tr('shared_text')
         .replaceAll('{name}', sign.name)
         .replaceAll('{meaning}', sign.meaning);
     Share.share(text);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../ads/adaptive_banner_ad_widget.dart';
 import '../models/country_model.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
@@ -37,32 +38,42 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
     final countries = provider.allCountries;
 
     return AppBackground(
-      appBar: AppBar(
-        title: Text(context.tr('compare_countries')),
-      ),
+      appBar: AppBar(title: Text(context.tr('compare_countries'))),
       child: ListView(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(16),
         children: [
+          // Big banner ad below the app bar
+          AdaptiveBannerAdWidget(),
+          const SizedBox(height: 16),
+
           // Selectors Row
           Row(
             children: [
               // Selector Country A
               Expanded(
                 child: GlassCard(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
                   borderRadius: 14,
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<CountryModel>(
                       isExpanded: true,
                       value: _countryA,
-                      dropdownColor: isDark ? const Color(0xFF0F172A) : Colors.white,
+                      dropdownColor: isDark
+                          ? const Color(0xFF0F172A)
+                          : Colors.white,
                       items: countries.map((c) {
                         return DropdownMenuItem(
                           value: c,
                           child: Text(
                             "${c.flagEmoji} ${c.name}",
-                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         );
                       }).toList(),
@@ -77,27 +88,38 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
               ),
 
               const SizedBox(width: 12),
-              
-              const Icon(Icons.compare_arrows_rounded, color: ThemeConstants.signalRed),
+
+              const Icon(
+                Icons.compare_arrows_rounded,
+                color: ThemeConstants.signalRed,
+              ),
 
               const SizedBox(width: 12),
 
               // Selector Country B
               Expanded(
                 child: GlassCard(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
                   borderRadius: 14,
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<CountryModel>(
                       isExpanded: true,
                       value: _countryB,
-                      dropdownColor: isDark ? const Color(0xFF0F172A) : Colors.white,
+                      dropdownColor: isDark
+                          ? const Color(0xFF0F172A)
+                          : Colors.white,
                       items: countries.map((c) {
                         return DropdownMenuItem(
                           value: c,
                           child: Text(
                             "${c.flagEmoji} ${c.name}",
-                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         );
                       }).toList(),
@@ -119,9 +141,9 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
             // Side by Side Stats
             Text(
               context.tr('comparison'),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
 
@@ -203,7 +225,9 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
       child: GlassCard(
         padding: const EdgeInsets.all(16),
         borderRadius: 16,
-        customBorderColor: isDifferent ? ThemeConstants.signalYellow.withValues(alpha: 0.5) : null,
+        customBorderColor: isDifferent
+            ? ThemeConstants.signalYellow.withValues(alpha: 0.5)
+            : null,
         child: Column(
           children: [
             Row(
@@ -213,7 +237,11 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
                 const SizedBox(width: 8),
                 Text(
                   context.tr(labelKey),
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white60),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white60,
+                  ),
                 ),
               ],
             ),
@@ -226,23 +254,23 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: isDifferent ? ThemeConstants.signalYellow : Colors.white,
+                      color: isDifferent
+                          ? ThemeConstants.signalYellow
+                          : Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ),
-                Container(
-                  height: 24,
-                  width: 1,
-                  color: Colors.white24,
-                ),
+                Container(height: 24, width: 1, color: Colors.white24),
                 Expanded(
                   child: Text(
                     valB,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: isDifferent ? ThemeConstants.signalYellow : Colors.white,
+                      color: isDifferent
+                          ? ThemeConstants.signalYellow
+                          : Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -266,7 +294,11 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.circle, size: 6, color: ThemeConstants.signalRed),
+                const Icon(
+                  Icons.circle,
+                  size: 6,
+                  color: ThemeConstants.signalRed,
+                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(

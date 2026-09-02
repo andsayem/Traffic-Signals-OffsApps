@@ -15,10 +15,6 @@ class AdService with WidgetsBindingObserver {
   bool _isInterstitialLoading = false;
   bool _isAppOpenLoading = false;
 
-  // Tracks whether ANY full-screen ad (interstitial or app open) is
-  // currently visible. Used so app-open doesn't fire on top of one.
-  bool _isShowingFullScreenAd = false;
-
   // Set by SubscriptionProvider whenever Pro status changes — Pro
   // subscribers see no ads at all.
   bool _isProUser = false;
@@ -36,32 +32,22 @@ class AdService with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _initialized = true;
 
-    // Preload the first app-open ad so it's ready the moment the
-    // app is backgrounded and resumed.
+    // Preload an app-open ad. It is shown exactly once on cold start
+    // (first open) a short moment after launch, and never again on resume.
     loadAppOpen();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future<void>.delayed(const Duration(milliseconds: 700), () {
+        showAppOpenOnColdStart();
+      });
+    });
   }
 
   /// Called automatically by Flutter whenever the app's lifecycle
   /// state changes (e.g. backgrounded, resumed, paused).
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _maybeShowAppOpenOnResume();
-    }
-  }
-
-  void _maybeShowAppOpenOnResume() {
-    // Skip if an interstitial/app-open ad is already showing
-    // (showing one triggers a resume event too — don't double-show),
-    // or if the SDK isn't ready yet, or the user is a Pro subscriber.
-    if (_isShowingFullScreenAd || !_initialized || _isProUser) return;
-
-    if (isAppOpenReady) {
-      showAppOpen();
-    } else {
-      // Not ready yet — load one for next time.
-      loadAppOpen();
-    }
+    // App-open ads intentionally disabled on resume — we only show one
+    // on cold start (first open) to avoid bothering the user repeatedly.
   }
 
   // ---------------- BANNER ----------------
@@ -173,16 +159,11 @@ class AdService with WidgetsBindingObserver {
           _interstitialAd = ad;
           _isInterstitialLoading = false;
           ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdShowedFullScreenContent: (ad) {
-              _isShowingFullScreenAd = true;
-            },
             onAdDismissedFullScreenContent: (ad) {
-              _isShowingFullScreenAd = false;
               ad.dispose();
               _interstitialAd = null;
             },
             onAdFailedToShowFullScreenContent: (ad, error) {
-              _isShowingFullScreenAd = false;
               ad.dispose();
               _interstitialAd = null;
             },
@@ -209,17 +190,12 @@ class AdService with WidgetsBindingObserver {
     }
     // Replace callback so we know when user dismisses the ad
     ad.fullScreenContentCallback = FullScreenContentCallback(
-      onAdShowedFullScreenContent: (ad) {
-        _isShowingFullScreenAd = true;
-      },
       onAdDismissedFullScreenContent: (ad) {
-        _isShowingFullScreenAd = false;
         ad.dispose();
         _interstitialAd = null;
         onDismissed?.call();
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
-        _isShowingFullScreenAd = false;
         ad.dispose();
         _interstitialAd = null;
         onDismissed?.call();
@@ -260,7 +236,12 @@ class AdService with WidgetsBindingObserver {
 
   /// Shows the app-open ad on cold start (first launch).
   /// Calls [onDismissed] after the ad is dismissed or fails to show.
+  /// Pro subscribers never see it.
   void showAppOpenOnColdStart({VoidCallback? onDismissed}) {
+    if (_isProUser) {
+      onDismissed?.call();
+      return;
+    }
     if (_appOpenAd == null) {
       onDismissed?.call();
       return;
@@ -275,18 +256,13 @@ class AdService with WidgetsBindingObserver {
 
   void _attachFullScreenCallbacks({VoidCallback? onDismissed}) {
     _appOpenAd?.fullScreenContentCallback = FullScreenContentCallback(
-      onAdShowedFullScreenContent: (ad) {
-        _isShowingFullScreenAd = true;
-      },
       onAdDismissedFullScreenContent: (ad) {
-        _isShowingFullScreenAd = false;
         ad.dispose();
         _appOpenAd = null;
         loadAppOpen();
         onDismissed?.call();
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
-        _isShowingFullScreenAd = false;
         ad.dispose();
         _appOpenAd = null;
         loadAppOpen();

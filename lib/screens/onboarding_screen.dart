@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../ads/ad_service.dart';
 import '../providers/app_provider.dart';
 import '../utils/translations.dart';
 import '../utils/theme_constants.dart';
@@ -18,6 +19,12 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    AdService.instance.loadInterstitial();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -182,9 +189,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _completeOnboarding() {
     final appProvider = Provider.of<AppProvider>(context, listen: false);
     appProvider.completeOnboarding();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const MainNavigationWrapper()),
+    AdService.instance.showInterstitial(
+      onDismissed: () {
+        if (!mounted) return;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainNavigationWrapper()),
+        );
+      },
     );
   }
 }

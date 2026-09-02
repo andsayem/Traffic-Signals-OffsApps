@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:traffic_signal_symbols/ads/adaptive_banner_ad_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../ads/ad_service.dart';
 import '../providers/subscription_provider.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
@@ -186,13 +187,7 @@ class HomeScreen extends StatelessWidget {
                           country: c,
                           onTap: () {
                             provider.addRecentCountry(c.id);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    CountryDetailsScreen(country: c),
-                              ),
-                            );
+                            _openCountryDetails(context, c);
                           },
                         );
                       }, childCount: provider.filteredCountries.length),
@@ -383,13 +378,7 @@ class HomeScreen extends StatelessWidget {
                                 ),
                                 child: GlassCard(
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            CountryDetailsScreen(country: c),
-                                      ),
-                                    );
+                                    _openCountryDetails(context, c);
                                   },
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 16,
@@ -450,13 +439,7 @@ class HomeScreen extends StatelessWidget {
                         country: c,
                         onTap: () {
                           provider.addRecentCountry(c.id);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  CountryDetailsScreen(country: c),
-                            ),
-                          );
+                          _openCountryDetails(context, c);
                         },
                       );
                     }, childCount: filtered.length),
@@ -646,6 +629,20 @@ class HomeScreen extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  void _openCountryDetails(BuildContext context, dynamic country) {
+    AdService.instance.showInterstitial(
+      onDismissed: () {
+        if (!context.mounted) return;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CountryDetailsScreen(country: country),
+          ),
+        );
+      },
     );
   }
 }
