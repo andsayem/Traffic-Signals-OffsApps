@@ -10,6 +10,10 @@ class StorageService {
   static const String _keyOnboarded = 'is_onboarded';
   static const String _keyIsPro = 'is_pro_subscriber';
   static const String _keyAdFreeUntil = 'ad_free_until_ms';
+  static const String _keySelectedCountry = 'selected_country';
+  static const String _keyLearnedSigns = 'learned_signs';
+  static const String _keyQuizzesDone = 'quizzes_done';
+  static const String _keyHomeTourDone = 'home_tour_done';
 
   // Initialize SharedPreferences
   static Future<void> init() async {
@@ -27,7 +31,8 @@ class StorageService {
 
   // Theme Preference
   static bool isDarkTheme() {
-    return _prefs?.getBool(_keyTheme) ?? true; // Default to dark theme for premium aesthetic
+    return _prefs?.getBool(_keyTheme) ??
+        true; // Default to dark theme for premium aesthetic
   }
 
   static Future<void> setDarkTheme(bool isDark) async {
@@ -75,6 +80,34 @@ class StorageService {
 
   static Future<void> setPro(bool value) async {
     await _prefs?.setBool(_keyIsPro, value);
+  }
+
+  // Learning progress: signs the user has opened at least once.
+  static List<String> getLearnedSigns() =>
+      _prefs?.getStringList(_keyLearnedSigns) ?? [];
+
+  static Future<void> setLearnedSigns(List<String> ids) async {
+    await _prefs?.setStringList(_keyLearnedSigns, ids);
+  }
+
+  static int getQuizzesDone() => _prefs?.getInt(_keyQuizzesDone) ?? 0;
+
+  static Future<void> incrementQuizzesDone() async {
+    await _prefs?.setInt(_keyQuizzesDone, getQuizzesDone() + 1);
+  }
+
+  // First-run guided tour of the Home screen.
+  static bool isHomeTourDone() => _prefs?.getBool(_keyHomeTourDone) ?? false;
+
+  static Future<void> setHomeTourDone() async {
+    await _prefs?.setBool(_keyHomeTourDone, true);
+  }
+
+  // Country the user is learning for (auto-detected, user can change).
+  static String? getSelectedCountry() => _prefs?.getString(_keySelectedCountry);
+
+  static Future<void> setSelectedCountry(String id) async {
+    await _prefs?.setString(_keySelectedCountry, id);
   }
 
   // End of the rewarded ad-free window (survives app restarts).

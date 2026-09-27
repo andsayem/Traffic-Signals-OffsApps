@@ -12,12 +12,36 @@ class _OtherApp {
 }
 
 const _otherApps = [
-  _OtherApp('Duplicate Photo Remover', 'com.andsayem.duplicate_remove', 'assets/other_apps/duplicate_remove.png'),
-  _OtherApp('QR & Barcode Studio', 'com.andsayem.qrbarcodestudio', 'assets/other_apps/qrbarcodestudio.png'),
-  _OtherApp('Hidden Camera Detector', 'com.andsayem.camera_detector', 'assets/other_apps/camera_detector.png'),
-  _OtherApp('Medi Reminder', 'com.andsayem.medicineReminder', 'assets/other_apps/medicine_reminder.png'),
-  _OtherApp('Jigsaw Puzzle - Cardscapes', 'com.andsayem.puzzle', 'assets/other_apps/puzzle.png'),
-  _OtherApp('Income & Expense Tracker', 'my.daily.transaction', 'assets/other_apps/daily_transaction.png'),
+  _OtherApp(
+    'Duplicate Photo Remover',
+    'com.andsayem.duplicate_remove',
+    'assets/other_apps/duplicate_remove.png',
+  ),
+  _OtherApp(
+    'QR & Barcode Studio',
+    'com.andsayem.qrbarcodestudio',
+    'assets/other_apps/qrbarcodestudio.png',
+  ),
+  _OtherApp(
+    'Hidden Camera Detector',
+    'com.andsayem.camera_detector',
+    'assets/other_apps/camera_detector.png',
+  ),
+  _OtherApp(
+    'Medi Reminder',
+    'com.andsayem.medicineReminder',
+    'assets/other_apps/medicine_reminder.png',
+  ),
+  _OtherApp(
+    'Jigsaw Puzzle - Cardscapes',
+    'com.andsayem.puzzle',
+    'assets/other_apps/puzzle.png',
+  ),
+  _OtherApp(
+    'Income & Expense Tracker',
+    'my.daily.transaction',
+    'assets/other_apps/daily_transaction.png',
+  ),
 ];
 
 class OtherAppsCard extends StatelessWidget {
@@ -26,9 +50,13 @@ class OtherAppsCard extends StatelessWidget {
   Future<void> _openStore(String packageId) async {
     // Try the Play Store app first, fall back to the web listing.
     final marketUri = Uri.parse('market://details?id=$packageId');
-    final webUri = Uri.parse('https://play.google.com/store/apps/details?id=$packageId');
+    final webUri = Uri.parse(
+      'https://play.google.com/store/apps/details?id=$packageId',
+    );
     try {
-      if (await launchUrl(marketUri, mode: LaunchMode.externalApplication)) return;
+      if (await launchUrl(marketUri, mode: LaunchMode.externalApplication)) {
+        return;
+      }
     } catch (_) {}
     await launchUrl(webUri, mode: LaunchMode.externalApplication);
   }
@@ -44,7 +72,11 @@ class OtherAppsCard extends StatelessWidget {
         children: [
           const Row(
             children: [
-              Icon(Icons.apps_rounded, color: ThemeConstants.signalGreen, size: 22),
+              Icon(
+                Icons.apps_rounded,
+                color: ThemeConstants.signalGreen,
+                size: 22,
+              ),
               SizedBox(width: 12),
               Text(
                 'More Apps from Us',
@@ -71,7 +103,12 @@ class OtherAppsCard extends StatelessWidget {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(16),
-                          child: Image.asset(app.iconAsset, width: 60, height: 60, fit: BoxFit.cover),
+                          child: Image.asset(
+                            app.iconAsset,
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -83,7 +120,9 @@ class OtherAppsCard extends StatelessWidget {
                             fontSize: 10.5,
                             height: 1.25,
                             fontWeight: FontWeight.w600,
-                            color: isDark ? Colors.white70 : ThemeConstants.lightTextPrimary,
+                            color: isDark
+                                ? Colors.white70
+                                : ThemeConstants.lightTextPrimary,
                           ),
                         ),
                       ],

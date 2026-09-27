@@ -29,8 +29,10 @@ class SubscriptionProvider with ChangeNotifier {
   bool get isPurchasing => _isPurchasing;
   String? get error => _service.pendingError;
 
-  ProductDetails? get monthlyProduct => _service.productFor(SubscriptionIds.monthly);
-  ProductDetails? get yearlyProduct => _service.productFor(SubscriptionIds.yearly);
+  ProductDetails? get monthlyProduct =>
+      _service.productFor(SubscriptionIds.monthly);
+  ProductDetails? get yearlyProduct =>
+      _service.productFor(SubscriptionIds.yearly);
 
   Future<void> _init() async {
     await _service.init();

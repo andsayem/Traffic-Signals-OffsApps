@@ -8,11 +8,7 @@ class CountryCard extends StatelessWidget {
   final CountryModel country;
   final VoidCallback onTap;
 
-  const CountryCard({
-    super.key,
-    required this.country,
-    required this.onTap,
-  });
+  const CountryCard({super.key, required this.country, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -57,18 +53,18 @@ class CountryCard extends StatelessWidget {
           Text(
             country.name,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 4),
           Text(
             "${context.tr('speed_highway')}: ${country.speedLimitHighway}",
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: 11,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(fontSize: 11),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

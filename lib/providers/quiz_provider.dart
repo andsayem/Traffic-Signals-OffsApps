@@ -9,7 +9,8 @@ class QuizProvider with ChangeNotifier {
   int? _selectedAnswerIndex;
   bool _isAnswered = false;
   int _score = 0;
-  List<Map<String, dynamic>> _history = []; // Holds list of { 'question': QuizQuestion, 'selectedIndex': int, 'isCorrect': bool }
+  List<Map<String, dynamic>> _history =
+      []; // Holds list of { 'question': QuizQuestion, 'selectedIndex': int, 'isCorrect': bool }
 
   bool _isQuizActive = false;
 

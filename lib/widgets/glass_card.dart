@@ -25,12 +25,16 @@ class GlassCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    final cardColor = customColor ?? 
+
+    final cardColor =
+        customColor ??
         (isDark ? ThemeConstants.darkCardColor : ThemeConstants.lightCardColor);
-        
-    final borderColor = customBorderColor ?? 
-        (isDark ? ThemeConstants.darkBorderColor : ThemeConstants.lightBorderColor);
+
+    final borderColor =
+        customBorderColor ??
+        (isDark
+            ? ThemeConstants.darkBorderColor
+            : ThemeConstants.lightBorderColor);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
@@ -43,11 +47,14 @@ class GlassCard extends StatelessWidget {
               ? InkWell(
                   onTap: onTap,
                   borderRadius: BorderRadius.circular(borderRadius),
-                  splashColor: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05),
-                  highlightColor: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.02),
+                  splashColor: (isDark ? Colors.white : Colors.black)
+                      .withValues(alpha: 0.05),
+                  highlightColor: (isDark ? Colors.white : Colors.black)
+                      .withValues(alpha: 0.02),
                   child: Container(
                     padding: padding,
                     decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(borderRadius),
                       border: Border.all(color: borderColor, width: 1.5),
                     ),
                     child: child,
@@ -56,7 +63,8 @@ class GlassCard extends StatelessWidget {
               : Container(
                   padding: padding,
                   decoration: BoxDecoration(
-                    border: Border.all(color: borderColor, width: 1.5),
+                    borderRadius: BorderRadius.circular(borderRadius),
+                      border: Border.all(color: borderColor, width: 1.5),
                   ),
                   child: child,
                 ),

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
@@ -8,11 +7,14 @@ class Translations {
     'en': {
       'app_title': 'Traffic Signals & Signs',
       'onboarding_title_1': 'Learn Global Rules',
-      'onboarding_subtitle_1': 'Explore road rules, speed limits, and traffic systems of 13 popular countries.',
+      'onboarding_subtitle_1':
+          'Explore road rules, speed limits, and traffic systems of 13 popular countries.',
       'onboarding_title_2': 'Vector Sign Dictionary',
-      'onboarding_subtitle_2': 'Browse vector-rendered warning, regulatory, mandatory, and information signs offline.',
+      'onboarding_subtitle_2':
+          'Browse vector-rendered warning, regulatory, mandatory, and information signs offline.',
       'onboarding_title_3': 'Interactive Quizzes',
-      'onboarding_subtitle_3': 'Test your driving safety knowledge and learn with rich explanations.',
+      'onboarding_subtitle_3':
+          'Test your driving safety knowledge and learn with rich explanations.',
       'get_started': 'Get Started',
       'next': 'Next',
       'skip': 'Skip',
@@ -42,7 +44,8 @@ class Translations {
       'usage_inst': 'Usage Instructions',
       'country_info': 'Country Specific Info',
       'related_signs': 'Related Signs',
-      'shared_text': 'Check out this traffic sign: {name}. Meaning: {meaning}. Learn more on Traffic Signal Symbols app!',
+      'shared_text':
+          'Check out this traffic sign: {name}. Meaning: {meaning}. Learn more on Traffic Signal Symbols app!',
       'download_success': 'Image saved to download folder successfully!',
       'download_fail': 'Failed to save image.',
       'quiz_title': 'Traffic Safety Quiz',
@@ -62,7 +65,8 @@ class Translations {
       'language': 'Language',
       'dark_mode': 'Dark Mode',
       'reset_data': 'Reset App Progress',
-      'reset_confirm': 'Are you sure you want to clear your favorites and settings?',
+      'reset_confirm':
+          'Are you sure you want to clear your favorites and settings?',
       'cancel': 'Cancel',
       'confirm': 'Confirm',
       'app_info': 'App Information',
@@ -73,24 +77,33 @@ class Translations {
       'comparison': 'Comparison Result',
       'difference': 'Difference Details',
       'rules_tips': 'Safety Driving Tips',
-      'warning_desc': 'Signs alerting drivers to potential hazards or danger ahead.',
-      'regulatory_desc': 'Signs indicating mandatory traffic laws or prohibitions.',
-      'mandatory_desc': 'Signs directing specific actions that drivers must execute.',
-      'information_desc': 'Signs pointing to facilities, parking, or services nearby.',
-      'signal_light_desc': 'Standard red, yellow, green, and pedestrian crossing signals.',
+      'warning_desc':
+          'Signs alerting drivers to potential hazards or danger ahead.',
+      'regulatory_desc':
+          'Signs indicating mandatory traffic laws or prohibitions.',
+      'mandatory_desc':
+          'Signs directing specific actions that drivers must execute.',
+      'information_desc':
+          'Signs pointing to facilities, parking, or services nearby.',
+      'signal_light_desc':
+          'Standard red, yellow, green, and pedestrian crossing signals.',
       'overview': 'Overview',
       'sources_title': 'Information Sources',
       'source_link': 'Official Source',
-      'disclaimer': 'This app is for educational purposes only. It does not represent any government entity. Traffic rules may vary; always refer to official local authorities for current regulations.',
+      'disclaimer':
+          'This app is for educational purposes only. It does not represent any government entity. Traffic rules may vary; always refer to official local authorities for current regulations.',
     },
     'bn': {
       'app_title': 'ট্রাফিক সাইন ও সিগন্যাল',
       'onboarding_title_1': 'বিশ্বব্যাপী নিয়ম জানুন',
-      'onboarding_subtitle_1': '১৩টি জনপ্রিয় দেশের রাস্তার নিয়ম, গতিসীমা এবং ট্রাফিক ব্যবস্থা অন্বেষণ করুন।',
+      'onboarding_subtitle_1':
+          '১৩টি জনপ্রিয় দেশের রাস্তার নিয়ম, গতিসীমা এবং ট্রাফিক ব্যবস্থা অন্বেষণ করুন।',
       'onboarding_title_2': 'ভেক্টর সাইন অভিধান',
-      'onboarding_subtitle_2': 'অফলাইনে সতর্কতামূলক, নিয়ন্ত্রণমূলক, বাধ্যতামূলক এবং তথ্যমূলক সংকেতগুলি ব্রাউজ করুন।',
+      'onboarding_subtitle_2':
+          'অফলাইনে সতর্কতামূলক, নিয়ন্ত্রণমূলক, বাধ্যতামূলক এবং তথ্যমূলক সংকেতগুলি ব্রাউজ করুন।',
       'onboarding_title_3': 'ইন্টারেক্টিভ কুইজ',
-      'onboarding_subtitle_3': 'আপনার ড্রাইভিং নিরাপত্তা জ্ঞান পরীক্ষা করুন এবং ব্যাখ্যার সাহায্যে শিখুন।',
+      'onboarding_subtitle_3':
+          'আপনার ড্রাইভিং নিরাপত্তা জ্ঞান পরীক্ষা করুন এবং ব্যাখ্যার সাহায্যে শিখুন।',
       'get_started': 'শুরু করুন',
       'next': 'পরবর্তী',
       'skip': 'এড়িয়ে যান',
@@ -120,7 +133,8 @@ class Translations {
       'usage_inst': 'ব্যবহারের নির্দেশাবলী',
       'country_info': 'দেশ-নির্দিষ্ট তথ্য',
       'related_signs': 'সম্পর্কিত সাইনসমূহ',
-      'shared_text': 'এই ট্রাফিক সাইনটি দেখুন: {name}। অর্থ: {meaning}। ট্রাফিক সংকেত অ্যাপে আরও জানুন!',
+      'shared_text':
+          'এই ট্রাফিক সাইনটি দেখুন: {name}। অর্থ: {meaning}। ট্রাফিক সংকেত অ্যাপে আরও জানুন!',
       'download_success': 'ছবিটি সফলভাবে ডাউনলোড ফোল্ডারে সংরক্ষিত হয়েছে!',
       'download_fail': 'ছবি সংরক্ষণ ব্যর্থ হয়েছে।',
       'quiz_title': 'ট্রাফিক নিরাপত্তা কুইজ',
@@ -140,7 +154,8 @@ class Translations {
       'language': 'ভাষা',
       'dark_mode': 'ডার্ক মোড',
       'reset_data': 'অ্যাপ ডাটা রিসেট',
-      'reset_confirm': 'আপনি কি নিশ্চিত যে প্রিয় তালিকা ও সেটিংস মুছে ফেলতে চান?',
+      'reset_confirm':
+          'আপনি কি নিশ্চিত যে প্রিয় তালিকা ও সেটিংস মুছে ফেলতে চান?',
       'cancel': 'বাতিল',
       'confirm': 'নিশ্চিত',
       'app_info': 'অ্যাপ তথ্য',
@@ -154,21 +169,26 @@ class Translations {
       'warning_desc': 'রাস্তায় সম্ভাব্য বিপদ সম্পর্কে সতর্ক সংকেত।',
       'regulatory_desc': 'আইনগত বাধ্যবাধকতা বা নিষেধাজ্ঞা নির্দেশকারী সংকেত।',
       'mandatory_desc': 'চালকদের নির্দিষ্ট নির্দেশ মেনে চলতে বাধ্যকারী সংকেত।',
-      'information_desc': 'নিকটস্থ হাসপাতাল, পার্কিং বা সেবার দিকনির্দেশক সংকেত।',
+      'information_desc':
+          'নিকটস্থ হাসপাতাল, পার্কিং বা সেবার দিকনির্দেশক সংকেত।',
       'signal_light_desc': 'লাল, হলুদ, সবুজ এবং পথচারী পারাপার সংকেত।',
       'overview': 'সংক্ষিপ্ত বিবরণ',
       'sources_title': 'তথ্যের উৎস',
       'source_link': 'সরকারী উৎস',
-      'disclaimer': 'এই অ্যাপটি শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে। এটি কোনো সরকারি সংস্থার প্রতিনিধিত্ব করে না। ট্রাফিক নিয়ম পরিবর্তিত হতে পারে; সর্বদা বর্তমান নিয়মের জন্য সরকারী স্থানীয় কর্তৃপক্ষের সাথে যোগাযোগ করুন।',
+      'disclaimer':
+          'এই অ্যাপটি শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে। এটি কোনো সরকারি সংস্থার প্রতিনিধিত্ব করে না। ট্রাফিক নিয়ম পরিবর্তিত হতে পারে; সর্বদা বর্তমান নিয়মের জন্য সরকারী স্থানীয় কর্তৃপক্ষের সাথে যোগাযোগ করুন।',
     },
     'es': {
       'app_title': 'Señales y Semáforos',
       'onboarding_title_1': 'Aprender Reglas Globales',
-      'onboarding_subtitle_1': 'Explore las reglas viales, límites de velocidad y sistemas de tránsito de 13 países populares.',
+      'onboarding_subtitle_1':
+          'Explore las reglas viales, límites de velocidad y sistemas de tránsito de 13 países populares.',
       'onboarding_title_2': 'Diccionario de Señales Vectoriales',
-      'onboarding_subtitle_2': 'Examine señales de advertencia, reglamentarias, obligatorias e informativas fuera de línea.',
+      'onboarding_subtitle_2':
+          'Examine señales de advertencia, reglamentarias, obligatorias e informativas fuera de línea.',
       'onboarding_title_3': 'Pruebas Interactivas',
-      'onboarding_subtitle_3': 'Ponga a prueba sus conocimientos de seguridad vial y aprenda con ricas explicaciones.',
+      'onboarding_subtitle_3':
+          'Ponga a prueba sus conocimientos de seguridad vial y aprenda con ricas explicaciones.',
       'get_started': 'Comenzar',
       'next': 'Siguiente',
       'skip': 'Omitir',
@@ -198,8 +218,10 @@ class Translations {
       'usage_inst': 'Instrucciones de Uso',
       'country_info': 'Información Específica del País',
       'related_signs': 'Señales Relacionadas',
-      'shared_text': 'Mira esta señal de tráfico: {name}. Significado: {meaning}. ¡Aprende más en la app de Señales de Tráfico!',
-      'download_success': '¡Imagen guardada con éxito en la carpeta de descargas!',
+      'shared_text':
+          'Mira esta señal de tráfico: {name}. Significado: {meaning}. ¡Aprende más en la app de Señales de Tráfico!',
+      'download_success':
+          '¡Imagen guardada con éxito en la carpeta de descargas!',
       'download_fail': 'Fallo al guardar la imagen.',
       'quiz_title': 'Prueba de Seguridad Vial',
       'quiz_setup': 'Configurar Prueba',
@@ -218,7 +240,8 @@ class Translations {
       'language': 'Idioma',
       'dark_mode': 'Modo Oscuro',
       'reset_data': 'Restablecer Progreso',
-      'reset_confirm': '¿Está seguro de que desea borrar sus favoritos y ajustes?',
+      'reset_confirm':
+          '¿Está seguro de que desea borrar sus favoritos y ajustes?',
       'cancel': 'Cancelar',
       'confirm': 'Confirmar',
       'app_info': 'Información de la Aplicación',
@@ -229,24 +252,33 @@ class Translations {
       'comparison': 'Resultado de Comparación',
       'difference': 'Detalle de Diferencias',
       'rules_tips': 'Consejos de Seguridad Vial',
-      'warning_desc': 'Señales que advierten a los conductores sobre peligros potenciales.',
-      'regulatory_desc': 'Señales que indican leyes de tránsito obligatorias o prohibiciones.',
-      'mandatory_desc': 'Señales que dirigen acciones específicas que los conductores deben realizar.',
-      'information_desc': 'Señales que indican instalaciones, estacionamiento o servicios cercanos.',
-      'signal_light_desc': 'Señales estándar de semáforo en rojo, amarillo, verde y cruce peatonal.',
+      'warning_desc':
+          'Señales que advierten a los conductores sobre peligros potenciales.',
+      'regulatory_desc':
+          'Señales que indican leyes de tránsito obligatorias o prohibiciones.',
+      'mandatory_desc':
+          'Señales que dirigen acciones específicas que los conductores deben realizar.',
+      'information_desc':
+          'Señales que indican instalaciones, estacionamiento o servicios cercanos.',
+      'signal_light_desc':
+          'Señales estándar de semáforo en rojo, amarillo, verde y cruce peatonal.',
       'overview': 'Resumen',
       'sources_title': 'Fuentes de Información',
       'source_link': 'Fuente Oficial',
-      'disclaimer': 'Esta aplicación tiene únicamente fines educativos. No representa a ninguna entidad gubernamental. Las normas de tránsito pueden variar; consulte siempre a las autoridades locales oficiales para conocer la normativa vigente.',
+      'disclaimer':
+          'Esta aplicación tiene únicamente fines educativos. No representa a ninguna entidad gubernamental. Las normas de tránsito pueden variar; consulte siempre a las autoridades locales oficiales para conocer la normativa vigente.',
     },
     'fr': {
       'app_title': 'Signaux et Panneaux',
       'onboarding_title_1': 'Règles Globales',
-      'onboarding_subtitle_1': 'Explorez les règles de route, les limitations de vitesse de 13 pays populaires.',
+      'onboarding_subtitle_1':
+          'Explorez les règles de route, les limitations de vitesse de 13 pays populaires.',
       'onboarding_title_2': 'Dictionnaire Vectoriel',
-      'onboarding_subtitle_2': 'Consultez les panneaux d\'avertissement, de réglementation et d\'information hors ligne.',
+      'onboarding_subtitle_2':
+          'Consultez les panneaux d\'avertissement, de réglementation et d\'information hors ligne.',
       'onboarding_title_3': 'Quiz Interactifs',
-      'onboarding_subtitle_3': 'Testez vos connaissances en sécurité routière avec des explications complètes.',
+      'onboarding_subtitle_3':
+          'Testez vos connaissances en sécurité routière avec des explications complètes.',
       'get_started': 'Commencer',
       'next': 'Suivant',
       'skip': 'Passer',
@@ -276,8 +308,10 @@ class Translations {
       'usage_inst': 'Instructions d\'Usage',
       'country_info': 'Info Spécifique au Pays',
       'related_signs': 'Panneaux Connexes',
-      'shared_text': 'Découvrez ce panneau: {name}. Signification: {meaning}. Plus sur l\'application Traffic Signal Symbols!',
-      'download_success': 'Image enregistrée avec succès dans le dossier Téléchargements!',
+      'shared_text':
+          'Découvrez ce panneau: {name}. Signification: {meaning}. Plus sur l\'application Traffic Signal Symbols!',
+      'download_success':
+          'Image enregistrée avec succès dans le dossier Téléchargements!',
       'download_fail': 'Échec de l\'enregistrement.',
       'quiz_title': 'Quiz de Sécurité Routière',
       'quiz_setup': 'Configurer le Quiz',
@@ -296,7 +330,8 @@ class Translations {
       'language': 'Langue',
       'dark_mode': 'Mode Sombre',
       'reset_data': 'Réinitialiser le progrès',
-      'reset_confirm': 'Voulez-vous vraiment effacer vos favoris et paramètres ?',
+      'reset_confirm':
+          'Voulez-vous vraiment effacer vos favoris et paramètres ?',
       'cancel': 'Annuler',
       'confirm': 'Confirmer',
       'app_info': 'Info de l\'Application',
@@ -307,24 +342,31 @@ class Translations {
       'comparison': 'Résultat de la Comparaison',
       'difference': 'Détails des Différences',
       'rules_tips': 'Conseils de Sécurité',
-      'warning_desc': 'Panneaux avertissant les conducteurs de dangers potentiels.',
-      'regulatory_desc': 'Panneaux indiquant des lois de circulation obligatoires ou interdictions.',
+      'warning_desc':
+          'Panneaux avertissant les conducteurs de dangers potentiels.',
+      'regulatory_desc':
+          'Panneaux indiquant des lois de circulation obligatoires ou interdictions.',
       'mandatory_desc': 'Panneaux ordonnant des actions spécifiques.',
-      'information_desc': 'Panneaux indiquant des installations ou services proches.',
+      'information_desc':
+          'Panneaux indiquant des installations ou services proches.',
       'signal_light_desc': 'Feux standard tricolores et signaux pour piétons.',
       'overview': 'Aperçu',
       'sources_title': "Sources d'Information",
       'source_link': 'Source Officielle',
-      'disclaimer': "Cette application est à but éducatif uniquement. Elle ne représente aucune entité gouvernementale. Les règles de circulation peuvent varier ; référez-vous toujours aux autorités locales officielles pour la réglementation en vigueur.",
+      'disclaimer':
+          "Cette application est à but éducatif uniquement. Elle ne représente aucune entité gouvernementale. Les règles de circulation peuvent varier ; référez-vous toujours aux autorités locales officielles pour la réglementation en vigueur.",
     },
     'de': {
       'app_title': 'Verkehrszeichen',
       'onboarding_title_1': 'Regeln Lernen',
-      'onboarding_subtitle_1': 'Entdecken Sie Verkehrsregeln und Tempolimits für 13 beliebte Länder.',
+      'onboarding_subtitle_1':
+          'Entdecken Sie Verkehrsregeln und Tempolimits für 13 beliebte Länder.',
       'onboarding_title_2': 'Vektor-Wörterbuch',
-      'onboarding_subtitle_2': 'Durchsuchen Sie Warn-, Verbots- und Informationszeichen offline.',
+      'onboarding_subtitle_2':
+          'Durchsuchen Sie Warn-, Verbots- und Informationszeichen offline.',
       'onboarding_title_3': 'Interaktive Quizzes',
-      'onboarding_subtitle_3': 'Testen Sie Ihr Wissen zur Verkehrssicherheit mit Erklärungen.',
+      'onboarding_subtitle_3':
+          'Testen Sie Ihr Wissen zur Verkehrssicherheit mit Erklärungen.',
       'get_started': 'Starten',
       'next': 'Weiter',
       'skip': 'Überspringen',
@@ -354,7 +396,8 @@ class Translations {
       'usage_inst': 'Gebrauchsanweisung',
       'country_info': 'Länderspezifische Info',
       'related_signs': 'Ähnliche Schilder',
-      'shared_text': 'Verkehrszeichen ansehen: {name}. Bedeutung: {meaning}. Mehr in der Verkehrszeichen-App!',
+      'shared_text':
+          'Verkehrszeichen ansehen: {name}. Bedeutung: {meaning}. Mehr in der Verkehrszeichen-App!',
       'download_success': 'Bild erfolgreich im Download-Ordner gespeichert!',
       'download_fail': 'Fehler beim Speichern.',
       'quiz_title': 'Verkehrssicherheits-Quiz',
@@ -374,7 +417,8 @@ class Translations {
       'language': 'Sprache',
       'dark_mode': 'Dunkelmodus',
       'reset_data': 'Fortschritt zurücksetzen',
-      'reset_confirm': 'Sind Sie sicher, dass Sie Favoriten und Einstellungen löschen möchten?',
+      'reset_confirm':
+          'Sind Sie sicher, dass Sie Favoriten und Einstellungen löschen möchten?',
       'cancel': 'Abbrechen',
       'confirm': 'Bestätigen',
       'app_info': 'App-Informationen',
@@ -387,13 +431,16 @@ class Translations {
       'rules_tips': 'Sicherheitstipps',
       'warning_desc': 'Warnung vor potenziellen Gefahren auf der Straße.',
       'regulatory_desc': 'Hinweise auf gesetzliche Pflichten oder Verbote.',
-      'mandatory_desc': 'Vorschriften für bestimmte Fahrtrichtungen oder Aktionen.',
-      'information_desc': 'Hinweise auf Parkplätze, Krankenhäuser oder Tankstellen.',
+      'mandatory_desc':
+          'Vorschriften für bestimmte Fahrtrichtungen oder Aktionen.',
+      'information_desc':
+          'Hinweise auf Parkplätze, Krankenhäuser oder Tankstellen.',
       'signal_light_desc': 'Standard-Ampelfarben und Fußgänger-Ampeln.',
       'overview': 'Übersicht',
       'sources_title': 'Informationsquellen',
       'source_link': 'Offizielle Quelle',
-      'disclaimer': 'Diese App dient ausschließlich Bildungszwecken. Sie repräsentiert keine Regierungsstelle. Verkehrsregeln können abweichen; beachten Sie stets die offiziellen lokalen Behörden für aktuelle Vorschriften.',
+      'disclaimer':
+          'Diese App dient ausschließlich Bildungszwecken. Sie repräsentiert keine Regierungsstelle. Verkehrsregeln können abweichen; beachten Sie stets die offiziellen lokalen Behörden für aktuelle Vorschriften.',
     },
     'ja': {
       'app_title': '標識と信号',
@@ -471,16 +518,20 @@ class Translations {
       'overview': '概要',
       'sources_title': '情報源',
       'source_link': '公式情報源',
-      'disclaimer': 'このアプリは教育目的のみです。政府機関を代表するものではありません。交通ルールは異なる場合があります。最新の規制については、必ず公式の地方当局を参照してください。',
+      'disclaimer':
+          'このアプリは教育目的のみです。政府機関を代表するものではありません。交通ルールは異なる場合があります。最新の規制については、必ず公式の地方当局を参照してください。',
     },
     'ar': {
       'app_title': 'إشارات المرور',
       'onboarding_title_1': 'قواعد المرور العالمية',
-      'onboarding_subtitle_1': 'اكتشف قوانين الطرق وحدود السرعة في 13 دولة شهيرة.',
+      'onboarding_subtitle_1':
+          'اكتشف قوانين الطرق وحدود السرعة في 13 دولة شهيرة.',
       'onboarding_title_2': 'قاموس إشارات المرور',
-      'onboarding_subtitle_2': 'تصفح إشارات التحذير والتنظيم والإرشاد بدون اتصال بالإنترنت.',
+      'onboarding_subtitle_2':
+          'تصفح إشارات التحذير والتنظيم والإرشاد بدون اتصال بالإنترنت.',
       'onboarding_title_3': 'اختبارات تفاعلية',
-      'onboarding_subtitle_3': 'اختبر معلوماتك في السلامة المرورية مع شرح كامل للإجابات.',
+      'onboarding_subtitle_3':
+          'اختبر معلوماتك في السلامة المرورية مع شرح كامل للإجابات.',
       'get_started': 'ابدأ الآن',
       'next': 'التالي',
       'skip': 'تخطي',
@@ -510,7 +561,8 @@ class Translations {
       'usage_inst': 'تعليمات الاستخدام',
       'country_info': 'معلومات خاصة بالبلد',
       'related_signs': 'إشارات ذات صلة',
-      'shared_text': 'شاهد إشارة المرور هذه: {name}. المعنى: {meaning}. للمزيد، قم بتحميل تطبيق إشارات المرور!',
+      'shared_text':
+          'شاهد إشارة المرور هذه: {name}. المعنى: {meaning}. للمزيد، قم بتحميل تطبيق إشارات المرور!',
       'download_success': 'تم حفظ الصورة بنجاح في مجلد التنزيلات!',
       'download_fail': 'فشل حفظ الصورة.',
       'quiz_title': 'اختبار السلامة المرورية',
@@ -542,23 +594,29 @@ class Translations {
       'difference': 'تفاصيل الاختلاف',
       'rules_tips': 'نصائح القيادة الآمنة',
       'warning_desc': 'إشارات تنبه السائقين إلى مخاطر محتملة على الطريق.',
-      'regulatory_desc': 'إشارات توضح القوانين المرورية الإلزامية أو المحظورات.',
+      'regulatory_desc':
+          'إشارات توضح القوانين المرورية الإلزامية أو المحظورات.',
       'mandatory_desc': 'إشارات تلزم السائقين باتباع اتجاهات أو إجراءات محددة.',
-      'information_desc': 'إشارات تدل على المرافق العامة أو المواقف أو الخدمات القريبة.',
+      'information_desc':
+          'إشارات تدل على المرافق العامة أو المواقف أو الخدمات القريبة.',
       'signal_light_desc': 'إشارات المرور الضوئية القياسية وإشارات المشاة.',
       'overview': 'نظرة عامة',
       'sources_title': 'مصادر المعلومات',
       'source_link': 'المصدر الرسمي',
-      'disclaimer': 'هذا التطبيق لأغراض تعليمية فقط. إنه لا يمثل أي جهة حكومية. قد تختلف قواعد المرور؛ يرجى دائمًا الرجوع إلى السلطات المحلية الرسمية للحصول على اللوائح الحالية.',
+      'disclaimer':
+          'هذا التطبيق لأغراض تعليمية فقط. إنه لا يمثل أي جهة حكومية. قد تختلف قواعد المرور؛ يرجى دائمًا الرجوع إلى السلطات المحلية الرسمية للحصول على اللوائح الحالية.',
     },
     'hi': {
       'app_title': 'यातायात संकेत',
       'onboarding_title_1': 'वैश्विक नियम सीखें',
-      'onboarding_subtitle_1': '13 लोकप्रिय देशों के सड़क नियमों, गति सीमाओं और यातायात प्रणालियों का पता लगाएं।',
+      'onboarding_subtitle_1':
+          '13 लोकप्रिय देशों के सड़क नियमों, गति सीमाओं और यातायात प्रणालियों का पता लगाएं।',
       'onboarding_title_2': 'वेक्टर संकेत शब्दकोश',
-      'onboarding_subtitle_2': 'सचेतक, नियामक, अनिवार्य और सूचनात्मक संकेतों को ऑफ़लाइन ब्राउज़ करें।',
+      'onboarding_subtitle_2':
+          'सचेतक, नियामक, अनिवार्य और सूचनात्मक संकेतों को ऑफ़लाइन ब्राउज़ करें।',
       'onboarding_title_3': 'इंटरैक्टिव प्रश्नोत्तरी',
-      'onboarding_subtitle_3': 'यातायात सुरक्षा ज्ञान का परीक्षण करें और विस्तृत व्याख्याओं के साथ सीखें।',
+      'onboarding_subtitle_3':
+          'यातायात सुरक्षा ज्ञान का परीक्षण करें और विस्तृत व्याख्याओं के साथ सीखें।',
       'get_started': 'शुरू करें',
       'next': 'आगे',
       'skip': 'छोड़ें',
@@ -588,7 +646,8 @@ class Translations {
       'usage_inst': 'उपयोग के निर्देश',
       'country_info': 'देश विशिष्ट जानकारी',
       'related_signs': 'संबंधित संकेत',
-      'shared_text': 'इस यातायात संकेत को देखें: {name}। अर्थ: {meaning}। यातायात संकेत ऐप पर अधिक जानें!',
+      'shared_text':
+          'इस यातायात संकेत को देखें: {name}। अर्थ: {meaning}। यातायात संकेत ऐप पर अधिक जानें!',
       'download_success': 'छवि सफलतापूर्वक डाउनलोड फ़ोल्डर में सहेजी गई!',
       'download_fail': 'छवि सहेजने में विफल।',
       'quiz_title': 'यातायात सुरक्षा प्रश्नोत्तरी',
@@ -608,7 +667,8 @@ class Translations {
       'language': 'भाषा',
       'dark_mode': 'डार्क मोड',
       'reset_data': 'प्रगति रीसेट करें',
-      'reset_confirm': 'क्या आप वाकई अपने पसंदीदा और सेटिंग्स को मिटाना चाहते हैं?',
+      'reset_confirm':
+          'क्या आप वाकई अपने पसंदीदा और सेटिंग्स को मिटाना चाहते हैं?',
       'cancel': 'रद्द करें',
       'confirm': 'पुष्टि करें',
       'app_info': 'app की जानकारी',
@@ -619,24 +679,32 @@ class Translations {
       'comparison': 'तुलना परिणाम',
       'difference': 'अंतर विवरण',
       'rules_tips': 'सुरक्षित ड्राइविंग टिप्स',
-      'warning_desc': 'सड़क पर संभावित खतरों के प्रति चालकों को आगाह करने वाले संकेत।',
-      'regulatory_desc': 'अनिवार्य यातायात नियमों या निषेधों को दर्शाने वाले संकेत।',
-      'mandatory_desc': 'चालकों को विशिष्ट दिशाओं या नियमों का पालन करने के निर्देश देने वाले संकेत।',
-      'information_desc': 'आस-पास की सुविधाओं, पार्किंग या सेवाओं को दर्शाने वाले संकेत।',
+      'warning_desc':
+          'सड़क पर संभावित खतरों के प्रति चालकों को आगाह करने वाले संकेत।',
+      'regulatory_desc':
+          'अनिवार्य यातायात नियमों या निषेधों को दर्शाने वाले संकेत।',
+      'mandatory_desc':
+          'चालकों को विशिष्ट दिशाओं या नियमों का पालन करने के निर्देश देने वाले संकेत।',
+      'information_desc':
+          'आस-पास की सुविधाओं, पार्किंग या सेवाओं को दर्शाने वाले संकेत।',
       'signal_light_desc': 'मानक लाल, पीला, हरा और पैदल यात्री सिग्नल लाइटें।',
       'overview': 'अवलोकन',
       'sources_title': 'सूचना स्रोत',
       'source_link': 'आधिकारिक स्रोत',
-      'disclaimer': 'यह ऐप केवल शैक्षिक उद्देश्यों के लिए है। यह किसी सरकारी संस्था का प्रतिनिधित्व नहीं करता है। यातायात नियम भिन्न हो सकते हैं; वर्तमान नियमों के लिए हमेशा आधिकारिक स्थानीय अधिकारियों को संदर्भित करें।',
+      'disclaimer':
+          'यह ऐप केवल शैक्षिक उद्देश्यों के लिए है। यह किसी सरकारी संस्था का प्रतिनिधित्व नहीं करता है। यातायात नियम भिन्न हो सकते हैं; वर्तमान नियमों के लिए हमेशा आधिकारिक स्थानीय अधिकारियों को संदर्भित करें।',
     },
     'it': {
       'app_title': 'Segnali Stradali',
       'onboarding_title_1': 'Regole Stradali',
-      'onboarding_subtitle_1': 'Esplora le regole della strada e i limiti di velocità di 13 paesi popolari.',
+      'onboarding_subtitle_1':
+          'Esplora le regole della strada e i limiti di velocità di 13 paesi popolari.',
       'onboarding_title_2': 'Dizionario Vettoriale',
-      'onboarding_subtitle_2': 'Sfoglia i segnali di pericolo, prescrizione e indicazione offline.',
+      'onboarding_subtitle_2':
+          'Sfoglia i segnali di pericolo, prescrizione e indicazione offline.',
       'onboarding_title_3': 'Quiz Interattivi',
-      'onboarding_subtitle_3': 'Metti alla prova la tua conoscenza della sicurezza stradale con spiegazioni dettagliate.',
+      'onboarding_subtitle_3':
+          'Metti alla prova la tua conoscenza della sicurezza stradale con spiegazioni dettagliate.',
       'get_started': 'Inizia',
       'next': 'Avanti',
       'skip': 'Salta',
@@ -666,7 +734,8 @@ class Translations {
       'usage_inst': 'Istruzioni d\'Uso',
       'country_info': 'Informazioni del Paese',
       'related_signs': 'Segnali Correlati',
-      'shared_text': 'Guarda questo segnale stradale: {name}. Significato: {meaning}. Maggiori info sull\'app Traffic Signal Symbols!',
+      'shared_text':
+          'Guarda questo segnale stradale: {name}. Significato: {meaning}. Maggiori info sull\'app Traffic Signal Symbols!',
       'download_success': 'Immagine salvata nella cartella Download!',
       'download_fail': 'Salvataggio fallito.',
       'quiz_title': 'Quiz sulla Sicurezza Stradale',
@@ -686,7 +755,8 @@ class Translations {
       'language': 'Lingua',
       'dark_mode': 'Modalità Scura',
       'reset_data': 'Ripristina Progressi',
-      'reset_confirm': 'Sei sicuro di voler cancellare i preferiti e le impostazioni?',
+      'reset_confirm':
+          'Sei sicuro di voler cancellare i preferiti e le impostazioni?',
       'cancel': 'Annulla',
       'confirm': 'Conferma',
       'app_info': 'Info Applicazione',
@@ -697,15 +767,21 @@ class Translations {
       'comparison': 'Risultato del Confronto',
       'difference': 'Dettagli Differenze',
       'rules_tips': 'Consigli di Sicurezza',
-      'warning_desc': 'Segnali che avvertono i conducenti di pericoli potenziali sulla strada.',
-      'regulatory_desc': 'Segnali che indicano leggi stradali obbligatorie o divieti.',
-      'mandatory_desc': 'Segnali che impongono direzioni o comportamenti specifici.',
-      'information_desc': 'Segnali che indicano parcheggi, ospedali o servizi vicini.',
-      'signal_light_desc': 'Luci semaforiche standard rosse, gialle, verdi e pedonali.',
+      'warning_desc':
+          'Segnali che avvertono i conducenti di pericoli potenziali sulla strada.',
+      'regulatory_desc':
+          'Segnali che indicano leggi stradali obbligatorie o divieti.',
+      'mandatory_desc':
+          'Segnali che impongono direzioni o comportamenti specifici.',
+      'information_desc':
+          'Segnali che indicano parcheggi, ospedali o servizi vicini.',
+      'signal_light_desc':
+          'Luci semaforiche standard rosse, gialle, verdi e pedonali.',
       'overview': 'Panoramica',
       'sources_title': 'Fonti di Informazione',
       'source_link': 'Fonte Ufficiale',
-      'disclaimer': 'Questa app è solo a scopo educativo. Non rappresenta alcuna entità governativa. Le regole del traffico possono variare; fare sempre riferimento alle autorità locali ufficiali per le normative vigenti.',
+      'disclaimer':
+          'Questa app è solo a scopo educativo. Non rappresenta alcuna entità governativa. Le regole del traffico possono variare; fare sempre riferimento alle autorità locali ufficiali per le normative vigenti.',
     },
     'zh': {
       'app_title': '交通标志与信号',
@@ -784,7 +860,7 @@ class Translations {
       'sources_title': '信息来源',
       'source_link': '官方来源',
       'disclaimer': '此应用程序仅用于教育目的。它不代表任何政府实体。交通规则可能有所不同；请始终参考官方地方当局以获取现行法规。',
-    }
+    },
   };
 
   static String text(BuildContext context, String key) {

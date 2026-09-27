@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:traffic_signal_symbols/ads/adaptive_banner_ad_widget.dart';
 import '../ads/ad_service.dart';
+import '../ads/native_ad_widget.dart';
 import '../models/quiz_model.dart';
 import '../providers/quiz_provider.dart';
 import '../providers/traffic_provider.dart';
@@ -9,7 +10,7 @@ import '../utils/translations.dart';
 import '../utils/theme_constants.dart';
 import '../widgets/app_background.dart';
 import '../widgets/glass_card.dart';
-import '../widgets/traffic_sign_painter.dart';
+import '../widgets/motion.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -19,7 +20,6 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  String? _selectedCountryId;
   int _questionCount = 5;
   bool _showReview = false;
 
@@ -45,7 +45,7 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget _buildSetupView(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final trafficProvider = Provider.of<TrafficDataProvider>(context);
-    final countries = trafficProvider.allCountries;
+    final country = trafficProvider.selectedCountry;
 
     AdService.instance.loadInterstitial();
 
@@ -56,7 +56,7 @@ class _QuizScreenState extends State<QuizScreen> {
         const SizedBox(height: 16),
         // Decorative quiz icon (stop sign glowing)
         const Center(
-          child: TrafficSignWidget(signId: 'stop', size: 110, isGlowing: true),
+          child: SpinningSign(signId: 'stop', size: 110, isGlowing: true),
         ),
         const SizedBox(height: 32),
 
@@ -75,52 +75,43 @@ class _QuizScreenState extends State<QuizScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Country Dropdown Selector
-              Text(
-                context.tr('select_country'),
-                style: TextStyle(
-                  fontSize: 12,
-                  color: isDark ? Colors.white60 : ThemeConstants.lightTextSecondary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
+              // Quiz follows the country chosen on Home
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
+                  horizontal: 14,
+                  vertical: 12,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.04),
+                  color: ThemeConstants.signalBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Colors.white10),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String?>(
-                    isExpanded: true,
-                    value: _selectedCountryId,
-                    dropdownColor: isDark
-                        ? const Color(0xFF0F172A)
-                        : Colors.white,
-                    hint: Text(context.tr('select_all')),
-                    items: [
-                      DropdownMenuItem<String?>(
-                        value: null,
-                        child: Text(context.tr('select_all')),
-                      ),
-                      ...countries.map((c) {
-                        return DropdownMenuItem<String?>(
-                          value: c.id,
-                          child: Text("${c.flagEmoji} ${c.name}"),
-                        );
-                      }),
-                    ],
-                    onChanged: (val) {
-                      setState(() {
-                        _selectedCountryId = val;
-                      });
-                    },
+                  border: Border.all(
+                    color: ThemeConstants.signalBlue.withValues(alpha: 0.3),
                   ),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      country.flagEmoji,
+                      style: const TextStyle(fontSize: 26),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        country.name,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.check_circle_rounded,
+                      color: isDark
+                          ? Colors.white70
+                          : ThemeConstants.signalBlue,
+                      size: 20,
+                    ),
+                  ],
                 ),
               ),
 
@@ -131,7 +122,9 @@ class _QuizScreenState extends State<QuizScreen> {
                 context.tr('question_count'),
                 style: TextStyle(
                   fontSize: 12,
-                  color: isDark ? Colors.white60 : ThemeConstants.lightTextSecondary,
+                  color: isDark
+                      ? Colors.white60
+                      : ThemeConstants.lightTextSecondary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -171,7 +164,9 @@ class _QuizScreenState extends State<QuizScreen> {
                           fontWeight: FontWeight.bold,
                           color: isSel
                               ? ThemeConstants.signalRed
-                              : (isDark ? Colors.white70 : ThemeConstants.lightTextSecondary),
+                              : (isDark
+                                    ? Colors.white70
+                                    : ThemeConstants.lightTextSecondary),
                         ),
                       ),
                     ),
@@ -193,7 +188,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         Provider.of<QuizProvider>(
                           context,
                           listen: false,
-                        ).startQuiz(_selectedCountryId, _questionCount);
+                        ).startQuiz(country.id, _questionCount);
                       },
                     );
                   },
@@ -277,7 +272,10 @@ class _QuizScreenState extends State<QuizScreen> {
                 color: Colors.white.withValues(alpha: 0.04),
                 shape: BoxShape.circle,
               ),
-              child: TrafficSignWidget(signId: question.signId!, size: 130),
+              child: FadeSlideIn(
+                key: ValueKey(currentIndex),
+                child: SpinningSign(signId: question.signId!, size: 130),
+              ),
             ),
           ),
           const SizedBox(height: 24),
@@ -309,8 +307,9 @@ class _QuizScreenState extends State<QuizScreen> {
           Color cardBorder = Colors.transparent;
           Color cardBackground = (isDark ? Colors.white : Colors.black)
               .withValues(alpha: 0.04);
-          Color textColor =
-              isDark ? Colors.white : ThemeConstants.lightTextPrimary;
+          Color textColor = isDark
+              ? Colors.white
+              : ThemeConstants.lightTextPrimary;
 
           if (isAnswered) {
             if (isCorrectOption) {
@@ -415,7 +414,9 @@ class _QuizScreenState extends State<QuizScreen> {
                   style: TextStyle(
                     fontSize: 12,
                     height: 1.45,
-                    color: isDark ? Colors.white70 : ThemeConstants.lightTextSecondary,
+                    color: isDark
+                        ? Colors.white70
+                        : ThemeConstants.lightTextSecondary,
                   ),
                 ),
               ],
@@ -425,7 +426,13 @@ class _QuizScreenState extends State<QuizScreen> {
           SizedBox(
             height: 50,
             child: ElevatedButton(
-              onPressed: () => provider.nextQuestion(),
+              onPressed: () {
+                if (!provider.nextQuestion()) {
+                  context.read<TrafficDataProvider>().markQuizDone();
+                  // Quiz finished: a natural break for an interstitial.
+                  AdService.instance.showInterstitial();
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: ThemeConstants.signalRed,
                 foregroundColor: Colors.white,
@@ -505,7 +512,9 @@ class _QuizScreenState extends State<QuizScreen> {
                     context.tr('score'),
                     style: TextStyle(
                       fontSize: 11,
-                      color: isDark ? Colors.white60 : ThemeConstants.lightTextSecondary,
+                      color: isDark
+                          ? Colors.white60
+                          : ThemeConstants.lightTextSecondary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -592,7 +601,9 @@ class _QuizScreenState extends State<QuizScreen> {
                 child: Text(
                   _showReview ? "Hide Answers" : context.tr('review_answers'),
                   style: TextStyle(
-                    color: isDark ? Colors.white : ThemeConstants.lightTextPrimary,
+                    color: isDark
+                        ? Colors.white
+                        : ThemeConstants.lightTextPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -618,6 +629,9 @@ class _QuizScreenState extends State<QuizScreen> {
             ),
           ],
         ),
+
+        // Native ad, kept well clear of the buttons above.
+        const NativeAdWidget(padding: EdgeInsets.only(top: 28)),
 
         const SizedBox(height: 24),
 

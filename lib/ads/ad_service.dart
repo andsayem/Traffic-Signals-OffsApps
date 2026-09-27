@@ -144,10 +144,29 @@ class AdService {
     AdManager.showInterstitial().then((_) => onDismissed?.call());
   }
 
+  /// Counts a light navigation step (opening a sign, "Next sign"). Every
+  /// few steps an interstitial is shown, subject to the kit's cooldown, so
+  /// browsing earns without an ad on every tap.
+  void registerAction() {
+    if (shouldHideAds) return;
+    AdManager.registerAction();
+  }
+
+  // ---------------- REWARDED ----------------
+
+  bool get isRewardedReady => AdManager.isRewardedReady;
+
+  /// Shows a rewarded video the user opted into. Returns whether the reward
+  /// was earned. Not blocked by [shouldHideAds]: the user asked for it.
+  Future<bool> showRewarded() async {
+    var rewarded = false;
+    await AdManager.showRewarded(onReward: () => rewarded = true);
+    return rewarded;
+  }
+
   // ---------------- REWARDED INTERSTITIAL ----------------
 
-  bool get isRewardedInterstitialReady =>
-      AdManager.isRewardedInterstitialReady;
+  bool get isRewardedInterstitialReady => AdManager.isRewardedInterstitialReady;
 
   /// Shows a rewarded interstitial; when the reward is earned, ads are
   /// hidden for [adFreeDuration]. Returns whether the reward was granted.

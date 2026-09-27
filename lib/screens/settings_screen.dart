@@ -10,6 +10,7 @@ import '../utils/theme_constants.dart';
 import '../widgets/ad_free_reward_card.dart';
 import '../widgets/app_background.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/motion.dart';
 import '../widgets/other_apps_card.dart';
 import 'subscription_screen.dart';
 
@@ -26,7 +27,7 @@ class SettingsScreen extends StatelessWidget {
           return ListView(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            children: [
+            children: _stagger([
               // Go Pro Card
               Consumer<SubscriptionProvider>(
                 builder: (context, subscription, child) {
@@ -36,15 +37,21 @@ class SettingsScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(16),
                       child: Row(
                         children: [
-                          const Icon(Icons.workspace_premium_rounded, color: ThemeConstants.signalYellow, size: 26),
+                          const Icon(
+                            Icons.workspace_premium_rounded,
+                            color: ThemeConstants.signalYellow,
+                            size: 26,
+                          ),
                           const SizedBox(width: 14),
                           Expanded(
                             child: Text(
-                              "You're a Pro member — thank you!",
+                              'Ads removed — thank you for your support!',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13,
-                                color: isDark ? Colors.white : ThemeConstants.lightTextPrimary,
+                                color: isDark
+                                    ? Colors.white
+                                    : ThemeConstants.lightTextPrimary,
                               ),
                             ),
                           ),
@@ -56,8 +63,12 @@ class SettingsScreen extends StatelessWidget {
                     onTap: () => SubscriptionScreen.show(context),
                     borderRadius: 18,
                     padding: const EdgeInsets.all(16),
-                    customColor: ThemeConstants.signalYellow.withValues(alpha: isDark ? 0.14 : 0.16),
-                    customBorderColor: ThemeConstants.signalYellow.withValues(alpha: 0.4),
+                    customColor: ThemeConstants.signalYellow.withValues(
+                      alpha: isDark ? 0.14 : 0.16,
+                    ),
+                    customBorderColor: ThemeConstants.signalYellow.withValues(
+                      alpha: 0.4,
+                    ),
                     child: Row(
                       children: [
                         Container(
@@ -65,11 +76,18 @@ class SettingsScreen extends StatelessWidget {
                           height: 44,
                           decoration: const BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [ThemeConstants.signalYellow, ThemeConstants.signalOrange],
+                              colors: [
+                                ThemeConstants.signalYellow,
+                                ThemeConstants.signalOrange,
+                              ],
                             ),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.workspace_premium_rounded, color: Colors.white, size: 22),
+                          child: const Icon(
+                            Icons.workspace_premium_rounded,
+                            color: Colors.white,
+                            size: 22,
+                          ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -77,25 +95,33 @@ class SettingsScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Go Pro',
+                                'Remove Ads',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w800,
                                   fontSize: 15,
-                                  color: isDark ? Colors.white : ThemeConstants.lightTextPrimary,
+                                  color: isDark
+                                      ? Colors.white
+                                      : ThemeConstants.lightTextPrimary,
                                 ),
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'Remove ads & unlock everything',
+                                'Use the whole app without any ads',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: isDark ? Colors.white70 : ThemeConstants.lightTextSecondary,
+                                  color: isDark
+                                      ? Colors.white70
+                                      : ThemeConstants.lightTextSecondary,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: ThemeConstants.signalOrange),
+                        const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 16,
+                          color: ThemeConstants.signalOrange,
+                        ),
                       ],
                     ),
                   );
@@ -157,87 +183,7 @@ class SettingsScreen extends StatelessWidget {
               const SizedBox(height: 16),
 
               // Language Selector Card
-              GlassCard(
-                borderRadius: 18,
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.language_rounded,
-                          color: ThemeConstants.signalBlue,
-                        ),
-                        const SizedBox(width: 16),
-                        Text(
-                          context.tr('language'),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    _buildLanguageOption(context, appProvider, 'English', 'en'),
-                    _buildLanguageOption(
-                      context,
-                      appProvider,
-                      'বাংলা (Bangla)',
-                      'bn',
-                    ),
-                    _buildLanguageOption(
-                      context,
-                      appProvider,
-                      'Español (Spanish)',
-                      'es',
-                    ),
-                    _buildLanguageOption(
-                      context,
-                      appProvider,
-                      'Français (French)',
-                      'fr',
-                    ),
-                    _buildLanguageOption(
-                      context,
-                      appProvider,
-                      'Deutsch (German)',
-                      'de',
-                    ),
-                    _buildLanguageOption(
-                      context,
-                      appProvider,
-                      '日本語 (Japanese)',
-                      'ja',
-                    ),
-                    _buildLanguageOption(
-                      context,
-                      appProvider,
-                      'العربية (Arabic)',
-                      'ar',
-                    ),
-                    _buildLanguageOption(
-                      context,
-                      appProvider,
-                      'हिन्दी (Hindi)',
-                      'hi',
-                    ),
-                    _buildLanguageOption(
-                      context,
-                      appProvider,
-                      'Italiano (Italian)',
-                      'it',
-                    ),
-                    _buildLanguageOption(
-                      context,
-                      appProvider,
-                      '中文 (Chinese)',
-                      'zh',
-                    ),
-                  ],
-                ),
-              ),
+              _buildLanguageCard(context, appProvider),
 
               const SizedBox(height: 16),
 
@@ -320,18 +266,21 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                    "${context.tr('version')}: 1.0.0+1",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isDark ? Colors.white54 : Colors.black54,
-                    ),
+                      "${context.tr('version')}: 1.0.0+1",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.white54 : Colors.black54,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     const Divider(color: Colors.white10),
                     const SizedBox(height: 8),
                     Text(
                       "Developed offline for cross-country driving education.",
-                      style: TextStyle(fontSize: 11, color: isDark ? Colors.white38 : Colors.black38),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: isDark ? Colors.white38 : Colors.black38,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -374,7 +323,9 @@ class SettingsScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           height: 1.5,
-                          color: isDark ? Colors.white70 : ThemeConstants.lightTextSecondary,
+                          color: isDark
+                              ? Colors.white70
+                              : ThemeConstants.lightTextSecondary,
                         ),
                       ),
                     ],
@@ -467,54 +418,89 @@ class SettingsScreen extends StatelessWidget {
               ),
 
               const SizedBox(height: 100),
-            ],
+            ]),
           );
         },
       ),
     );
   }
 
-  Widget _buildLanguageOption(
-    BuildContext context,
-    AppProvider appProvider,
-    String name,
-    String code,
-  ) {
+  static const _languages = [
+    ('en', '🇬🇧', 'English'),
+    ('bn', '🇧🇩', 'বাংলা (Bangla)'),
+    ('es', '🇪🇸', 'Español (Spanish)'),
+    ('fr', '🇫🇷', 'Français (French)'),
+    ('de', '🇩🇪', 'Deutsch (German)'),
+    ('ja', '🇯🇵', '日本語 (Japanese)'),
+    ('ar', '🇸🇦', 'العربية (Arabic)'),
+    ('hi', '🇮🇳', 'हिन्दी (Hindi)'),
+    ('it', '🇮🇹', 'Italiano (Italian)'),
+    ('zh', '🇨🇳', '中文 (Chinese)'),
+  ];
+
+  Widget _buildLanguageCard(BuildContext context, AppProvider appProvider) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isSelected = appProvider.languageCode == code;
-    return InkWell(
-      onTap: () => appProvider.setLanguage(code),
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? ThemeConstants.signalBlue.withValues(alpha: 0.12)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              name,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected
-                    ? ThemeConstants.signalBlue
-                    : (isDark ? Colors.white70 : ThemeConstants.lightTextSecondary),
+    return GlassCard(
+      borderRadius: 18,
+      padding: const EdgeInsets.fromLTRB(16, 8, 12, 8),
+      child: Row(
+        children: [
+          const Icon(Icons.language_rounded, color: ThemeConstants.signalBlue),
+          const SizedBox(width: 16),
+          Text(
+            context.tr('language'),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: ThemeConstants.signalBlue.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: ThemeConstants.signalBlue.withValues(alpha: 0.35),
+                ),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: appProvider.languageCode,
+                  isExpanded: true,
+                  borderRadius: BorderRadius.circular(14),
+                  dropdownColor: isDark
+                      ? ThemeConstants.darkBgStart
+                      : Colors.white,
+                  menuMaxHeight: 420,
+                  icon: const Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: ThemeConstants.signalBlue,
+                  ),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: isDark
+                        ? Colors.white
+                        : ThemeConstants.lightTextPrimary,
+                  ),
+                  items: [
+                    for (final (code, flag, name) in _languages)
+                      DropdownMenuItem(
+                        value: code,
+                        child: Text(
+                          '$flag  $name',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                  ],
+                  onChanged: (code) {
+                    if (code != null) appProvider.setLanguage(code);
+                  },
+                ),
               ),
             ),
-            if (isSelected)
-              const Icon(
-                Icons.check_circle_rounded,
-                color: ThemeConstants.signalBlue,
-                size: 18,
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -566,4 +552,13 @@ class SettingsScreen extends StatelessWidget {
       },
     );
   }
+}
+
+/// Staggers each settings card in; spacers pass through untouched.
+List<Widget> _stagger(List<Widget> children) {
+  var i = 0;
+  return [
+    for (final child in children)
+      child is SizedBox ? child : FadeSlideIn(index: i++, child: child),
+  ];
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../utils/theme_constants.dart';
+import '../widgets/motion.dart';
 import '../widgets/traffic_sign_painter.dart';
 import 'onboarding_screen.dart';
 import 'main_navigation_wrapper.dart'; // We will create this as a wrapper for home/quiz/fav/settings
@@ -81,43 +82,49 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Glowing Animated Vector Traffic Light
-              TrafficSignWidget(
-                signId: _activeSignal,
-                size: 200,
-                isGlowing: true,
-              ),
-              const SizedBox(height: 40),
-              // App Title
-              Text(
-                'TRAFFIC SIGNALS',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                  letterSpacing: 2,
+        body: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Glowing Animated Vector Traffic Light
+                Spin360(
+                  duration: const Duration(milliseconds: 2600),
+                  spinFraction: 0.6,
+                  child: TrafficSignWidget(
+                    signId: _activeSignal,
+                    size: 200,
+                    isGlowing: true,
+                  ),
                 ),
-              ),
-              Text(
-                'BY COUNTRY',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  color: ThemeConstants.signalRed,
-                  letterSpacing: 6,
+                const SizedBox(height: 40),
+                // App Title
+                Text(
+                  'TRAFFIC SIGNALS',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: 2,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 48),
-              const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  ThemeConstants.signalGreen,
+                Text(
+                  'BY COUNTRY',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: ThemeConstants.signalRed,
+                    letterSpacing: 6,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 48),
+                const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    ThemeConstants.signalGreen,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

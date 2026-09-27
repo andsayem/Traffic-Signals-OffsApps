@@ -9,6 +9,7 @@ import '../utils/translations.dart';
 import '../utils/theme_constants.dart';
 import '../widgets/app_background.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/motion.dart';
 import '../widgets/traffic_sign_painter.dart';
 import 'sign_details_screen.dart';
 
@@ -140,9 +141,12 @@ class _CountryDetailsScreenState extends State<CountryDetailsScreen> {
             children: [
               Row(
                 children: [
-                  Text(
-                    widget.country.flagEmoji,
-                    style: const TextStyle(fontSize: 32),
+                  Spin360(
+                    duration: const Duration(milliseconds: 7000),
+                    child: Text(
+                      widget.country.flagEmoji,
+                      style: const TextStyle(fontSize: 40),
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(

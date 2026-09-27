@@ -80,11 +80,14 @@ class PurchaseService {
     _pendingError = null;
     final product = productFor(productId);
     if (product == null) {
-      _pendingError = 'This plan is not available right now. Please try again later.';
+      _pendingError =
+          'This plan is not available right now. Please try again later.';
       onPurchaseUpdate?.call();
       return;
     }
-    await _iap.buyNonConsumable(purchaseParam: PurchaseParam(productDetails: product));
+    await _iap.buyNonConsumable(
+      purchaseParam: PurchaseParam(productDetails: product),
+    );
   }
 
   Future<void> restore() async {
@@ -102,7 +105,8 @@ class PurchaseService {
           _setPro(true);
           break;
         case PurchaseStatus.error:
-          _pendingError = purchase.error?.message ?? 'Purchase failed. Please try again.';
+          _pendingError =
+              purchase.error?.message ?? 'Purchase failed. Please try again.';
           break;
         case PurchaseStatus.canceled:
           break;

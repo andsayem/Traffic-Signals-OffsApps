@@ -27,7 +27,9 @@ class _AdFreeRewardCardState extends State<AdFreeRewardCard> {
     if (!mounted) return;
     setState(() => _isShowing = false);
     if (rewarded) {
-      _showSnack('Ads removed for ${AdService.adFreeDuration.inMinutes} minutes. Enjoy!');
+      _showSnack(
+        'Ads removed for ${AdService.adFreeDuration.inMinutes} minutes. Enjoy!',
+      );
     }
   }
 
@@ -65,7 +67,9 @@ class _AdFreeRewardCardState extends State<AdFreeRewardCard> {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  active ? Icons.check_circle_rounded : Icons.ondemand_video_rounded,
+                  active
+                      ? Icons.check_circle_rounded
+                      : Icons.ondemand_video_rounded,
                   color: ThemeConstants.signalGreen,
                   size: 22,
                 ),
@@ -80,7 +84,9 @@ class _AdFreeRewardCardState extends State<AdFreeRewardCard> {
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 15,
-                        color: isDark ? Colors.white : ThemeConstants.lightTextPrimary,
+                        color: isDark
+                            ? Colors.white
+                            : ThemeConstants.lightTextPrimary,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -88,7 +94,9 @@ class _AdFreeRewardCardState extends State<AdFreeRewardCard> {
                       subtitle,
                       style: TextStyle(
                         fontSize: 12,
-                        color: isDark ? Colors.white70 : ThemeConstants.lightTextSecondary,
+                        color: isDark
+                            ? Colors.white70
+                            : ThemeConstants.lightTextSecondary,
                       ),
                     ),
                   ],
@@ -101,7 +109,10 @@ class _AdFreeRewardCardState extends State<AdFreeRewardCard> {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
               else if (!active)
-                const Icon(Icons.play_circle_fill_rounded, color: ThemeConstants.signalGreen),
+                const Icon(
+                  Icons.play_circle_fill_rounded,
+                  color: ThemeConstants.signalGreen,
+                ),
             ],
           ),
         );

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../ads/ad_service.dart';
 import '../ads/adaptive_banner_ad_widget.dart';
 import '../models/traffic_sign_model.dart';
 import '../providers/traffic_provider.dart';
@@ -12,6 +13,7 @@ import '../utils/translations.dart';
 import '../utils/theme_constants.dart';
 import '../widgets/app_background.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/motion.dart';
 import '../widgets/traffic_sign_painter.dart';
 
 class SignDetailsScreen extends StatelessWidget {
@@ -40,6 +42,14 @@ class SignDetailsScreen extends StatelessWidget {
               "This sign follows standard international guidelines in $countryName.";
 
           final relatedSigns = provider.getRelatedSigns(sign);
+          final nextSign = provider.nextInCategory(sign);
+
+          // Opening a sign counts as learning it.
+          if (!provider.isLearned(sign.id)) {
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) => provider.markLearned(sign.id),
+            );
+          }
 
           return ListView(
             physics: const BouncingScrollPhysics(),
@@ -53,7 +63,7 @@ class SignDetailsScreen extends StatelessWidget {
               Center(
                 child: Hero(
                   tag: 'sign-${sign.id}',
-                  child: TrafficSignWidget(
+                  child: SpinningSign(
                     signId: sign.id,
                     size: 160,
                     isGlowing: true,
@@ -248,6 +258,25 @@ class SignDetailsScreen extends StatelessWidget {
                   ),
                 ),
               ],
+
+              // Keep the lesson flowing: next sign in the same category.
+              if (nextSign != null) ...[
+                const SizedBox(height: 24),
+                _NextSignButton(
+                  next: nextSign,
+                  learned: provider.learnedInCategory(sign.category),
+                  total: provider.getSignsByCategory(sign.category).length,
+                  onTap: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SignDetailsScreen(
+                        sign: nextSign,
+                        countryId: countryId,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ],
           );
         },
@@ -372,5 +401,111 @@ class SignDetailsScreen extends StatelessWidget {
         );
       }
     }
+  }
+}
+
+class _NextSignButton extends StatelessWidget {
+  const _NextSignButton({
+    required this.next,
+    required this.learned,
+    required this.total,
+    required this.onTap,
+  });
+
+  final TrafficSignModel next;
+  final int learned;
+  final int total;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            const Icon(
+              Icons.school_rounded,
+              size: 16,
+              color: ThemeConstants.signalGreen,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              'Lesson progress: $learned / $total learned',
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: total == 0 ? 0 : learned / total,
+            minHeight: 6,
+            color: ThemeConstants.signalGreen,
+            backgroundColor: ThemeConstants.signalGreen.withValues(alpha: 0.15),
+          ),
+        ),
+        const SizedBox(height: 14),
+        GestureDetector(
+          onTap: () {
+            // Every few "Next" taps may show an interstitial (with cooldown).
+            AdService.instance.registerAction();
+            onTap();
+          },
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              gradient: const LinearGradient(
+                colors: [ThemeConstants.signalGreen, Color(0xFF15803D)],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: ThemeConstants.signalGreen.withValues(alpha: 0.35),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: TrafficSignWidget(signId: next.id, size: 40),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Next sign',
+                        style: TextStyle(color: Colors.white70, fontSize: 11.5),
+                      ),
+                      Text(
+                        next.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.arrow_forward_rounded, color: Colors.white),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

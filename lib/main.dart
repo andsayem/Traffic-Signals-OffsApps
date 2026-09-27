@@ -53,12 +53,12 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'Traffic Signals & Signs',
           debugShowCheckedModeBanner: false,
-          
+
           // Theme Setup
           theme: ThemeConstants.lightTheme,
           darkTheme: ThemeConstants.darkTheme,
           themeMode: appProvider.isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-          
+
           // Root Screen
           home: const SplashScreen(),
         );

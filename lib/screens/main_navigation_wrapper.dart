@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/subscription_provider.dart';
+import '../services/storage_service.dart';
 import '../utils/theme_constants.dart';
 import '../widgets/custom_nav_bar.dart';
 import 'home_screen.dart';
@@ -19,21 +20,29 @@ class MainNavigationWrapper extends StatefulWidget {
 class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    QuizScreen(),
-    FavoritesScreen(),
-    SettingsScreen(),
+  void _goToTab(int index) => setState(() => _currentIndex = index);
+
+  late final List<Widget> _screens = [
+    HomeScreen(onStartQuiz: () => _goToTab(1)),
+    const QuizScreen(),
+    FavoritesScreen(onBrowse: () => _goToTab(0)),
+    const SettingsScreen(),
   ];
 
   @override
   void initState() {
     super.initState();
-    // Auto-show the paywall shortly after launch, once per cold start,
-    // unless the user is already subscribed.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 900), () {
         if (!mounted) return;
+        // First visit: teach the app with the guided tour instead of
+        // opening with a paywall.
+        if (!StorageService.isHomeTourDone()) {
+          HomeScreen.startTour(context);
+          return;
+        }
+        // Later launches: auto-show the paywall once per cold start,
+        // unless the user is already subscribed.
         if (context.read<SubscriptionProvider>().isPro) return;
         SubscriptionScreen.show(context);
       });
@@ -44,8 +53,9 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor:
-          isDark ? ThemeConstants.darkBgEnd : ThemeConstants.lightBgEnd,
+      backgroundColor: isDark
+          ? ThemeConstants.darkBgEnd
+          : ThemeConstants.lightBgEnd,
       body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: CustomNavBar(
         currentIndex: _currentIndex,

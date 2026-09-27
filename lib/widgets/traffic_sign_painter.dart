@@ -44,7 +44,10 @@ class TrafficSignWidget extends StatelessWidget {
       return Colors.amber;
     } else if (id == 'green_signal') {
       return Colors.green;
-    } else if (id.startsWith('turn_') || id == 'keep_left' || id == 'parking' || id == 'hospital') {
+    } else if (id.startsWith('turn_') ||
+        id == 'keep_left' ||
+        id == 'parking' ||
+        id == 'hospital') {
       return Colors.blue;
     }
     return Colors.orange;
@@ -166,7 +169,12 @@ class TrafficSignPainter extends CustomPainter {
   }
 
   // Draw generic warning triangle (apex pointing up)
-  void _drawWarningTriangle(Canvas canvas, Size size, Paint fill, Paint stroke) {
+  void _drawWarningTriangle(
+    Canvas canvas,
+    Size size,
+    Paint fill,
+    Paint stroke,
+  ) {
     final double w = size.width;
     final double h = size.height;
 
@@ -214,8 +222,7 @@ class TrafficSignPainter extends CustomPainter {
         ..close();
       fill.color = Colors.black;
       canvas.drawPath(headPath, fill);
-    } 
-    else if (signId == 'school_zone') {
+    } else if (signId == 'school_zone') {
       // Draw two walking silhouettes (parent and child)
       fill.color = Colors.black;
       // Adult head
@@ -245,12 +252,11 @@ class TrafficSignPainter extends CustomPainter {
         ..lineTo(w * 0.58, h * 0.75)
         ..close();
       canvas.drawPath(childBodyPath, fill);
-    } 
-    else if (signId == 'slippery_road') {
+    } else if (signId == 'slippery_road') {
       // Draw skidding car tracks
       stroke.strokeWidth = w * 0.03;
       stroke.strokeCap = StrokeCap.round;
-      
+
       final leftTrack = Path()
         ..moveTo(w * 0.4, h * 0.72)
         ..cubicTo(w * 0.42, h * 0.67, w * 0.36, h * 0.62, w * 0.45, h * 0.55);
@@ -273,8 +279,7 @@ class TrafficSignPainter extends CustomPainter {
       // wheels
       canvas.drawCircle(Offset(w * 0.44, h * 0.51), w * 0.035, fill);
       canvas.drawCircle(Offset(w * 0.56, h * 0.49), w * 0.035, fill);
-    } 
-    else if (signId == 'animal_crossing') {
+    } else if (signId == 'animal_crossing') {
       // Draw animal silhouette (deer)
       fill.color = Colors.black;
       final deerPath = Path()
@@ -304,9 +309,17 @@ class TrafficSignPainter extends CustomPainter {
     } else if (signId == 'crossroad') {
       stroke.strokeWidth = w * 0.08;
       // Vertical bar
-      canvas.drawLine(Offset(center, h * 0.38), Offset(center, h * 0.72), stroke);
+      canvas.drawLine(
+        Offset(center, h * 0.38),
+        Offset(center, h * 0.72),
+        stroke,
+      );
       // Horizontal bar
-      canvas.drawLine(Offset(w * 0.33, h * 0.55), Offset(w * 0.67, h * 0.55), stroke);
+      canvas.drawLine(
+        Offset(w * 0.33, h * 0.55),
+        Offset(w * 0.67, h * 0.55),
+        stroke,
+      );
     } else if (signId == 'traffic_light_ahead') {
       // Small vertical black rectangle housing
       fill.color = const Color(0xFF1E293B);
@@ -315,8 +328,11 @@ class TrafficSignPainter extends CustomPainter {
         width: w * 0.12,
         height: h * 0.30,
       );
-      canvas.drawRRect(RRect.fromRectAndRadius(housing, const Radius.circular(4)), fill);
-      
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(housing, const Radius.circular(4)),
+        fill,
+      );
+
       // Three dots: Red, Amber, Green
       fill.color = const Color(0xFFFF3B30);
       canvas.drawCircle(Offset(center, h * 0.45), w * 0.035, fill);
@@ -328,13 +344,21 @@ class TrafficSignPainter extends CustomPainter {
       // Zebra stripes at bottom
       stroke.strokeWidth = w * 0.02;
       for (double i = 0.3; i <= 0.7; i += 0.09) {
-        canvas.drawLine(Offset(w * i, h * 0.72), Offset(w * (i + 0.04), h * 0.72), stroke);
+        canvas.drawLine(
+          Offset(w * i, h * 0.72),
+          Offset(w * (i + 0.04), h * 0.72),
+          stroke,
+        );
       }
       // Walking silhouette
       fill.color = Colors.black;
       final double figureCenterY = h * 0.48;
-      canvas.drawCircle(Offset(w * 0.5, figureCenterY - h * 0.08), w * 0.04, fill); // head
-      
+      canvas.drawCircle(
+        Offset(w * 0.5, figureCenterY - h * 0.08),
+        w * 0.04,
+        fill,
+      ); // head
+
       // torso and legs
       final bodyPath = Path()
         ..moveTo(w * 0.48, figureCenterY - h * 0.03)
@@ -349,7 +373,7 @@ class TrafficSignPainter extends CustomPainter {
     } else if (signId == 'narrow_road') {
       stroke.strokeWidth = w * 0.05;
       stroke.strokeCap = StrokeCap.round;
-      
+
       // Draw left boundary
       final leftPath = Path()
         ..moveTo(w * 0.35, h * 0.72)
@@ -357,7 +381,7 @@ class TrafficSignPainter extends CustomPainter {
         ..lineTo(w * 0.45, h * 0.5)
         ..lineTo(w * 0.45, h * 0.38);
       canvas.drawPath(leftPath, stroke);
-      
+
       // Draw right boundary
       final rightPath = Path()
         ..moveTo(w * 0.65, h * 0.72)
@@ -368,9 +392,13 @@ class TrafficSignPainter extends CustomPainter {
     } else if (signId == 'two_way_traffic') {
       stroke.strokeWidth = w * 0.05;
       stroke.strokeCap = StrokeCap.round;
-      
+
       // Up arrow (right side)
-      canvas.drawLine(Offset(w * 0.58, h * 0.72), Offset(w * 0.58, h * 0.4), stroke);
+      canvas.drawLine(
+        Offset(w * 0.58, h * 0.72),
+        Offset(w * 0.58, h * 0.4),
+        stroke,
+      );
       final upHead = Path()
         ..moveTo(w * 0.52, h * 0.46)
         ..lineTo(w * 0.58, h * 0.38)
@@ -378,9 +406,13 @@ class TrafficSignPainter extends CustomPainter {
         ..close();
       fill.color = Colors.black;
       canvas.drawPath(upHead, fill);
-      
+
       // Down arrow (left side)
-      canvas.drawLine(Offset(w * 0.42, h * 0.38), Offset(w * 0.42, h * 0.7), stroke);
+      canvas.drawLine(
+        Offset(w * 0.42, h * 0.38),
+        Offset(w * 0.42, h * 0.7),
+        stroke,
+      );
       final downHead = Path()
         ..moveTo(w * 0.36, h * 0.62)
         ..lineTo(w * 0.42, h * 0.7)
@@ -464,7 +496,11 @@ class TrafficSignPainter extends CustomPainter {
     // Red border
     stroke.color = const Color(0xFFFF3B30);
     stroke.strokeWidth = w * 0.09;
-    canvas.drawCircle(Offset(center, center), center - stroke.strokeWidth / 2 - 2, stroke);
+    canvas.drawCircle(
+      Offset(center, center),
+      center - stroke.strokeWidth / 2 - 2,
+      stroke,
+    );
 
     // Speed limit text e.g. "80"
     _drawText(canvas, size, '80', Colors.black, w * 0.35);
@@ -482,7 +518,11 @@ class TrafficSignPainter extends CustomPainter {
     // Red border
     stroke.color = const Color(0xFFFF3B30);
     stroke.strokeWidth = w * 0.09;
-    canvas.drawCircle(Offset(center, center), center - stroke.strokeWidth / 2 - 2, stroke);
+    canvas.drawCircle(
+      Offset(center, center),
+      center - stroke.strokeWidth / 2 - 2,
+      stroke,
+    );
 
     // Diagonal slash
     stroke.color = const Color(0xFFFF3B30);
@@ -498,48 +538,62 @@ class TrafficSignPainter extends CustomPainter {
   void _drawGiveWay(Canvas canvas, Size size, Paint fill, Paint stroke) {
     final double w = size.width;
     final double h = size.height;
-    
+
     // Inverted equilateral triangle pointing down
     final path = Path()
       ..moveTo(w * 0.05, h * 0.15)
       ..lineTo(w * 0.95, h * 0.15)
       ..lineTo(w * 0.5, h * 0.9)
       ..close();
-      
+
     fill.color = Colors.white;
     canvas.drawPath(path, fill);
-    
+
     stroke.color = const Color(0xFFFF3B30);
     stroke.strokeWidth = w * 0.08;
     canvas.drawPath(path, stroke);
   }
 
   // Draw Prohibited Circle (White fill, Red thick border)
-  void _drawProhibitedCircle(Canvas canvas, Size size, Paint fill, Paint stroke) {
+  void _drawProhibitedCircle(
+    Canvas canvas,
+    Size size,
+    Paint fill,
+    Paint stroke,
+  ) {
     final double w = size.width;
     final double center = w / 2;
-    
+
     // White background circle
     fill.color = Colors.white;
     canvas.drawCircle(Offset(center, center), center - 5, fill);
-    
+
     // Red circular border
     stroke.color = const Color(0xFFFF3B30);
     stroke.strokeWidth = w * 0.09;
-    canvas.drawCircle(Offset(center, center), center - stroke.strokeWidth / 2 - 2, stroke);
+    canvas.drawCircle(
+      Offset(center, center),
+      center - stroke.strokeWidth / 2 - 2,
+      stroke,
+    );
   }
 
   // Draw Prohibited symbols (No turns, No overtaking)
-  void _drawProhibitedSymbol(Canvas canvas, Size size, Paint fill, Paint stroke) {
+  void _drawProhibitedSymbol(
+    Canvas canvas,
+    Size size,
+    Paint fill,
+    Paint stroke,
+  ) {
     final double w = size.width;
     final double h = size.height;
     final double center = w / 2;
-    
+
     stroke.color = const Color(0xFFFF3B30);
     stroke.strokeWidth = w * 0.08;
     stroke.style = PaintingStyle.stroke;
     stroke.strokeCap = StrokeCap.round;
-    
+
     if (signId == 'no_left_turn') {
       // Draw left arrow in black
       final arrowStroke = Paint()
@@ -552,7 +606,7 @@ class TrafficSignPainter extends CustomPainter {
         ..lineTo(w * 0.6, h * 0.5)
         ..lineTo(w * 0.35, h * 0.5);
       canvas.drawPath(arrowPath, arrowStroke);
-      
+
       final arrowHead = Path()
         ..moveTo(w * 0.42, h * 0.42)
         ..lineTo(w * 0.28, h * 0.5)
@@ -560,15 +614,14 @@ class TrafficSignPainter extends CustomPainter {
         ..close();
       fill.color = Colors.black;
       canvas.drawPath(arrowHead, fill);
-      
+
       // Draw diagonal slash
       canvas.drawLine(
         Offset(center - (center * 0.6), center - (center * 0.6)),
         Offset(center + (center * 0.6), center + (center * 0.6)),
         stroke,
       );
-    }
-    else if (signId == 'no_right_turn') {
+    } else if (signId == 'no_right_turn') {
       // Draw right arrow in black
       final arrowStroke = Paint()
         ..color = Colors.black
@@ -580,7 +633,7 @@ class TrafficSignPainter extends CustomPainter {
         ..lineTo(w * 0.4, h * 0.5)
         ..lineTo(w * 0.65, h * 0.5);
       canvas.drawPath(arrowPath, arrowStroke);
-      
+
       final arrowHead = Path()
         ..moveTo(w * 0.58, h * 0.42)
         ..lineTo(w * 0.72, h * 0.5)
@@ -588,15 +641,14 @@ class TrafficSignPainter extends CustomPainter {
         ..close();
       fill.color = Colors.black;
       canvas.drawPath(arrowHead, fill);
-      
+
       // Draw diagonal slash
       canvas.drawLine(
         Offset(center - (center * 0.6), center - (center * 0.6)),
         Offset(center + (center * 0.6), center + (center * 0.6)),
         stroke,
       );
-    }
-    else if (signId == 'no_u_turn') {
+    } else if (signId == 'no_u_turn') {
       // Draw U-turn arrow in black
       final arrowStroke = Paint()
         ..color = Colors.black
@@ -608,7 +660,7 @@ class TrafficSignPainter extends CustomPainter {
         ..quadraticBezierTo(w * 0.38, h * 0.35, w * 0.62, h * 0.38)
         ..lineTo(w * 0.62, h * 0.65);
       canvas.drawPath(arrowPath, arrowStroke);
-      
+
       final arrowHead = Path()
         ..moveTo(w * 0.31, h * 0.55)
         ..lineTo(w * 0.38, h * 0.67)
@@ -616,15 +668,14 @@ class TrafficSignPainter extends CustomPainter {
         ..close();
       fill.color = Colors.black;
       canvas.drawPath(arrowHead, fill);
-      
+
       // Draw diagonal slash
       canvas.drawLine(
         Offset(center - (center * 0.6), center - (center * 0.6)),
         Offset(center + (center * 0.6), center + (center * 0.6)),
         stroke,
       );
-    }
-    else if (signId == 'no_overtaking') {
+    } else if (signId == 'no_overtaking') {
       // Draw two cars side-by-side: left red, right black
       // Left car (red)
       final leftCar = Path()
@@ -637,7 +688,7 @@ class TrafficSignPainter extends CustomPainter {
       canvas.drawPath(leftCar, fill);
       canvas.drawCircle(Offset(w * 0.34, h * 0.59), w * 0.035, fill);
       canvas.drawCircle(Offset(w * 0.42, h * 0.59), w * 0.035, fill);
-      
+
       // Right car (black)
       final rightCar = Path()
         ..moveTo(w * 0.54, h * 0.58)
@@ -653,7 +704,12 @@ class TrafficSignPainter extends CustomPainter {
   }
 
   // Draw Mandatory blue circle
-  void _drawMandatoryCircle(Canvas canvas, Size size, Paint fill, Paint stroke) {
+  void _drawMandatoryCircle(
+    Canvas canvas,
+    Size size,
+    Paint fill,
+    Paint stroke,
+  ) {
     final double w = size.width;
     final double center = w / 2;
 
@@ -664,11 +720,20 @@ class TrafficSignPainter extends CustomPainter {
     // White border
     stroke.color = Colors.white;
     stroke.strokeWidth = w * 0.03;
-    canvas.drawCircle(Offset(center, center), center - stroke.strokeWidth / 2 - 4, stroke);
+    canvas.drawCircle(
+      Offset(center, center),
+      center - stroke.strokeWidth / 2 - 4,
+      stroke,
+    );
   }
 
   // Draw Mandatory Symbols
-  void _drawMandatorySymbol(Canvas canvas, Size size, Paint fill, Paint stroke) {
+  void _drawMandatorySymbol(
+    Canvas canvas,
+    Size size,
+    Paint fill,
+    Paint stroke,
+  ) {
     final double w = size.width;
     final double h = size.height;
     final double center = w / 2;
@@ -681,7 +746,11 @@ class TrafficSignPainter extends CustomPainter {
     if (signId == 'turn_left') {
       stroke.strokeWidth = w * 0.08;
       // Arrow shaft
-      canvas.drawLine(Offset(w * 0.7, center), Offset(w * 0.35, center), stroke);
+      canvas.drawLine(
+        Offset(w * 0.7, center),
+        Offset(w * 0.35, center),
+        stroke,
+      );
       // Arrow head
       final path = Path()
         ..moveTo(w * 0.42, h * 0.38)
@@ -690,11 +759,14 @@ class TrafficSignPainter extends CustomPainter {
         ..close();
       fill.color = Colors.white;
       canvas.drawPath(path, fill);
-    } 
-    else if (signId == 'turn_right') {
+    } else if (signId == 'turn_right') {
       stroke.strokeWidth = w * 0.08;
       // Arrow shaft
-      canvas.drawLine(Offset(w * 0.3, center), Offset(w * 0.65, center), stroke);
+      canvas.drawLine(
+        Offset(w * 0.3, center),
+        Offset(w * 0.65, center),
+        stroke,
+      );
       // Arrow head
       final path = Path()
         ..moveTo(w * 0.58, h * 0.38)
@@ -703,8 +775,7 @@ class TrafficSignPainter extends CustomPainter {
         ..close();
       fill.color = Colors.white;
       canvas.drawPath(path, fill);
-    } 
-    else if (signId == 'keep_left') {
+    } else if (signId == 'keep_left') {
       stroke.strokeWidth = w * 0.08;
       // Diagonal arrow shaft
       canvas.drawLine(
@@ -739,7 +810,11 @@ class TrafficSignPainter extends CustomPainter {
     } else if (signId == 'go_straight') {
       stroke.strokeWidth = w * 0.08;
       // Vertical shaft
-      canvas.drawLine(Offset(center, h * 0.68), Offset(center, h * 0.35), stroke);
+      canvas.drawLine(
+        Offset(center, h * 0.68),
+        Offset(center, h * 0.35),
+        stroke,
+      );
       // Arrow head pointing up
       final path = Path()
         ..moveTo(w * 0.38, h * 0.42)
@@ -752,12 +827,20 @@ class TrafficSignPainter extends CustomPainter {
       stroke.strokeWidth = w * 0.05;
       final double radius = w * 0.2;
       canvas.drawCircle(Offset(center, center), radius, stroke);
-      
+
       // Arrow heads along the circle (represented as white dots/wedges)
       fill.color = Colors.white;
       canvas.drawCircle(Offset(center + radius, center), w * 0.045, fill);
-      canvas.drawCircle(Offset(center - radius * 0.5, center + radius * 0.86), w * 0.045, fill);
-      canvas.drawCircle(Offset(center - radius * 0.5, center - radius * 0.86), w * 0.045, fill);
+      canvas.drawCircle(
+        Offset(center - radius * 0.5, center + radius * 0.86),
+        w * 0.045,
+        fill,
+      );
+      canvas.drawCircle(
+        Offset(center - radius * 0.5, center - radius * 0.86),
+        w * 0.045,
+        fill,
+      );
     } else if (signId == 'mandatory_u_turn') {
       stroke.strokeWidth = w * 0.08;
       // Draw U-turn arrow in white
@@ -766,7 +849,7 @@ class TrafficSignPainter extends CustomPainter {
         ..quadraticBezierTo(w * 0.38, h * 0.35, w * 0.62, h * 0.38)
         ..lineTo(w * 0.62, h * 0.65);
       canvas.drawPath(arrowPath, stroke);
-      
+
       final arrowHead = Path()
         ..moveTo(w * 0.31, h * 0.55)
         ..lineTo(w * 0.38, h * 0.67)
@@ -785,7 +868,10 @@ class TrafficSignPainter extends CustomPainter {
     // Outer blue rounded rect
     fill.color = const Color(0xFF007AFF);
     canvas.drawRRect(
-      RRect.fromRectAndRadius(Rect.fromLTWH(4, 4, w - 8, h - 8), const Radius.circular(16)),
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(4, 4, w - 8, h - 8),
+        const Radius.circular(16),
+      ),
       fill,
     );
   }
@@ -798,8 +884,7 @@ class TrafficSignPainter extends CustomPainter {
 
     if (signId == 'parking') {
       _drawText(canvas, size, 'P', Colors.white, w * 0.45);
-    } 
-    else if (signId == 'hospital') {
+    } else if (signId == 'hospital') {
       // Draw white center square
       fill.color = Colors.white;
       final whiteRect = Rect.fromCenter(
@@ -823,8 +908,7 @@ class TrafficSignPainter extends CustomPainter {
       );
       canvas.drawRect(verticalCross, fill);
       canvas.drawRect(horizontalCross, fill);
-    } 
-    else if (signId == 'bus_stop') {
+    } else if (signId == 'bus_stop') {
       // Draw white bus silhouette
       fill.color = Colors.white;
       // Bus body
@@ -833,7 +917,10 @@ class TrafficSignPainter extends CustomPainter {
         width: w * 0.5,
         height: h * 0.35,
       );
-      canvas.drawRRect(RRect.fromRectAndRadius(busBody, const Radius.circular(8)), fill);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(busBody, const Radius.circular(8)),
+        fill,
+      );
 
       // Bus top cap
       final busCap = Rect.fromCenter(
@@ -845,9 +932,18 @@ class TrafficSignPainter extends CustomPainter {
 
       // Bus windows
       fill.color = const Color(0xFF007AFF);
-      canvas.drawRect(Rect.fromLTWH(w * 0.3, h * 0.22, w * 0.11, h * 0.09), fill);
-      canvas.drawRect(Rect.fromLTWH(w * 0.44, h * 0.22, w * 0.11, h * 0.09), fill);
-      canvas.drawRect(Rect.fromLTWH(w * 0.58, h * 0.22, w * 0.11, h * 0.09), fill);
+      canvas.drawRect(
+        Rect.fromLTWH(w * 0.3, h * 0.22, w * 0.11, h * 0.09),
+        fill,
+      );
+      canvas.drawRect(
+        Rect.fromLTWH(w * 0.44, h * 0.22, w * 0.11, h * 0.09),
+        fill,
+      );
+      canvas.drawRect(
+        Rect.fromLTWH(w * 0.58, h * 0.22, w * 0.11, h * 0.09),
+        fill,
+      );
 
       // Bus wheels
       fill.color = Colors.white;
@@ -858,18 +954,23 @@ class TrafficSignPainter extends CustomPainter {
       fill.color = Colors.black;
       canvas.drawCircle(Offset(w * 0.35, center + h * 0.12), w * 0.03, fill);
       canvas.drawCircle(Offset(w * 0.65, center + h * 0.12), w * 0.03, fill);
-    } 
-    else if (signId == 'petrol_pump') {
+    } else if (signId == 'petrol_pump') {
       // Draw fuel dispenser
       fill.color = Colors.white;
       // Main pump body
       canvas.drawRRect(
-        RRect.fromRectAndRadius(Rect.fromLTWH(w * 0.33, h * 0.22, w * 0.34, h * 0.5), const Radius.circular(6)),
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(w * 0.33, h * 0.22, w * 0.34, h * 0.5),
+          const Radius.circular(6),
+        ),
         fill,
       );
       // Dispenser screen
       fill.color = const Color(0xFF007AFF);
-      canvas.drawRect(Rect.fromLTWH(w * 0.38, h * 0.28, w * 0.24, h * 0.12), fill);
+      canvas.drawRect(
+        Rect.fromLTWH(w * 0.38, h * 0.28, w * 0.24, h * 0.12),
+        fill,
+      );
 
       // Hose and nozzle
       stroke.color = Colors.white;
@@ -899,13 +1000,28 @@ class TrafficSignPainter extends CustomPainter {
       // Draw white fork and knife side by side
       fill.color = Colors.white;
       // Fork tines
-      canvas.drawRect(Rect.fromLTWH(w * 0.36, h * 0.32, w * 0.02, h * 0.12), fill);
-      canvas.drawRect(Rect.fromLTWH(w * 0.40, h * 0.32, w * 0.02, h * 0.12), fill);
-      canvas.drawRect(Rect.fromLTWH(w * 0.44, h * 0.32, w * 0.02, h * 0.12), fill);
+      canvas.drawRect(
+        Rect.fromLTWH(w * 0.36, h * 0.32, w * 0.02, h * 0.12),
+        fill,
+      );
+      canvas.drawRect(
+        Rect.fromLTWH(w * 0.40, h * 0.32, w * 0.02, h * 0.12),
+        fill,
+      );
+      canvas.drawRect(
+        Rect.fromLTWH(w * 0.44, h * 0.32, w * 0.02, h * 0.12),
+        fill,
+      );
       // Fork base & handle
-      canvas.drawRect(Rect.fromLTWH(w * 0.36, h * 0.44, w * 0.10, h * 0.04), fill);
-      canvas.drawRect(Rect.fromLTWH(w * 0.40, h * 0.48, w * 0.02, h * 0.20), fill);
-      
+      canvas.drawRect(
+        Rect.fromLTWH(w * 0.36, h * 0.44, w * 0.10, h * 0.04),
+        fill,
+      );
+      canvas.drawRect(
+        Rect.fromLTWH(w * 0.40, h * 0.48, w * 0.02, h * 0.20),
+        fill,
+      );
+
       // Knife blade
       final knifeBlade = Path()
         ..moveTo(w * 0.58, h * 0.32)
@@ -915,7 +1031,10 @@ class TrafficSignPainter extends CustomPainter {
         ..close();
       canvas.drawPath(knifeBlade, fill);
       // Knife handle
-      canvas.drawRect(Rect.fromLTWH(w * 0.60, h * 0.48, w * 0.02, h * 0.20), fill);
+      canvas.drawRect(
+        Rect.fromLTWH(w * 0.60, h * 0.48, w * 0.02, h * 0.20),
+        fill,
+      );
     } else if (signId == 'first_aid') {
       // White square
       fill.color = Colors.white;
@@ -925,11 +1044,19 @@ class TrafficSignPainter extends CustomPainter {
         height: h * 0.55,
       );
       canvas.drawRect(whiteSquare, fill);
-      
+
       // Green cross
       fill.color = const Color(0xFF34C759); // Green Cross
-      final vCross = Rect.fromCenter(center: Offset(center, center), width: w * 0.12, height: h * 0.36);
-      final hCross = Rect.fromCenter(center: Offset(center, center), width: w * 0.36, height: h * 0.12);
+      final vCross = Rect.fromCenter(
+        center: Offset(center, center),
+        width: w * 0.12,
+        height: h * 0.36,
+      );
+      final hCross = Rect.fromCenter(
+        center: Offset(center, center),
+        width: w * 0.36,
+        height: h * 0.12,
+      );
       canvas.drawRect(vCross, fill);
       canvas.drawRect(hCross, fill);
     } else if (signId == 'taxi_stand') {
@@ -939,7 +1066,13 @@ class TrafficSignPainter extends CustomPainter {
   }
 
   // Draw 3-lamp Traffic Light
-  void _drawTrafficLight(Canvas canvas, Size size, Paint fill, Paint stroke, {required int activeLight}) {
+  void _drawTrafficLight(
+    Canvas canvas,
+    Size size,
+    Paint fill,
+    Paint stroke, {
+    required int activeLight,
+  }) {
     final double w = size.width;
     final double h = size.height;
     final double center = w / 2;
@@ -951,7 +1084,10 @@ class TrafficSignPainter extends CustomPainter {
       width: w * 0.45,
       height: h * 0.9,
     );
-    canvas.drawRRect(RRect.fromRectAndRadius(housing, const Radius.circular(24)), fill);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(housing, const Radius.circular(24)),
+      fill,
+    );
 
     // Draw three lamp holes / light circles
     final double spacing = h * 0.25;
@@ -985,7 +1121,12 @@ class TrafficSignPainter extends CustomPainter {
   }
 
   // Draw Pedestrian Signal
-  void _drawPedestrianSignal(Canvas canvas, Size size, Paint fill, Paint stroke) {
+  void _drawPedestrianSignal(
+    Canvas canvas,
+    Size size,
+    Paint fill,
+    Paint stroke,
+  ) {
     final double w = size.width;
     final double h = size.height;
     final double center = w / 2;
@@ -997,42 +1138,76 @@ class TrafficSignPainter extends CustomPainter {
       width: w * 0.45,
       height: h * 0.85,
     );
-    canvas.drawRRect(RRect.fromRectAndRadius(housing, const Radius.circular(16)), fill);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(housing, const Radius.circular(16)),
+      fill,
+    );
 
     // Dividing bar
     fill.color = Colors.black;
-    canvas.drawRect(Rect.fromLTWH(w * 0.27, h * 0.48, w * 0.46, h * 0.04), fill);
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.27, h * 0.48, w * 0.46, h * 0.04),
+      fill,
+    );
 
     // Top Compartment - Glowing red hand or standing man
     // Let's paint a standing figure (red)
     fill.color = const Color(0xFFFF3B30);
     final double topCenterY = h * 0.28;
-    canvas.drawCircle(Offset(center, topCenterY - h * 0.08), w * 0.035, fill); // head
+    canvas.drawCircle(
+      Offset(center, topCenterY - h * 0.08),
+      w * 0.035,
+      fill,
+    ); // head
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(center, topCenterY), width: w * 0.05, height: h * 0.1),
+      Rect.fromCenter(
+        center: Offset(center, topCenterY),
+        width: w * 0.05,
+        height: h * 0.1,
+      ),
       fill,
     ); // body
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(center - w * 0.04, topCenterY), width: w * 0.02, height: h * 0.08),
+      Rect.fromCenter(
+        center: Offset(center - w * 0.04, topCenterY),
+        width: w * 0.02,
+        height: h * 0.08,
+      ),
       fill,
     ); // left arm
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(center + w * 0.04, topCenterY), width: w * 0.02, height: h * 0.08),
+      Rect.fromCenter(
+        center: Offset(center + w * 0.04, topCenterY),
+        width: w * 0.02,
+        height: h * 0.08,
+      ),
       fill,
     ); // right arm
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(center - w * 0.015, topCenterY + h * 0.08), width: w * 0.02, height: h * 0.06),
+      Rect.fromCenter(
+        center: Offset(center - w * 0.015, topCenterY + h * 0.08),
+        width: w * 0.02,
+        height: h * 0.06,
+      ),
       fill,
     ); // left leg
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(center + w * 0.015, topCenterY + h * 0.08), width: w * 0.02, height: h * 0.06),
+      Rect.fromCenter(
+        center: Offset(center + w * 0.015, topCenterY + h * 0.08),
+        width: w * 0.02,
+        height: h * 0.06,
+      ),
       fill,
     ); // right leg
 
     // Bottom Compartment - Glowing green walking man
     fill.color = const Color(0xFF34C759);
     final double bottomCenterY = h * 0.72;
-    canvas.drawCircle(Offset(center + w * 0.03, bottomCenterY - h * 0.08), w * 0.035, fill); // head
+    canvas.drawCircle(
+      Offset(center + w * 0.03, bottomCenterY - h * 0.08),
+      w * 0.035,
+      fill,
+    ); // head
 
     // Walk path body
     final walkingBody = Path()
@@ -1066,7 +1241,13 @@ class TrafficSignPainter extends CustomPainter {
   }
 
   // Text drawing helper
-  void _drawText(Canvas canvas, Size size, String text, Color color, double fontSize) {
+  void _drawText(
+    Canvas canvas,
+    Size size,
+    String text,
+    Color color,
+    double fontSize,
+  ) {
     final textPainter = TextPainter(
       text: TextSpan(
         text: text,

@@ -18,7 +18,7 @@ class AppBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -32,7 +32,9 @@ class AppBackground extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: appBar,
-        body: child,
+        // Keep content clear of notches, the status bar (when there's no
+        // app bar) and the system navigation / gesture bar.
+        body: SafeArea(top: appBar == null, child: child),
         bottomNavigationBar: bottomNavigationBar,
         floatingActionButton: floatingActionButton,
       ),
