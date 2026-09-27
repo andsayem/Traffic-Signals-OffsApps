@@ -1,0 +1,25 @@
+name: admob_kit
+description: >
+  A reusable, production-ready AdMob layer for Flutter apps - banner,
+  adaptive banner, interstitial, rewarded, rewarded interstitial, native,
+  and app open ads with built-in caching, retry, cooldown, and frequency
+  control. Configure ad unit IDs once per app and drive everything
+  through AdManager.
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.10.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_mobile_ads: '>=8.0.0 <10.0.0'
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: '>=3.0.0 <7.0.0'
+
+flutter:

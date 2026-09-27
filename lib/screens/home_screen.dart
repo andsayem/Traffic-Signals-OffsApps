@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:traffic_signal_symbols/ads/adaptive_banner_ad_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../ads/ad_service.dart';
+import '../ads/native_ad_widget.dart';
 import '../providers/subscription_provider.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
@@ -443,6 +444,12 @@ class HomeScreen extends StatelessWidget {
                         },
                       );
                     }, childCount: filtered.length),
+                  ),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: NativeAdWidget(
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
                   ),
                 ),
 

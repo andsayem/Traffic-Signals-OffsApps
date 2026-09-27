@@ -1,40 +1,89 @@
+import 'dart:async';
+
+import 'package:admob_kit/admob_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'ad_ids.dart';
 
-class AdService with WidgetsBindingObserver {
+import '../services/storage_service.dart';
+
+/// App-side facade over `admob_kit`. The kit owns loading, caching, retry
+/// and cooldowns (ad unit IDs live in `packages/admob_kit/lib/config/
+/// admob_config.dart`); this class owns the single "remove ads" rule:
+///
+/// Ads are hidden when the user is **Pro** or inside a **rewarded ad-free
+/// window** (see [adsHidden]). Every ad in the app — banner, native,
+/// interstitial, App Open — checks it, and nothing is even requested while
+/// it is `true`. The rewarded interstitial is the one exception: it is how
+/// a user earns the ad-free window.
+///
+/// The App Open ad is shown once on cold start only, never on resume.
+class AdService {
   static final AdService _instance = AdService._();
   static AdService get instance => _instance;
   AdService._();
 
   bool _initialized = false;
-  BannerAd? _bannerAd;
-  InterstitialAd? _interstitialAd;
-  AppOpenAd? _appOpenAd;
-  bool _isBannerLoaded = false;
-  bool _isInterstitialLoading = false;
-  bool _isAppOpenLoading = false;
 
-  // Set by SubscriptionProvider whenever Pro status changes — Pro
-  // subscribers see no ads at all.
+  /// How long one watched rewarded interstitial keeps ads hidden.
+  static const Duration adFreeDuration = Duration(minutes: 30);
+
   bool _isProUser = false;
-  void setProUser(bool value) => _isProUser = value;
+  DateTime? _adFreeUntil;
+  Timer? _adFreeTimer;
+
+  /// `true` while ads must be hidden (Pro, or inside an ad-free window).
+  /// Ad widgets listen to this so they disappear/reappear immediately.
+  final ValueNotifier<bool> adsHidden = ValueNotifier<bool>(false);
+
   bool get isProUser => _isProUser;
 
-  String get bannerAdUnitId => AdIds.banner;
-  String get _bannerId => AdIds.banner;
-  String get _interstitialId => AdIds.interstitial;
-  String get _appOpenId => AdIds.appOpen;
+  bool get isAdFreeActive {
+    final until = _adFreeUntil;
+    return until != null && DateTime.now().isBefore(until);
+  }
+
+  /// Time left in the current ad-free window, or `null` if none.
+  Duration? get adFreeRemaining =>
+      isAdFreeActive ? _adFreeUntil!.difference(DateTime.now()) : null;
+
+  /// Single source of truth for "should this user see ads right now".
+  bool get shouldHideAds => _isProUser || isAdFreeActive;
+
+  // Set by SubscriptionProvider whenever Pro status changes.
+  void setProUser(bool value) {
+    _isProUser = value;
+    _refreshAdsHidden();
+  }
+
+  void _refreshAdsHidden() {
+    final wasHidden = adsHidden.value;
+    adsHidden.value = shouldHideAds;
+    // Ads just came back (ad-free window ended / Pro lapsed): warm the
+    // full-screen caches so the next placement has something to show.
+    if (_initialized && wasHidden && !adsHidden.value) _preload();
+  }
+
+  String get bannerAdUnitId => AdMobConfig.bannerId;
 
   Future<void> init() async {
     if (_initialized) return;
-    await MobileAds.instance.initialize();
-    WidgetsBinding.instance.addObserver(this);
-    _initialized = true;
 
-    // Preload an app-open ad. It is shown exactly once on cold start
-    // (first open) a short moment after launch, and never again on resume.
-    loadAppOpen();
+    // Restore state before any ad is requested, so a Pro user or an
+    // active ad-free window never triggers a load on launch.
+    _isProUser = StorageService.isPro();
+    _restoreAdFreeWindow();
+    adsHidden.value = shouldHideAds;
+
+    await AdMobService.initialize();
+    _initialized = true;
+    if (shouldHideAds) {
+      // Only the rewarded interstitial (used to earn ad-free time).
+      RewardedInterstitialAdManager.load();
+      return;
+    }
+    _preload();
+
+    // Shown exactly once on cold start, a short moment after launch.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future<void>.delayed(const Duration(milliseconds: 700), () {
         showAppOpenOnColdStart();
@@ -42,94 +91,24 @@ class AdService with WidgetsBindingObserver {
     });
   }
 
-  /// Called automatically by Flutter whenever the app's lifecycle
-  /// state changes (e.g. backgrounded, resumed, paused).
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // App-open ads intentionally disabled on resume — we only show one
-    // on cold start (first open) to avoid bothering the user repeatedly.
+  void _preload() {
+    // Interstitial, rewarded and rewarded interstitial.
+    AdManager.preloadAll();
+    // App Open: preload without AppOpenAdManager.initialize() so the kit's
+    // on-resume trigger stays off.
+    AppOpenAdManager.instance.load();
   }
 
   // ---------------- BANNER ----------------
 
-  void loadBanner({VoidCallback? onLoaded, VoidCallback? onFailed}) {
-    _bannerAd?.dispose();
-    _bannerAd = null;
-    _isBannerLoaded = false;
-
-    _bannerAd = BannerAd(
-      adUnitId: _bannerId,
-      size: AdSize.banner,
-      request: const AdRequest(),
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          _isBannerLoaded = true;
-          onLoaded?.call();
-        },
-        onAdFailedToLoad: (ad, error) {
-          ad.dispose();
-          _bannerAd = null;
-          _isBannerLoaded = false;
-          onFailed?.call();
-        },
-      ),
-    )..load();
-  }
-
-  BannerAd? get bannerAd => _isBannerLoaded ? _bannerAd : null;
-  bool get isBannerLoaded => _isBannerLoaded;
-
-  /// Creates and loads a bigger, adaptive-size [BannerAd] sized for the
-  /// given [width] (usually MediaQuery.of(context).size.width).
-  ///
-  /// Unlike [loadBanner], this does NOT store the ad on AdService —
-  /// it returns a fresh, independent BannerAd instance to the caller.
-  /// This avoids the "Ad with id could not be found" crash that happens
-  /// when multiple widgets/rebuilds share and dispose the same ad object.
-  /// The caller (typically a widget's State) owns the returned ad and is
-  /// responsible for disposing it in its own dispose().
-  Future<BannerAd?> createAdaptiveBanner({
-    required int width,
-    required void Function(BannerAd ad) onLoaded,
-    required void Function() onFailed,
-  }) async {
-    final AdSize? adaptiveSize = await AdSize.getAnchoredAdaptiveBannerAdSize(
-        Orientation.portrait, width);
-
-    if (adaptiveSize == null) {
-      onFailed();
-      return null;
-    }
-
-    final BannerAd bannerAd = BannerAd(
-      adUnitId: _bannerId,
-      size: adaptiveSize,
-      request: const AdRequest(),
-      listener: BannerAdListener(
-        onAdLoaded: (ad) => onLoaded(ad as BannerAd),
-        onAdFailedToLoad: (ad, error) {
-          ad.dispose();
-          onFailed();
-        },
-      ),
-    );
-
-    bannerAd.load();
-    return bannerAd;
-  }
-
-  /// Creates and loads a Medium Rectangle (300x250) [BannerAd] — a bigger,
-  /// fixed-size box ad format (IAB MREC standard). Bigger than adaptive
-  /// banners, good for in-feed or content-break placements.
-  ///
-  /// Same ownership rules as [createAdaptiveBanner]: the caller owns the
-  /// returned ad and must dispose it themselves.
+  /// Creates and loads a Medium Rectangle (300x250) [BannerAd]. The caller
+  /// owns the returned ad and must dispose it.
   BannerAd createMediumRectangleBanner({
     required void Function(BannerAd ad) onLoaded,
     required void Function() onFailed,
   }) {
     final BannerAd bannerAd = BannerAd(
-      adUnitId: _bannerId,
+      adUnitId: AdMobConfig.bannerId,
       size: AdSize.mediumRectangle, // 300x250
       request: const AdRequest(),
       listener: BannerAdListener(
@@ -148,139 +127,80 @@ class AdService with WidgetsBindingObserver {
   // ---------------- INTERSTITIAL ----------------
 
   void loadInterstitial() {
-    if (_isInterstitialLoading || _interstitialAd != null) return;
-    _isInterstitialLoading = true;
-
-    InterstitialAd.load(
-      adUnitId: _interstitialId,
-      request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) {
-          _interstitialAd = ad;
-          _isInterstitialLoading = false;
-          ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) {
-              ad.dispose();
-              _interstitialAd = null;
-            },
-            onAdFailedToShowFullScreenContent: (ad, error) {
-              ad.dispose();
-              _interstitialAd = null;
-            },
-          );
-        },
-        onAdFailedToLoad: (error) {
-          _isInterstitialLoading = false;
-        },
-      ),
-    );
+    if (shouldHideAds) return;
+    InterstitialAdManager.load();
   }
 
-  bool get isInterstitialReady => _interstitialAd != null;
+  bool get isInterstitialReady => AdManager.isInterstitialReady;
 
+  /// Shows an interstitial (subject to the kit's cooldown) and calls
+  /// [onDismissed] once the user is back in the app — or right away if no
+  /// ad was shown.
   void showInterstitial({VoidCallback? onDismissed}) {
-    if (_isProUser) {
+    if (shouldHideAds) {
       onDismissed?.call();
       return;
     }
-    final ad = _interstitialAd;
-    if (ad == null) {
-      onDismissed?.call();
-      return;
+    AdManager.showInterstitial().then((_) => onDismissed?.call());
+  }
+
+  // ---------------- REWARDED INTERSTITIAL ----------------
+
+  bool get isRewardedInterstitialReady =>
+      AdManager.isRewardedInterstitialReady;
+
+  /// Shows a rewarded interstitial; when the reward is earned, ads are
+  /// hidden for [adFreeDuration]. Returns whether the reward was granted.
+  Future<bool> showRewardedInterstitialForAdFree() async {
+    var rewarded = false;
+    await AdManager.showRewardedInterstitial(onReward: () => rewarded = true);
+    if (rewarded) _startAdFreeWindow(DateTime.now().add(adFreeDuration));
+    return rewarded;
+  }
+
+  void _restoreAdFreeWindow() {
+    final until = StorageService.getAdFreeUntil();
+    if (until == null) return;
+    if (DateTime.now().isBefore(until)) {
+      _startAdFreeWindow(until, persist: false);
+    } else {
+      StorageService.setAdFreeUntil(null);
     }
-    // Replace callback so we know when user dismisses the ad
-    ad.fullScreenContentCallback = FullScreenContentCallback(
-      onAdDismissedFullScreenContent: (ad) {
-        ad.dispose();
-        _interstitialAd = null;
-        onDismissed?.call();
-      },
-      onAdFailedToShowFullScreenContent: (ad, error) {
-        ad.dispose();
-        _interstitialAd = null;
-        onDismissed?.call();
-      },
-    );
-    ad.show();
+  }
+
+  void _startAdFreeWindow(DateTime until, {bool persist = true}) {
+    _adFreeUntil = until;
+    if (persist) StorageService.setAdFreeUntil(until);
+    _adFreeTimer?.cancel();
+    _adFreeTimer = Timer(until.difference(DateTime.now()), () {
+      _adFreeUntil = null;
+      StorageService.setAdFreeUntil(null);
+      _refreshAdsHidden();
+    });
+    _refreshAdsHidden();
   }
 
   // ---------------- APP OPEN ----------------
 
-  void loadAppOpen() {
-    if (_isAppOpenLoading || _appOpenAd != null) return;
-    _isAppOpenLoading = true;
+  bool get isAppOpenReady => AdManager.isAppOpenReady;
 
-    AppOpenAd.load(
-      adUnitId: _appOpenId,
-      request: const AdRequest(),
-      adLoadCallback: AppOpenAdLoadCallback(
-        onAdLoaded: (ad) {
-          _appOpenAd = ad;
-          _isAppOpenLoading = false;
-        },
-        onAdFailedToLoad: (error) {
-          _isAppOpenLoading = false;
-        },
-      ),
-    );
-  }
-
-  bool get isAppOpenReady => _appOpenAd != null;
-
-  /// Shows the app-open ad manually (also called automatically on resume).
-  void showAppOpen() {
-    if (_appOpenAd == null) return;
-    _attachFullScreenCallbacks();
-    _appOpenAd!.show();
-  }
-
-  /// Shows the app-open ad on cold start (first launch).
-  /// Calls [onDismissed] after the ad is dismissed or fails to show.
-  /// Pro subscribers never see it.
+  /// Shows the app-open ad on cold start (first launch). Skipped while ads
+  /// are hidden. [onDismissed] runs once the show attempt resolves.
   void showAppOpenOnColdStart({VoidCallback? onDismissed}) {
-    if (_isProUser) {
+    if (shouldHideAds) {
       onDismissed?.call();
       return;
     }
-    if (_appOpenAd == null) {
-      onDismissed?.call();
-      return;
-    }
-    _attachFullScreenCallbacks(
-      onDismissed: () {
-        onDismissed?.call();
-      },
-    );
-    _appOpenAd!.show();
-  }
-
-  void _attachFullScreenCallbacks({VoidCallback? onDismissed}) {
-    _appOpenAd?.fullScreenContentCallback = FullScreenContentCallback(
-      onAdDismissedFullScreenContent: (ad) {
-        ad.dispose();
-        _appOpenAd = null;
-        loadAppOpen();
-        onDismissed?.call();
-      },
-      onAdFailedToShowFullScreenContent: (ad, error) {
-        ad.dispose();
-        _appOpenAd = null;
-        loadAppOpen();
-        onDismissed?.call();
-      },
-    );
+    AdManager.showAppOpen().then((_) => onDismissed?.call());
   }
 
   // ---------------- CLEANUP ----------------
 
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _bannerAd?.dispose();
-    _interstitialAd?.dispose();
-    _appOpenAd?.dispose();
-    _bannerAd = null;
-    _interstitialAd = null;
-    _appOpenAd = null;
-    _isBannerLoaded = false;
+    _adFreeTimer?.cancel();
+    InterstitialAdManager.dispose();
+    RewardedAdManager.dispose();
+    RewardedInterstitialAdManager.dispose();
+    AppOpenAdManager.instance.dispose();
   }
 }

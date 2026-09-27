@@ -7,8 +7,10 @@ import '../providers/subscription_provider.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
 import '../utils/theme_constants.dart';
+import '../widgets/ad_free_reward_card.dart';
 import '../widgets/app_background.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/other_apps_card.dart';
 import 'subscription_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -101,6 +103,17 @@ class SettingsScreen extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
+
+              // Rewarded "remove ads for a while" card (non-Pro only)
+              Consumer<SubscriptionProvider>(
+                builder: (context, subscription, child) {
+                  if (subscription.isPro) return const SizedBox.shrink();
+                  return const Padding(
+                    padding: EdgeInsets.only(bottom: 16),
+                    child: AdFreeRewardCard(),
+                  );
+                },
+              ),
 
               // Theme Toggle Card
               GlassCard(
@@ -252,6 +265,11 @@ class SettingsScreen extends StatelessWidget {
                   onTap: () => _showResetConfirmation(context, appProvider),
                 ),
               ),
+
+              const SizedBox(height: 16),
+
+              // More Apps Card
+              const OtherAppsCard(),
 
               const SizedBox(height: 24),
 

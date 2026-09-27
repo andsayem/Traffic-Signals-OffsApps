@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../ads/ad_service.dart';
@@ -68,10 +70,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   children: [
                     const SizedBox(height: 40),
                     // Vector Sign Illustration
-                    TrafficSignWidget(
+                    _SpinningSign(
                       signId: page.signId,
-                      size: 180,
-                      isGlowing: true,
                     ),
                     const SizedBox(height: 60),
                     // Onboarding Glass Card Info
@@ -211,4 +211,46 @@ class _OnboardingData {
     required this.subtitleKey,
     required this.signId,
   });
+}
+
+/// Onboarding sign that keeps turning 360° around its vertical axis, like a
+/// road sign spinning on its pole.
+class _SpinningSign extends StatefulWidget {
+  const _SpinningSign({required this.signId});
+
+  final String signId;
+
+  @override
+  State<_SpinningSign> createState() => _SpinningSignState();
+}
+
+class _SpinningSignState extends State<_SpinningSign>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 4),
+  )..repeat();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      child: TrafficSignWidget(signId: widget.signId, size: 180, isGlowing: true),
+      builder: (context, child) {
+        return Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.identity()
+            ..setEntry(3, 2, 0.001) // perspective
+            ..rotateY(_controller.value * 2 * math.pi),
+          child: child,
+        );
+      },
+    );
+  }
 }

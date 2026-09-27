@@ -9,6 +9,7 @@ class StorageService {
   static const String _keyRecentCountries = 'recent_countries';
   static const String _keyOnboarded = 'is_onboarded';
   static const String _keyIsPro = 'is_pro_subscriber';
+  static const String _keyAdFreeUntil = 'ad_free_until_ms';
 
   // Initialize SharedPreferences
   static Future<void> init() async {
@@ -74,6 +75,20 @@ class StorageService {
 
   static Future<void> setPro(bool value) async {
     await _prefs?.setBool(_keyIsPro, value);
+  }
+
+  // End of the rewarded ad-free window (survives app restarts).
+  static DateTime? getAdFreeUntil() {
+    final ms = _prefs?.getInt(_keyAdFreeUntil);
+    return ms == null ? null : DateTime.fromMillisecondsSinceEpoch(ms);
+  }
+
+  static Future<void> setAdFreeUntil(DateTime? until) async {
+    if (until == null) {
+      await _prefs?.remove(_keyAdFreeUntil);
+    } else {
+      await _prefs?.setInt(_keyAdFreeUntil, until.millisecondsSinceEpoch);
+    }
   }
 
   static Future<void> clearAll() async {

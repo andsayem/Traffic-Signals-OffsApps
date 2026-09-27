@@ -55,6 +55,14 @@ class _AdaptiveBannerAdWidgetState extends State<AdaptiveBannerAdWidget> {
       return const SizedBox.shrink();
     }
 
+    return ValueListenableBuilder<bool>(
+      valueListenable: AdService.instance.adsHidden,
+      builder: (context, hidden, _) =>
+          hidden ? const SizedBox.shrink() : _buildAd(),
+    );
+  }
+
+  Widget _buildAd() {
     if (!_hasRequested) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _loadAd());
     }
