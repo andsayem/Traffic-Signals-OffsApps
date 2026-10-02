@@ -43,10 +43,6 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(16),
         children: [
-          // Big banner ad below the app bar
-          AdaptiveBannerAdWidget(),
-          const SizedBox(height: 16),
-
           // Selectors Row
           Row(
             children: [
@@ -135,6 +131,10 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
             ],
           ),
 
+          const SizedBox(height: 16),
+
+          // Big banner ad as the second section, visible without scrolling
+          const AdaptiveBannerAdWidget(),
           const SizedBox(height: 24),
 
           if (_countryA != null && _countryB != null) ...[

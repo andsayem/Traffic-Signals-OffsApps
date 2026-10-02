@@ -238,6 +238,14 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
 
+                // Big banner ad as the second section, visible without scrolling
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 12),
+                    child: AdaptiveBannerAdWidget(),
+                  ),
+                ),
+
                 // Play & learn: the Car Assembly mini-game
                 const SliverToBoxAdapter(
                   child: SectionHeader(
@@ -335,13 +343,6 @@ class HomeScreen extends StatelessWidget {
                         ),
                       );
                     }, childCount: _categories.length),
-                  ),
-                ),
-
-                const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 12),
-                    child: AdaptiveBannerAdWidget(),
                   ),
                 ),
 

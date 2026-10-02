@@ -55,10 +55,6 @@ class SignDetailsScreen extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
             children: [
-              // Big banner ad below the app bar
-              AdaptiveBannerAdWidget(),
-              const SizedBox(height: 12),
-
               // Large Vector Sign
               Center(
                 child: Hero(
@@ -110,7 +106,11 @@ class SignDetailsScreen extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
+
+              // Big banner ad as the second section, visible without scrolling
+              const AdaptiveBannerAdWidget(),
+              const SizedBox(height: 16),
 
               // Sign Information Details Cards
               GlassCard(

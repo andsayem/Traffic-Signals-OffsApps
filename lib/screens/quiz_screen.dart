@@ -58,7 +58,11 @@ class _QuizScreenState extends State<QuizScreen> {
         const Center(
           child: SpinningSign(signId: 'stop', size: 110, isGlowing: true),
         ),
-        const SizedBox(height: 32),
+        const SizedBox(height: 24),
+
+        // Big banner ad as the second section, visible without scrolling
+        const AdaptiveBannerAdWidget(),
+        const SizedBox(height: 24),
 
         GlassCard(
           padding: const EdgeInsets.all(20),
@@ -211,8 +215,6 @@ class _QuizScreenState extends State<QuizScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
-        AdaptiveBannerAdWidget(),
       ],
     );
   }

@@ -130,6 +130,10 @@ class SettingsScreen extends StatelessWidget {
 
               const SizedBox(height: 16),
 
+              // Big banner ad as the second section, visible without scrolling
+              const AdaptiveBannerAdWidget(),
+              const SizedBox(height: 16),
+
               // Rewarded "remove ads for a while" card (non-Pro only)
               Consumer<SubscriptionProvider>(
                 builder: (context, subscription, child) {
@@ -286,10 +290,8 @@ class SettingsScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 14),
 
-              AdaptiveBannerAdWidget(),
-              const SizedBox(height: 16),
               // Disclaimer Card
               Padding(
                 padding: const EdgeInsets.only(top: 16),
