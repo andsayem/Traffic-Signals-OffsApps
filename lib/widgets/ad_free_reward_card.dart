@@ -16,9 +16,17 @@ class AdFreeRewardCard extends StatefulWidget {
 class _AdFreeRewardCardState extends State<AdFreeRewardCard> {
   bool _isShowing = false;
 
+  @override
+  void initState() {
+    super.initState();
+    // Loaded only while this offer is on screen, not on every launch.
+    AdService.instance.preloadRewardedInterstitial();
+  }
+
   Future<void> _watchAd() async {
     final ads = AdService.instance;
     if (!ads.isRewardedInterstitialReady) {
+      ads.preloadRewardedInterstitial();
       _showSnack('Ad is not ready yet. Please try again in a moment.');
       return;
     }

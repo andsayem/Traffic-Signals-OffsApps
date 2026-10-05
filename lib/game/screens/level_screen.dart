@@ -22,6 +22,13 @@ class LevelScreen extends StatefulWidget {
 }
 
 class _LevelScreenState extends State<LevelScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Ready for the "unlock with an ad" offer on locked levels.
+    AdService.instance.preloadRewarded();
+  }
+
   Future<void> _play(Level level) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
@@ -73,7 +80,7 @@ class _LevelScreenState extends State<LevelScreen> {
     if (watch != true || !mounted) return;
     final ads = AdService.instance;
     if (!ads.isRewardedReady) {
-      ads.showRewarded(); // not ready: this starts loading one
+      ads.preloadRewarded();
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(tr('ad_not_ready'))),

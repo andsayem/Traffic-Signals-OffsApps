@@ -35,6 +35,7 @@ class AppOpenAdManager with WidgetsBindingObserver {
   bool _observerAttached = false;
   bool _hasSeenFirstResume = false;
   DateTime? _backgroundedAt;
+  final List<Completer<bool>> _readyWaiters = [];
 
   /// Whether a fully loaded, non-expired ad is cached and ready to show.
   bool get isReady => _ad != null && !_isAdExpired;
@@ -94,6 +95,7 @@ class AppOpenAdManager with WidgetsBindingObserver {
           _adLoadedAt = DateTime.now();
           _attachCallbacks(ad);
           AdMobLogger.log('App Open loaded');
+          _completeWaiters(true);
         },
         onAdFailedToLoad: (error) {
           _isLoading = false;
@@ -105,9 +107,33 @@ class AppOpenAdManager with WidgetsBindingObserver {
     );
   }
 
+  /// Starts a load if needed and resolves `true` once an ad is ready, or
+  /// `false` if loading fails for good or [timeout] passes first. Lets a
+  /// cold-start flow show the ad as soon as it arrives instead of probing
+  /// once and missing it.
+  Future<bool> waitUntilReady(Duration timeout) {
+    if (isReady) return Future.value(true);
+    final completer = Completer<bool>();
+    _readyWaiters.add(completer);
+    unawaited(load());
+    return completer.future.timeout(timeout, onTimeout: () {
+      _readyWaiters.remove(completer);
+      return false;
+    });
+  }
+
+  void _completeWaiters(bool ready) {
+    final waiters = List.of(_readyWaiters);
+    _readyWaiters.clear();
+    for (final waiter in waiters) {
+      if (!waiter.isCompleted) waiter.complete(ready);
+    }
+  }
+
   void _retryLoad() {
     if (_retryCount >= AdMobSettings.maxLoadRetry) {
       AdMobLogger.log('App Open retry limit reached, giving up');
+      _completeWaiters(false);
       return;
     }
     _retryCount++;
@@ -143,7 +169,7 @@ class AppOpenAdManager with WidgetsBindingObserver {
     ad.dispose();
     _ad = null;
     _adLoadedAt = null;
-    load();
+    if (AdMobSettings.appOpenAutoReload) load();
   }
 
   /// Shows the cached App Open ad if every guard passes. Can also be
@@ -168,7 +194,7 @@ class AppOpenAdManager with WidgetsBindingObserver {
 
       final ad = _ad;
       if (ad == null) {
-        unawaited(load());
+        if (AdMobSettings.appOpenAutoReload) unawaited(load());
         return AdShowResult.notReady;
       }
 

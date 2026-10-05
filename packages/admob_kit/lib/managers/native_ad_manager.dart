@@ -16,6 +16,39 @@ import '../core/admob_logger.dart';
 class NativeAdManager {
   NativeAdManager._();
 
+  /// A loaded ad whose widget was gone before it arrived. It was never
+  /// rendered, so the next native slot shows it instead of requesting a
+  /// new one - otherwise that request is paid for with no impression.
+  static NativeAd? _spare;
+  static DateTime? _spareLoadedAt;
+
+  /// Native ads should be shown within about an hour of loading.
+  static const Duration _spareMaxAge = Duration(minutes: 50);
+
+  /// Keeps an unrendered [ad] for the next native slot, disposing any
+  /// older spare.
+  static void park(NativeAd ad) {
+    _spare?.dispose();
+    _spare = ad;
+    _spareLoadedAt = DateTime.now();
+    AdMobLogger.log('Native parked for reuse');
+  }
+
+  /// Returns the parked ad, if one is fresh enough, and clears the slot.
+  static NativeAd? takeSpare() {
+    final ad = _spare;
+    final loadedAt = _spareLoadedAt;
+    _spare = null;
+    _spareLoadedAt = null;
+    if (ad == null || loadedAt == null) return null;
+    if (DateTime.now().difference(loadedAt) > _spareMaxAge) {
+      ad.dispose();
+      return null;
+    }
+    AdMobLogger.log('Native reused from spare');
+    return ad;
+  }
+
   static void load({
     required String factoryId,
     required void Function(NativeAd ad) onLoaded,

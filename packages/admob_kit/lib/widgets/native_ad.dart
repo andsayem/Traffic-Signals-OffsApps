@@ -48,11 +48,16 @@ class _AdNativeState extends State<AdNative> {
     if (!AdMobSettings.enableNative || !AdMobUtils.isSupportedPlatform) {
       return;
     }
+    final spare = NativeAdManager.takeSpare();
+    if (spare != null) {
+      _readyAd = spare;
+      return;
+    }
     NativeAdManager.load(
       factoryId: widget.factoryId ?? AdMobConfig.nativeAdFactoryId,
       onLoaded: (ad) {
         if (_disposed) {
-          ad.dispose();
+          NativeAdManager.park(ad);
           return;
         }
         setState(() => _readyAd = ad);

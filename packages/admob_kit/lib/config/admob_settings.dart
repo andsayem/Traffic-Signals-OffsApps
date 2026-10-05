@@ -51,18 +51,24 @@ class AdMobSettings {
   /// older than this is dropped and reloaded rather than shown stale.
   static int appOpenMaxCacheHours = 4;
 
+  /// When `true`, a new App Open ad is requested after one is shown or
+  /// after a show attempt finds nothing cached. Apps that only show App
+  /// Open on cold start should set this to `false`: an ad loaded after the
+  /// launch moment is never shown and only lowers the show rate.
+  static bool appOpenAutoReload = true;
+
   // ---------------------------------------------------------------------
   // Retry
   // ---------------------------------------------------------------------
 
   /// Maximum number of automatic reload attempts after a load failure,
   /// per ad instance lifecycle. Set to 0 to disable retries.
-  static int maxLoadRetry = 3;
+  static int maxLoadRetry = 1;
 
   /// Base delay used to space out retries: attempt N waits
   /// `retryBaseDelaySeconds * N` seconds. Keeps retries from hammering
   /// AdMob after a no-fill or network failure.
-  static int retryBaseDelaySeconds = 2;
+  static int retryBaseDelaySeconds = 10;
 
   // ---------------------------------------------------------------------
   // Test ads

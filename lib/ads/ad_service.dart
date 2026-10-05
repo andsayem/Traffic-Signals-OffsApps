@@ -59,11 +59,20 @@ class AdService {
     final wasHidden = adsHidden.value;
     adsHidden.value = shouldHideAds;
     // Ads just came back (ad-free window ended / Pro lapsed): warm the
-    // full-screen caches so the next placement has something to show.
-    if (_initialized && wasHidden && !adsHidden.value) _preload();
+    // interstitial so the next placement has something to show.
+    if (_initialized && wasHidden && !adsHidden.value) loadInterstitial();
   }
 
   String get bannerAdUnitId => AdMobConfig.bannerId;
+
+  /// How long cold start waits for the App Open ad before giving up. Past
+  /// this the user is already using the app, so a late ad is not shown.
+  static const Duration _appOpenWait = Duration(seconds: 4);
+
+  /// Delay before the interstitial is preloaded, so quick-bounce sessions
+  /// (open and close within seconds) don't spend a request on an ad that
+  /// can never be shown.
+  static const Duration _interstitialPreloadDelay = Duration(seconds: 8);
 
   Future<void> init() async {
     if (_initialized) return;
@@ -74,29 +83,30 @@ class AdService {
     _restoreAdFreeWindow();
     adsHidden.value = shouldHideAds;
 
+    // App Open is cold-start only: never reload it after the launch moment.
+    AdMobSettings.appOpenAutoReload = false;
+
     await AdMobService.initialize();
     _initialized = true;
-    if (shouldHideAds) {
-      // Only the rewarded interstitial (used to earn ad-free time).
-      RewardedInterstitialAdManager.load();
-      return;
-    }
-    _preload();
+    // Rewarded formats are loaded on demand by the screens that offer
+    // them (see preloadRewarded / preloadRewardedInterstitial); loading
+    // them on every launch wasted almost every request.
+    if (shouldHideAds) return;
 
-    // Shown exactly once on cold start, a short moment after launch.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future<void>.delayed(const Duration(milliseconds: 700), () {
-        showAppOpenOnColdStart();
-      });
-    });
+    // App Open: load without AppOpenAdManager.initialize() so the kit's
+    // on-resume trigger stays off, then show it as soon as it arrives.
+    unawaited(_showAppOpenWhenReady());
+
+    Timer(_interstitialPreloadDelay, loadInterstitial);
   }
 
-  void _preload() {
-    // Interstitial, rewarded and rewarded interstitial.
-    AdManager.preloadAll();
-    // App Open: preload without AppOpenAdManager.initialize() so the kit's
-    // on-resume trigger stays off.
-    AppOpenAdManager.instance.load();
+  Future<void> _showAppOpenWhenReady() async {
+    final ready = await AppOpenAdManager.instance.waitUntilReady(_appOpenWait);
+    if (!ready) return;
+    // The user may have left the app or gone ad-free while it loaded.
+    final state = WidgetsBinding.instance.lifecycleState;
+    if (state != null && state != AppLifecycleState.resumed) return;
+    showAppOpenOnColdStart();
   }
 
   // ---------------- BANNER ----------------
@@ -156,6 +166,13 @@ class AdService {
 
   bool get isRewardedReady => AdManager.isRewardedReady;
 
+  /// Call when a screen that offers a rewarded ad opens, so it is ready by
+  /// the time the user taps. Skipped for Pro users, who never watch one.
+  void preloadRewarded() {
+    if (_isProUser) return;
+    RewardedAdManager.load();
+  }
+
   /// Shows a rewarded video the user opted into. Returns whether the reward
   /// was earned. Not blocked by [shouldHideAds]: the user asked for it.
   Future<bool> showRewarded() async {
@@ -167,6 +184,13 @@ class AdService {
   // ---------------- REWARDED INTERSTITIAL ----------------
 
   bool get isRewardedInterstitialReady => AdManager.isRewardedInterstitialReady;
+
+  /// Call when the "remove ads for free" offer is on screen. Skipped when
+  /// the offer can't be used (Pro, or an ad-free window already running).
+  void preloadRewardedInterstitial() {
+    if (shouldHideAds) return;
+    RewardedInterstitialAdManager.load();
+  }
 
   /// Shows a rewarded interstitial; when the reward is earned, ads are
   /// hidden for [adFreeDuration]. Returns whether the reward was granted.
