@@ -55,6 +55,15 @@ android {
     }
 }
 
+dependencies {
+    // play-services-ads (pulled in by google_mobile_ads) transitively depends on
+    // an old androidx.work:work-runtime (2.7.0), whose bundled WorkDatabase_Impl
+    // crashes at startup on modern Android with:
+    // "Failed to create an instance of androidx.work.impl.WorkDatabase".
+    // Force a current WorkManager so Gradle picks this version instead.
+    implementation("androidx.work:work-runtime:2.11.2")
+}
+
 flutter {
     source = "../.."
 }
