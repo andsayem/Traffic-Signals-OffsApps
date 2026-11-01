@@ -32,6 +32,13 @@ class AdMobSettings {
   /// regardless of the action interval above.
   static int interstitialCooldownSeconds = 30;
 
+  /// Optional "ad break" notice the host app shows right before an
+  /// interstitial (e.g. a short "Ad starting in 2..." countdown), so the
+  /// ad never appears without warning mid-tap. It runs only when an ad is
+  /// loaded and every other guard has passed; the ad shows once the
+  /// returned future completes. Leave `null` to show ads immediately.
+  static Future<void> Function()? beforeInterstitial;
+
   // ---------------------------------------------------------------------
   // App Open
   // ---------------------------------------------------------------------
@@ -51,24 +58,18 @@ class AdMobSettings {
   /// older than this is dropped and reloaded rather than shown stale.
   static int appOpenMaxCacheHours = 4;
 
-  /// When `true`, a new App Open ad is requested after one is shown or
-  /// after a show attempt finds nothing cached. Apps that only show App
-  /// Open on cold start should set this to `false`: an ad loaded after the
-  /// launch moment is never shown and only lowers the show rate.
-  static bool appOpenAutoReload = true;
-
   // ---------------------------------------------------------------------
   // Retry
   // ---------------------------------------------------------------------
 
   /// Maximum number of automatic reload attempts after a load failure,
   /// per ad instance lifecycle. Set to 0 to disable retries.
-  static int maxLoadRetry = 1;
+  static int maxLoadRetry = 3;
 
   /// Base delay used to space out retries: attempt N waits
   /// `retryBaseDelaySeconds * N` seconds. Keeps retries from hammering
   /// AdMob after a no-fill or network failure.
-  static int retryBaseDelaySeconds = 10;
+  static int retryBaseDelaySeconds = 2;
 
   // ---------------------------------------------------------------------
   // Test ads

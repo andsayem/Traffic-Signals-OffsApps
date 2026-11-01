@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import '../ads/ad_service.dart';
 import '../ads/adaptive_banner_ad_widget.dart';
+import '../ads/interstitial_break.dart';
 import '../models/traffic_sign_model.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
@@ -26,8 +26,13 @@ class SignDetailsScreen extends StatelessWidget {
     required this.countryId,
   });
 
+  // Opening a sign (from a list, a related sign or "Next sign") is a
+  // natural break for an interstitial.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      InterstitialBreak(child: _buildPage(context));
+
+  Widget _buildPage(BuildContext context) {
     return AppBackground(
       appBar: AppBar(title: Text(sign.name)),
       child: Consumer<TrafficDataProvider>(
@@ -448,11 +453,8 @@ class _NextSignButton extends StatelessWidget {
         ),
         const SizedBox(height: 14),
         GestureDetector(
-          onTap: () {
-            // Every few "Next" taps may show an interstitial (with cooldown).
-            AdService.instance.registerAction();
-            onTap();
-          },
+          // The next sign's screen counts its own break (InterstitialBreak).
+          onTap: onTap,
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(

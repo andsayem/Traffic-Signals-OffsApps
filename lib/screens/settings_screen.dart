@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:traffic_signal_symbols/ads/adaptive_banner_ad_widget.dart';
+import 'package:admob_kit/admob_kit.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../providers/app_provider.dart';
 import '../providers/subscription_provider.dart';
@@ -128,10 +128,7 @@ class SettingsScreen extends StatelessWidget {
                 },
               ),
 
-              const SizedBox(height: 16),
-
-              // Big banner ad as the second section, visible without scrolling
-              const AdaptiveBannerAdWidget(),
+              // No ad on Settings (policy: no ads on settings screens).
               const SizedBox(height: 16),
 
               // Rewarded "remove ads for a while" card (non-Pro only)
@@ -215,6 +212,8 @@ class SettingsScreen extends StatelessWidget {
                   onTap: () => _showResetConfirmation(context, appProvider),
                 ),
               ),
+
+              const _PrivacyOptionsCard(),
 
               const SizedBox(height: 16),
 
@@ -563,4 +562,37 @@ List<Widget> _stagger(List<Widget> children) {
     for (final child in children)
       child is SizedBox ? child : FadeSlideIn(index: i++, child: child),
   ];
+}
+
+/// Lets users revisit their ad consent; only shown where the UMP form
+/// applies (e.g. EEA/UK).
+class _PrivacyOptionsCard extends StatelessWidget {
+  const _PrivacyOptionsCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: AdMobConsent.privacyOptionsRequired(),
+      builder: (context, snapshot) {
+        if (snapshot.data != true) return const SizedBox.shrink();
+        return const Padding(
+          padding: EdgeInsets.only(top: 16),
+          child: GlassCard(
+            borderRadius: 18,
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(Icons.privacy_tip_outlined),
+              title: Text(
+                'Privacy settings',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              ),
+              subtitle: Text('Change your ad consent choices'),
+              onTap: AdMobConsent.showPrivacyOptions,
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

@@ -75,6 +75,13 @@ class AdManager {
     return AppOpenAdManager.instance.showAdIfAvailable();
   }
 
+  /// Waits up to [timeout] for the App Open ad that started loading at
+  /// launch to finish, so a cold-start caller can give it a real chance to
+  /// be ready before calling [showAppOpen].
+  static Future<bool> waitForAppOpenReady(Duration timeout) {
+    return AppOpenAdManager.instance.waitUntilReady(timeout);
+  }
+
   // ---------------------------------------------------------------------
   // Interstitial frequency control
   // ---------------------------------------------------------------------

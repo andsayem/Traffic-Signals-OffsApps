@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 /// Platform detection that is safe to call on every Flutter target,
@@ -60,37 +62,47 @@ class FullScreenAdGuard {
 /// often exactly how a user earns a suppression window in the first
 /// place.
 ///
-/// Most apps should use `AdManager`'s forwarding methods
-/// (`isAdsSuppressed`, `suppressAdsFor`, etc.) rather than this class
-/// directly.
+/// Banner and native widgets listen to [AdSuppression.notifier], so they
+/// hide and return on their own when a window starts or ends.
 class AdSuppression {
   AdSuppression._();
 
+  static final ValueNotifier<bool> notifier = ValueNotifier(false);
   static DateTime? _until;
+  static Timer? _timer;
+  static bool _permanent = false;
 
-  /// Whether ads are currently suppressed. Clears itself once [_until]
-  /// has passed, so callers never need to know to "turn it back on".
-  static bool get isActive {
-    final until = _until;
-    if (until == null) return false;
-    if (!DateTime.now().isBefore(until)) {
-      _until = null;
-      return false;
+  /// True during a timed window or while a permanent suppression (e.g. a
+  /// paid "remove ads" subscription) is on.
+  static bool get isActive => _permanent || (_until != null && DateTime.now().isBefore(_until!));
+
+  static bool get isPermanent => _permanent;
+
+  /// Turns ads off (or back on) indefinitely, independent of timed windows.
+  static void setPermanent(bool value) {
+    _permanent = value;
+    notifier.value = isActive;
+  }
+
+  static DateTime? get until => _until != null && DateTime.now().isBefore(_until!) ? _until : null;
+
+  static void suppressUntil(DateTime until) {
+    _timer?.cancel();
+    if (!until.isAfter(DateTime.now())) {
+      clear();
+      return;
     }
-    return true;
+    _until = until;
+    notifier.value = true;
+    _timer = Timer(until.difference(DateTime.now()), clear);
   }
 
-  /// Time remaining until suppression lifts, or `null` if not active.
-  static Duration? get remaining {
-    final until = _until;
-    if (until == null || !isActive) return null;
-    return until.difference(DateTime.now());
+  static void suppressFor(Duration duration) => suppressUntil(DateTime.now().add(duration));
+
+  /// Ends the timed window; a permanent suppression stays on.
+  static void clear() {
+    _timer?.cancel();
+    _until = null;
+    notifier.value = isActive;
   }
-
-  static void suppressUntil(DateTime until) => _until = until;
-
-  static void suppressFor(Duration duration) =>
-      _until = DateTime.now().add(duration);
-
-  static void clear() => _until = null;
 }

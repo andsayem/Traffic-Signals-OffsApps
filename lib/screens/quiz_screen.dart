@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:traffic_signal_symbols/ads/adaptive_banner_ad_widget.dart';
 import '../ads/ad_service.dart';
-import '../ads/native_ad_widget.dart';
 import '../models/quiz_model.dart';
 import '../providers/quiz_provider.dart';
 import '../providers/traffic_provider.dart';
@@ -185,16 +184,12 @@ class _QuizScreenState extends State<QuizScreen> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
+                  // No ad on Start: the quiz's natural break is its end.
                   onPressed: () {
-                    AdService.instance.showInterstitial(
-                      onDismissed: () {
-                        if (!mounted) return;
-                        Provider.of<QuizProvider>(
-                          context,
-                          listen: false,
-                        ).startQuiz(country.id, _questionCount);
-                      },
-                    );
+                    Provider.of<QuizProvider>(
+                      context,
+                      listen: false,
+                    ).startQuiz(country.id, _questionCount);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ThemeConstants.signalRed,
@@ -432,7 +427,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 if (!provider.nextQuestion()) {
                   context.read<TrafficDataProvider>().markQuizDone();
                   // Quiz finished: a natural break for an interstitial.
-                  AdService.instance.showInterstitial();
+                  AdService.instance.registerBreak();
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -631,9 +626,6 @@ class _QuizScreenState extends State<QuizScreen> {
             ),
           ],
         ),
-
-        // Native ad, kept well clear of the buttons above.
-        const NativeAdWidget(padding: EdgeInsets.only(top: 28)),
 
         const SizedBox(height: 24),
 

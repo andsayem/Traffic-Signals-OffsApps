@@ -14,6 +14,7 @@ class StorageService {
   static const String _keyLearnedSigns = 'learned_signs';
   static const String _keyQuizzesDone = 'quizzes_done';
   static const String _keyHomeTourDone = 'home_tour_done';
+  static const String _keyPaywallPromptDate = 'paywall_prompt_date';
 
   // Initialize SharedPreferences
   static Future<void> init() async {
@@ -122,6 +123,15 @@ class StorageService {
     } else {
       await _prefs?.setInt(_keyAdFreeUntil, until.millisecondsSinceEpoch);
     }
+  }
+
+  // Day (yyyy-mm-dd) the Pro paywall last opened by itself, so the
+  // auto-prompt shows at most once a day instead of on every launch.
+  static String? getPaywallPromptDate() =>
+      _prefs?.getString(_keyPaywallPromptDate);
+
+  static Future<void> setPaywallPromptDate(String day) async {
+    await _prefs?.setString(_keyPaywallPromptDate, day);
   }
 
   static Future<void> clearAll() async {

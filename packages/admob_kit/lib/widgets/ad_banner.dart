@@ -6,10 +6,12 @@ import '../core/admob_logger.dart';
 import '../core/admob_utils.dart';
 import '../managers/banner_ad_manager.dart';
 
-/// A self-contained, fixed-size (320x50) banner ad.
+/// A self-contained, fixed-size banner ad: 320x50 by default, or a 300x250
+/// medium rectangle via [AdBanner.mediumRectangle].
 ///
 /// ```dart
 /// const AdBanner()
+/// const AdBanner.mediumRectangle()
 /// ```
 ///
 /// Loads itself on mount, disposes itself on unmount, retries on failure
@@ -17,7 +19,13 @@ import '../managers/banner_ad_manager.dart';
 /// throws, never disrupts layout) if disabled, unsupported on this
 /// platform, or ultimately unable to load.
 class AdBanner extends StatefulWidget {
-  const AdBanner({super.key});
+  const AdBanner({super.key}) : size = AdSize.banner;
+
+  /// A 300x250 in-content ad. It is eligible for display and video
+  /// demand, so it usually earns far more per impression than a 320x50.
+  const AdBanner.mediumRectangle({super.key}) : size = AdSize.mediumRectangle;
+
+  final AdSize size;
 
   @override
   State<AdBanner> createState() => _AdBannerState();
@@ -39,6 +47,7 @@ class _AdBannerState extends State<AdBanner> {
       return;
     }
     BannerAdManager.loadStandardBanner(
+      size: widget.size,
       onLoaded: (ad) {
         if (_disposed) {
           ad.dispose();

@@ -82,9 +82,9 @@ class _LevelScreenState extends State<LevelScreen> {
     if (!ads.isRewardedReady) {
       ads.preloadRewarded();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(tr('ad_not_ready'))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(tr('ad_not_ready'))));
       return;
     }
     if (!await ads.showRewarded()) return;

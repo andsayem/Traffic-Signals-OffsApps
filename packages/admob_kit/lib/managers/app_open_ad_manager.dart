@@ -35,7 +35,6 @@ class AppOpenAdManager with WidgetsBindingObserver {
   bool _observerAttached = false;
   bool _hasSeenFirstResume = false;
   DateTime? _backgroundedAt;
-  final List<Completer<bool>> _readyWaiters = [];
 
   /// Whether a fully loaded, non-expired ad is cached and ready to show.
   bool get isReady => _ad != null && !_isAdExpired;
@@ -95,7 +94,6 @@ class AppOpenAdManager with WidgetsBindingObserver {
           _adLoadedAt = DateTime.now();
           _attachCallbacks(ad);
           AdMobLogger.log('App Open loaded');
-          _completeWaiters(true);
         },
         onAdFailedToLoad: (error) {
           _isLoading = false;
@@ -107,33 +105,9 @@ class AppOpenAdManager with WidgetsBindingObserver {
     );
   }
 
-  /// Starts a load if needed and resolves `true` once an ad is ready, or
-  /// `false` if loading fails for good or [timeout] passes first. Lets a
-  /// cold-start flow show the ad as soon as it arrives instead of probing
-  /// once and missing it.
-  Future<bool> waitUntilReady(Duration timeout) {
-    if (isReady) return Future.value(true);
-    final completer = Completer<bool>();
-    _readyWaiters.add(completer);
-    unawaited(load());
-    return completer.future.timeout(timeout, onTimeout: () {
-      _readyWaiters.remove(completer);
-      return false;
-    });
-  }
-
-  void _completeWaiters(bool ready) {
-    final waiters = List.of(_readyWaiters);
-    _readyWaiters.clear();
-    for (final waiter in waiters) {
-      if (!waiter.isCompleted) waiter.complete(ready);
-    }
-  }
-
   void _retryLoad() {
     if (_retryCount >= AdMobSettings.maxLoadRetry) {
       AdMobLogger.log('App Open retry limit reached, giving up');
-      _completeWaiters(false);
       return;
     }
     _retryCount++;
@@ -169,7 +143,20 @@ class AppOpenAdManager with WidgetsBindingObserver {
     ad.dispose();
     _ad = null;
     _adLoadedAt = null;
-    if (AdMobSettings.appOpenAutoReload) load();
+    load();
+  }
+
+  /// Waits (up to [timeout]) for an in-flight load to finish, so a caller
+  /// that just started the app can give the ad a real chance to be
+  /// [isReady] before deciding whether to show it, instead of always
+  /// finding it still loading. Returns immediately if already ready.
+  Future<bool> waitUntilReady(Duration timeout) async {
+    if (isReady) return true;
+    final deadline = DateTime.now().add(timeout);
+    while (!isReady && DateTime.now().isBefore(deadline)) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    return isReady;
   }
 
   /// Shows the cached App Open ad if every guard passes. Can also be
@@ -178,6 +165,7 @@ class AppOpenAdManager with WidgetsBindingObserver {
   Future<AdShowResult> showAdIfAvailable() async {
     try {
       if (!AdMobSettings.enableAppOpen) return AdShowResult.disabled;
+      if (AdSuppression.isActive) return AdShowResult.suppressed;
       if (!AdMobUtils.isSupportedPlatform) {
         return AdShowResult.unsupportedPlatform;
       }
@@ -194,7 +182,7 @@ class AppOpenAdManager with WidgetsBindingObserver {
 
       final ad = _ad;
       if (ad == null) {
-        if (AdMobSettings.appOpenAutoReload) unawaited(load());
+        unawaited(load());
         return AdShowResult.notReady;
       }
 

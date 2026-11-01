@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../ads/ad_service.dart';
+import '../ads/adaptive_banner_ad_widget.dart';
 import '../providers/subscription_provider.dart';
 import '../services/storage_service.dart';
 import '../utils/theme_constants.dart';
@@ -33,7 +35,9 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 900), () {
+      Future.delayed(const Duration(milliseconds: 900), () async {
+        // Never start the tour or the paywall under the post-onboarding ad.
+        await AdService.instance.onboardingAdDone;
         if (!mounted) return;
         // First visit: teach the app with the guided tour instead of
         // opening with a paywall.
@@ -41,9 +45,12 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
           HomeScreen.startTour(context);
           return;
         }
-        // Later launches: auto-show the paywall once per cold start,
-        // unless the user is already subscribed.
+        // Later launches: auto-show the paywall at most once a day, unless
+        // the user is already subscribed. (Every cold start was too pushy.)
         if (context.read<SubscriptionProvider>().isPro) return;
+        final today = DateTime.now().toIso8601String().substring(0, 10);
+        if (StorageService.getPaywallPromptDate() == today) return;
+        StorageService.setPaywallPromptDate(today);
         SubscriptionScreen.show(context);
       });
     });
@@ -56,7 +63,15 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
       backgroundColor: isDark
           ? ThemeConstants.darkBgEnd
           : ThemeConstants.lightBgEnd,
-      body: IndexedStack(index: _currentIndex, children: _screens),
+      // The IndexedStack keeps a running quiz alive across tab switches;
+      // TabVisibility stops the hidden tabs from loading in-content ads.
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [
+          for (var i = 0; i < _screens.length; i++)
+            TabVisibility(visible: i == _currentIndex, child: _screens[i]),
+        ],
+      ),
       bottomNavigationBar: CustomNavBar(
         currentIndex: _currentIndex,
         onTap: (index) {

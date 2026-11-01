@@ -95,9 +95,11 @@ class _AssemblyScreenState extends State<AssemblyScreen> {
         _car.score,
       );
       if (mounted) setState(() => _newBest = best);
-      // Let the finish celebration show first, then an interstitial.
+      // Finishing a build is a natural break. Let the finish celebration
+      // show first; the interstitial (every 2nd break) comes behind the
+      // countdown.
       await Future<void>.delayed(const Duration(milliseconds: 1500));
-      if (mounted) AdService.instance.showInterstitial();
+      if (mounted) AdService.instance.registerBreak();
     }
   }
 
@@ -816,12 +818,8 @@ class _CompletePanel extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   style: outlinedStyle,
-                  // Starting a drive is an ad break; stopping is instant.
-                  onPressed: car.driving
-                      ? car.toggleDrive
-                      : () => AdService.instance.showInterstitial(
-                          onDismissed: car.toggleDrive,
-                        ),
+                  // A button tap is never gated on an interstitial.
+                  onPressed: car.toggleDrive,
                   icon: Icon(
                     car.driving
                         ? Icons.stop_rounded

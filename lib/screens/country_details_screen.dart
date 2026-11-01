@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../ads/adaptive_banner_ad_widget.dart';
-import '../ads/ad_service.dart';
+import '../ads/interstitial_break.dart';
 import '../models/country_model.dart';
 import '../providers/traffic_provider.dart';
 import '../utils/translations.dart';
@@ -27,100 +27,102 @@ class _CountryDetailsScreenState extends State<CountryDetailsScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return DefaultTabController(
-      length: 6,
-      child: AppBackground(
-        appBar: AppBar(
-          title: Text(widget.country.name),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Hero(
-                tag: 'flag-${widget.country.id}',
-                child: Text(
-                  widget.country.flagEmoji,
-                  style: const TextStyle(fontSize: 28),
+    // Opening a country is a natural break for an interstitial.
+    return InterstitialBreak(
+      child: DefaultTabController(
+        length: 6,
+        child: AppBackground(
+          appBar: AppBar(
+            title: Text(widget.country.name),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: Hero(
+                  tag: 'flag-${widget.country.id}',
+                  child: Text(
+                    widget.country.flagEmoji,
+                    style: const TextStyle(fontSize: 28),
+                  ),
                 ),
               ),
+            ],
+            bottom: TabBar(
+              isScrollable: true,
+              physics: const BouncingScrollPhysics(),
+              indicatorColor: ThemeConstants.signalYellow,
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.white60,
+              tabs: [
+                Tab(
+                  text: context.tr('overview') != 'overview'
+                      ? context.tr('overview')
+                      : 'Overview',
+                ),
+                Tab(text: context.tr('warning').split(' ').first),
+                Tab(text: context.tr('regulatory').split(' ').first),
+                Tab(text: context.tr('mandatory').split(' ').first),
+                Tab(text: context.tr('information').split(' ').first),
+                Tab(text: context.tr('signal_light').split(' ').first),
+              ],
             ),
-          ],
-          bottom: TabBar(
-            isScrollable: true,
-            physics: const BouncingScrollPhysics(),
-            indicatorColor: ThemeConstants.signalYellow,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white60,
-            tabs: [
-              Tab(
-                text: context.tr('overview') != 'overview'
-                    ? context.tr('overview')
-                    : 'Overview',
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: Consumer<TrafficDataProvider>(
+                  builder: (context, provider, child) {
+                    return TabBarView(
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        // Tab 1: Overview (driving info and tips)
+                        _buildOverviewTab(context, isDark),
+
+                        // Tab 2: Warning Signs
+                        _buildSignsGrid(
+                          context,
+                          provider,
+                          'warning',
+                          widget.country.id,
+                        ),
+
+                        // Tab 3: Regulatory Signs
+                        _buildSignsGrid(
+                          context,
+                          provider,
+                          'regulatory',
+                          widget.country.id,
+                        ),
+
+                        // Tab 4: Mandatory Signs
+                        _buildSignsGrid(
+                          context,
+                          provider,
+                          'mandatory',
+                          widget.country.id,
+                        ),
+
+                        // Tab 5: Information Signs
+                        _buildSignsGrid(
+                          context,
+                          provider,
+                          'information',
+                          widget.country.id,
+                        ),
+
+                        // Tab 6: Signal Lights
+                        _buildSignsGrid(
+                          context,
+                          provider,
+                          'signal_light',
+                          widget.country.id,
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
-              Tab(text: context.tr('warning').split(' ').first),
-              Tab(text: context.tr('regulatory').split(' ').first),
-              Tab(text: context.tr('mandatory').split(' ').first),
-              Tab(text: context.tr('information').split(' ').first),
-              Tab(text: context.tr('signal_light').split(' ').first),
             ],
           ),
-        ),
-        child: Column(
-          children: [
-            AdaptiveBannerAdWidget(),
-            Expanded(
-              child: Consumer<TrafficDataProvider>(
-                builder: (context, provider, child) {
-                  return TabBarView(
-                    physics: const BouncingScrollPhysics(),
-                    children: [
-                      // Tab 1: Overview (driving info and tips)
-                      _buildOverviewTab(context, isDark),
-
-                      // Tab 2: Warning Signs
-                      _buildSignsGrid(
-                        context,
-                        provider,
-                        'warning',
-                        widget.country.id,
-                      ),
-
-                      // Tab 3: Regulatory Signs
-                      _buildSignsGrid(
-                        context,
-                        provider,
-                        'regulatory',
-                        widget.country.id,
-                      ),
-
-                      // Tab 4: Mandatory Signs
-                      _buildSignsGrid(
-                        context,
-                        provider,
-                        'mandatory',
-                        widget.country.id,
-                      ),
-
-                      // Tab 5: Information Signs
-                      _buildSignsGrid(
-                        context,
-                        provider,
-                        'information',
-                        widget.country.id,
-                      ),
-
-                      // Tab 6: Signal Lights
-                      _buildSignsGrid(
-                        context,
-                        provider,
-                        'signal_light',
-                        widget.country.id,
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -216,6 +218,11 @@ class _CountryDetailsScreenState extends State<CountryDetailsScreen> {
             ],
           ),
         ),
+
+        // The screen's one ad: second section of the Overview tab, inside
+        // the scrolling content (not pinned above the tabs).
+        const SizedBox(height: 16),
+        const AdaptiveBannerAdWidget(),
 
         const SizedBox(height: 24),
 
@@ -348,17 +355,14 @@ class _CountryDetailsScreenState extends State<CountryDetailsScreen> {
         final sign = signs[index];
         return GlassCard(
           onTap: () {
-            AdService.instance.showInterstitial(
-              onDismissed: () {
-                if (!context.mounted) return;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        SignDetailsScreen(sign: sign, countryId: countryId),
-                  ),
-                );
-              },
+            // Opening a sign is a natural break, counted inside
+            // SignDetailsScreen; navigation is never gated on an ad.
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    SignDetailsScreen(sign: sign, countryId: countryId),
+              ),
             );
           },
           padding: const EdgeInsets.all(12),

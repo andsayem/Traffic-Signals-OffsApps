@@ -11,9 +11,10 @@ library;
 export 'config/admob_config.dart';
 export 'config/admob_settings.dart';
 
+export 'core/admob_consent.dart';
 export 'core/admob_logger.dart';
 export 'core/admob_service.dart';
-export 'core/admob_utils.dart' show AdMobUtils, FullScreenAdGuard;
+export 'core/admob_utils.dart' show AdMobUtils, FullScreenAdGuard, AdSuppression;
 
 export 'models/ad_result.dart';
 export 'models/ad_type.dart';
@@ -29,3 +30,7 @@ export 'managers/rewarded_interstitial_ad_manager.dart';
 export 'widgets/ad_banner.dart';
 export 'widgets/adaptive_banner_ad.dart';
 export 'widgets/native_ad.dart';
+
+// Re-exported so host apps can pick a native template without depending
+// on google_mobile_ads directly.
+export 'package:google_mobile_ads/google_mobile_ads.dart' show TemplateType;

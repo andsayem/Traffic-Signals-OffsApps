@@ -5,24 +5,35 @@ import 'package:flutter/widgets.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../services/storage_service.dart';
+import 'ad_break_notice.dart';
 
 /// App-side facade over `admob_kit`. The kit owns loading, caching, retry
 /// and cooldowns (ad unit IDs live in `packages/admob_kit/lib/config/
-/// admob_config.dart`); this class owns the single "remove ads" rule:
+/// admob_config.dart`); this class owns the placement rules and the single
+/// "remove ads" rule.
+///
+/// Placements (kept conservative after the AdMob "more ads than content" /
+/// "modified ad behavior" review of the sibling apps):
+/// * Medium rectangle (300x250, `AdaptiveBannerAdWidget`) - at most one per
+///   browsing screen, as its second section. Never on Settings, and never
+///   pinned outside the scrolling content.
+/// * Interstitial - only at natural breaks ([registerBreak]: opening a
+///   country or sign, finishing a quiz or a build), every 2nd break, at
+///   most once a minute, always behind the "Ad starts in" countdown.
+/// * One full-screen ad after the first-run onboarding ([showAfterOnboarding]).
+/// * Rewarded / rewarded interstitial only when the user opts in (unlock a
+///   level, 30 ad-free minutes).
+/// * No sticky banner, no native ads, no App Open.
 ///
 /// Ads are hidden when the user is **Pro** or inside a **rewarded ad-free
-/// window** (see [adsHidden]). Every ad in the app — banner, native,
-/// interstitial, App Open — checks it, and nothing is even requested while
-/// it is `true`. The rewarded interstitial is the one exception: it is how
-/// a user earns the ad-free window.
-///
-/// The App Open ad is shown once on cold start only, never on resume.
+/// window** (see [adsHidden]); nothing is even requested while it is `true`.
 class AdService {
   static final AdService _instance = AdService._();
   static AdService get instance => _instance;
   AdService._();
 
   bool _initialized = false;
+  final _ready = Completer<void>();
 
   /// How long one watched rewarded interstitial keeps ads hidden.
   static const Duration adFreeDuration = Duration(minutes: 30);
@@ -49,6 +60,11 @@ class AdService {
   /// Single source of truth for "should this user see ads right now".
   bool get shouldHideAds => _isProUser || isAdFreeActive;
 
+  /// Completes once consent and SDK start-up are done (bounded, so a slow
+  /// network never blocks a screen forever).
+  Future<void> whenReady() =>
+      _ready.future.timeout(const Duration(seconds: 10), onTimeout: () {});
+
   // Set by SubscriptionProvider whenever Pro status changes.
   void setProUser(bool value) {
     _isProUser = value;
@@ -63,50 +79,46 @@ class AdService {
     if (_initialized && wasHidden && !adsHidden.value) loadInterstitial();
   }
 
-  String get bannerAdUnitId => AdMobConfig.bannerId;
-
-  /// How long cold start waits for the App Open ad before giving up. Past
-  /// this the user is already using the app, so a late ad is not shown.
-  static const Duration _appOpenWait = Duration(seconds: 4);
-
   /// Delay before the interstitial is preloaded, so quick-bounce sessions
   /// (open and close within seconds) don't spend a request on an ad that
   /// can never be shown.
   static const Duration _interstitialPreloadDelay = Duration(seconds: 8);
 
+  /// Call from `main()` right after `runApp` (not awaited), so the UMP
+  /// consent form is never hidden behind the splash screen.
   Future<void> init() async {
     if (_initialized) return;
+    try {
+      await _init();
+    } finally {
+      if (!_ready.isCompleted) _ready.complete();
+    }
+  }
 
+  Future<void> _init() async {
     // Restore state before any ad is requested, so a Pro user or an
     // active ad-free window never triggers a load on launch.
     _isProUser = StorageService.isPro();
     _restoreAdFreeWindow();
     adsHidden.value = shouldHideAds;
 
-    // App Open is cold-start only: never reload it after the launch moment.
-    AdMobSettings.appOpenAutoReload = false;
+    AdMobSettings.enableAppOpen = false;
+    AdMobSettings.enableAdaptiveBanner = false;
+    AdMobSettings.enableNative = false;
+    AdMobSettings.interstitialActionInterval = 2;
+    AdMobSettings.interstitialCooldownSeconds = 60;
+    // A short countdown before every interstitial, so it never lands mid-tap.
+    AdMobSettings.beforeInterstitial = AdBreakNotice.show;
 
+    // UMP consent (GDPR / US privacy) before the first ad request.
+    await AdMobConsent.gather();
     await AdMobService.initialize();
     _initialized = true;
     // Rewarded formats are loaded on demand by the screens that offer
-    // them (see preloadRewarded / preloadRewardedInterstitial); loading
-    // them on every launch wasted almost every request.
+    // them (see preloadRewarded / preloadRewardedInterstitial).
     if (shouldHideAds) return;
 
-    // App Open: load without AppOpenAdManager.initialize() so the kit's
-    // on-resume trigger stays off, then show it as soon as it arrives.
-    unawaited(_showAppOpenWhenReady());
-
     Timer(_interstitialPreloadDelay, loadInterstitial);
-  }
-
-  Future<void> _showAppOpenWhenReady() async {
-    final ready = await AppOpenAdManager.instance.waitUntilReady(_appOpenWait);
-    if (!ready) return;
-    // The user may have left the app or gone ad-free while it loaded.
-    final state = WidgetsBinding.instance.lifecycleState;
-    if (state != null && state != AppLifecycleState.resumed) return;
-    showAppOpenOnColdStart();
   }
 
   // ---------------- BANNER ----------------
@@ -143,23 +155,38 @@ class AdService {
 
   bool get isInterstitialReady => AdManager.isInterstitialReady;
 
-  /// Shows an interstitial (subject to the kit's cooldown) and calls
-  /// [onDismissed] once the user is back in the app — or right away if no
-  /// ad was shown.
-  void showInterstitial({VoidCallback? onDismissed}) {
-    if (shouldHideAds) {
-      onDismissed?.call();
-      return;
-    }
-    AdManager.showInterstitial().then((_) => onDismissed?.call());
+  /// Counts one natural break (opening a country or sign, "Next sign",
+  /// finishing a quiz or a build). Every 2nd break may show an interstitial,
+  /// behind the countdown and subject to the kit's cooldown. Never call it
+  /// right before navigation as a gate: navigate first, then count.
+  void registerBreak() {
+    if (shouldHideAds || !_initialized) return;
+    AdManager.registerAction();
   }
 
-  /// Counts a light navigation step (opening a sign, "Next sign"). Every
-  /// few steps an interstitial is shown, subject to the kit's cooldown, so
-  /// browsing earns without an ad on every tap.
-  void registerAction() {
-    if (shouldHideAds) return;
-    AdManager.registerAction();
+  Future<void> _onboardingAd = Future<void>.value();
+
+  /// Completes once the post-onboarding ad (if any) is over, so the Home
+  /// guided tour never starts underneath it.
+  Future<void> get onboardingAdDone => _onboardingAd;
+
+  /// Starts the one full-screen ad shown when a first-time user taps
+  /// "Get Started"; the caller navigates on without waiting for it.
+  void startOnboardingAd() => _onboardingAd = _showAfterOnboarding();
+
+  /// Never blocks the flow when no ad is ready.
+  Future<void> _showAfterOnboarding() async {
+    await whenReady();
+    if (shouldHideAds || !_initialized) return;
+    // The first interstitial is usually still loading this early; give it
+    // a short bounded window instead of skipping straight away.
+    InterstitialAdManager.load();
+    final deadline = DateTime.now().add(const Duration(seconds: 4));
+    while (!AdManager.isInterstitialReady &&
+        DateTime.now().isBefore(deadline)) {
+      await Future<void>.delayed(const Duration(milliseconds: 250));
+    }
+    await AdManager.showInterstitial();
   }
 
   // ---------------- REWARDED ----------------
@@ -223,20 +250,6 @@ class AdService {
     _refreshAdsHidden();
   }
 
-  // ---------------- APP OPEN ----------------
-
-  bool get isAppOpenReady => AdManager.isAppOpenReady;
-
-  /// Shows the app-open ad on cold start (first launch). Skipped while ads
-  /// are hidden. [onDismissed] runs once the show attempt resolves.
-  void showAppOpenOnColdStart({VoidCallback? onDismissed}) {
-    if (shouldHideAds) {
-      onDismissed?.call();
-      return;
-    }
-    AdManager.showAppOpen().then((_) => onDismissed?.call());
-  }
-
   // ---------------- CLEANUP ----------------
 
   void dispose() {
@@ -244,6 +257,5 @@ class AdService {
     InterstitialAdManager.dispose();
     RewardedAdManager.dispose();
     RewardedInterstitialAdManager.dispose();
-    AppOpenAdManager.instance.dispose();
   }
 }

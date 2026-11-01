@@ -21,9 +21,12 @@ class _AdaptiveBannerAdWidgetState extends State<AdaptiveBannerAdWidget> {
   bool _isLoaded = false;
   bool _hasRequested = false;
 
-  void _loadAd() {
+  Future<void> _loadAd() async {
     if (_hasRequested) return;
     _hasRequested = true;
+    // No request before UMP consent and SDK start-up have finished.
+    await AdService.instance.whenReady();
+    if (!mounted) return;
 
     AdService.instance.createMediumRectangleBanner(
       onLoaded: (ad) {
@@ -51,7 +54,8 @@ class _AdaptiveBannerAdWidgetState extends State<AdaptiveBannerAdWidget> {
   @override
   Widget build(BuildContext context) {
     final isPro = context.watch<SubscriptionProvider>().isPro;
-    if (isPro) {
+    // Hidden tabs (kept alive by the IndexedStack) never load an ad.
+    if (isPro || !TabVisibility.of(context)) {
       return const SizedBox.shrink();
     }
 
@@ -85,4 +89,23 @@ class _AdaptiveBannerAdWidgetState extends State<AdaptiveBannerAdWidget> {
       ),
     );
   }
+}
+
+/// Tells in-content ads whether their tab is the one on screen. The main
+/// shell keeps every tab alive in an IndexedStack (so a running quiz keeps
+/// its state); without this, hidden tabs would load and hold ads nobody
+/// sees. Screens outside the shell have no [TabVisibility] and count as
+/// visible.
+class TabVisibility extends InheritedWidget {
+  const TabVisibility({super.key, required this.visible, required super.child});
+
+  final bool visible;
+
+  static bool of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<TabVisibility>()?.visible ??
+      true;
+
+  @override
+  bool updateShouldNotify(TabVisibility oldWidget) =>
+      visible != oldWidget.visible;
 }

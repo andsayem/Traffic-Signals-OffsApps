@@ -6,7 +6,6 @@ import '../utils/theme_constants.dart';
 import '../widgets/app_background.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/motion.dart';
-import '../ads/native_ad_widget.dart';
 import 'sign_details_screen.dart';
 
 class FavoritesScreen extends StatelessWidget {
@@ -193,11 +192,8 @@ class FavoritesScreen extends StatelessWidget {
                   }, childCount: favorites.length),
                 ),
               ),
-              const SliverToBoxAdapter(
-                child: NativeAdWidget(
-                  padding: EdgeInsets.fromLTRB(16, 4, 16, 100),
-                ),
-              ),
+              // Room above the floating nav bar (this list carries no ad).
+              const SliverToBoxAdapter(child: SizedBox(height: 100)),
             ],
           );
         },

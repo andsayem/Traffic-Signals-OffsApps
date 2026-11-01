@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../config/admob_config.dart';
@@ -25,10 +26,7 @@ class InterstitialAdManager {
   static bool _isLoading = false;
   static int _retryCount = 0;
   static DateTime? _lastShownAt;
-
-  /// Completed when the ad currently on screen is dismissed (or fails to
-  /// show), so [show] resolves only once the user is back in the app.
-  static Completer<AdShowResult>? _closeCompleter;
+  static bool _noticeShowing = false;
 
   /// Whether a fully loaded ad is cached and ready to show right now.
   static bool get isReady => _ad != null;
@@ -99,53 +97,66 @@ class InterstitialAdManager {
       },
       onAdDismissedFullScreenContent: (ad) {
         AdMobLogger.log('Interstitial dismissed');
-        _handleClosed(ad, AdShowResult.shown);
+        _handleClosed(ad);
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
         AdMobLogger.error('Interstitial failed to show', error);
-        _handleClosed(ad, AdShowResult.error);
+        _handleClosed(ad);
       },
       onAdClicked: (ad) => AdMobLogger.log('Interstitial clicked'),
       onAdImpression: (ad) => AdMobLogger.log('Interstitial impression'),
     );
   }
 
-  static void _handleClosed(InterstitialAd ad, AdShowResult result) {
+  static void _handleClosed(InterstitialAd ad) {
     FullScreenAdGuard.markDismissed();
     _lastShownAt = DateTime.now();
     ad.dispose();
     _ad = null;
     load();
-    final completer = _closeCompleter;
-    _closeCompleter = null;
-    if (completer != null && !completer.isCompleted) {
-      completer.complete(result);
-    }
   }
 
   /// Shows the cached interstitial if every guard (enabled, cooldown, no
-  /// other full-screen ad showing, ad actually loaded) passes. When shown,
-  /// resolves only after the ad is dismissed, so callers can safely
-  /// navigate afterwards. Always resolves, never throws.
+  /// other full-screen ad showing, ad actually loaded) passes. Always
+  /// resolves, never throws.
   static Future<AdShowResult> show() async {
     try {
       if (!AdMobSettings.enableInterstitial) return AdShowResult.disabled;
+      if (AdSuppression.isActive) return AdShowResult.suppressed;
       if (!AdMobUtils.isSupportedPlatform) {
         return AdShowResult.unsupportedPlatform;
       }
-      if (FullScreenAdGuard.isShowing) return AdShowResult.alreadyShowing;
+      if (FullScreenAdGuard.isShowing || _noticeShowing) {
+        return AdShowResult.alreadyShowing;
+      }
       if (_isInCooldown) return AdShowResult.cooldown;
 
-      final ad = _ad;
-      if (ad == null) {
+      if (_ad == null) {
         unawaited(load());
         return AdShowResult.notReady;
       }
 
-      final completer = Completer<AdShowResult>();
-      _closeCompleter = completer;
+      final notice = AdMobSettings.beforeInterstitial;
+      if (notice != null) {
+        _noticeShowing = true;
+        try {
+          await notice();
+        } finally {
+          _noticeShowing = false;
+        }
+        // The user may have left the app during the notice; never show a
+        // full-screen ad to a backgrounded app.
+        final lifecycle = WidgetsBinding.instance.lifecycleState;
+        if (lifecycle != null && lifecycle != AppLifecycleState.resumed) {
+          return AdShowResult.notReady;
+        }
+        if (FullScreenAdGuard.isShowing) return AdShowResult.alreadyShowing;
+      }
+
+      final ad = _ad;
+      if (ad == null) return AdShowResult.notReady;
       await ad.show();
-      return await completer.future;
+      return AdShowResult.shown;
     } catch (e, st) {
       AdMobLogger.error('Interstitial show failed', e, st);
       return AdShowResult.error;

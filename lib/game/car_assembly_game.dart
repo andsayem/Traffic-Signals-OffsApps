@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../ads/footer_banner_ad.dart';
-
 import 'l10n/strings.dart';
 import 'screens/home_screen.dart';
 import 'settings.dart';
@@ -66,35 +64,20 @@ class _CarAssemblyGameState extends State<CarAssemblyGame> {
   Widget build(BuildContext context) {
     // Nested Navigator so the game's own screens (levels, assembly,
     // settings) share its theme. System back pops inside the game first;
-    // on the game's home it leaves the game.
+    // on the game's home it leaves the game. No sticky footer banner: the
+    // game screens are interactive, so an anchored ad sits under the
+    // player's thumbs.
     return Theme(
       data: buildTheme(),
       child: ColoredBox(
         color: AppColors.bgBottom,
-        child: Column(
-          children: [
-            Expanded(
-              // The footer below handles the bottom inset, so the game's
-              // own SafeAreas don't add a second gap above the banner.
-              child: MediaQuery.removePadding(
-                context: context,
-                removeBottom: true,
-                child: NavigatorPopHandler(
-                  onPopWithResult: (_) => _navKey.currentState?.maybePop(),
-                  child: Navigator(
-                    key: _navKey,
-                    onGenerateRoute: (_) =>
-                        MaterialPageRoute(builder: (_) => const HomeScreen()),
-                  ),
-                ),
-              ),
-            ),
-            // Footer banner on every game screen.
-            const SafeArea(
-              top: false,
-              child: FooterBannerAd(background: AppColors.bgBottom),
-            ),
-          ],
+        child: NavigatorPopHandler(
+          onPopWithResult: (_) => _navKey.currentState?.maybePop(),
+          child: Navigator(
+            key: _navKey,
+            onGenerateRoute: (_) =>
+                MaterialPageRoute(builder: (_) => const HomeScreen()),
+          ),
         ),
       ),
     );

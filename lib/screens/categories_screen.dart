@@ -6,8 +6,7 @@ import '../utils/theme_constants.dart';
 import '../widgets/app_background.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/motion.dart';
-import '../ads/ad_service.dart';
-import '../ads/native_ad_widget.dart';
+import '../ads/adaptive_banner_ad_widget.dart';
 import 'sign_details_screen.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -56,8 +55,13 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   ),
                 ),
               ),
-              // In-feed native ad between the lesson header and the signs.
-              const NativeAdWidget(padding: EdgeInsets.fromLTRB(16, 6, 16, 0)),
+              // The screen's one ad, as its second section (after the header).
+              // No ad on an empty category.
+              if (signs.isNotEmpty)
+                const Padding(
+                  padding: EdgeInsets.only(top: 6),
+                  child: AdaptiveBannerAdWidget(),
+                ),
               // Category Sign Search Bar
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -124,7 +128,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             index: index,
                             child: GlassCard(
                               onTap: () {
-                                AdService.instance.registerAction();
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

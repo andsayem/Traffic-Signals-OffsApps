@@ -23,7 +23,10 @@ import '../managers/banner_ad_manager.dart';
 /// fixed-height container. It renders nothing before loaded (or if
 /// disabled/unsupported/ultimately failed).
 class AdaptiveBannerAd extends StatefulWidget {
-  const AdaptiveBannerAd({super.key});
+  const AdaptiveBannerAd({super.key, this.collapsible = false});
+
+  /// See [BannerAdManager.loadAdaptiveBanner].
+  final bool collapsible;
 
   @override
   State<AdaptiveBannerAd> createState() => _AdaptiveBannerAdState();
@@ -48,11 +51,13 @@ class _AdaptiveBannerAdState extends State<AdaptiveBannerAd> {
 
   void _load(int width) {
     if (!AdMobSettings.enableAdaptiveBanner ||
-        !AdMobUtils.isSupportedPlatform) {
+        !AdMobUtils.isSupportedPlatform ||
+        AdSuppression.isActive) {
       return;
     }
     BannerAdManager.loadAdaptiveBanner(
       width: width,
+      collapsible: widget.collapsible,
       onLoaded: (ad) {
         if (_disposed) {
           ad.dispose();
@@ -83,13 +88,34 @@ class _AdaptiveBannerAdState extends State<AdaptiveBannerAd> {
 
   @override
   void dispose() {
+    AdSuppression.notifier.removeListener(_onSuppressionChanged);
     _disposed = true;
     _readyAd?.dispose();
     super.dispose();
   }
 
   @override
+  void initState() {
+    super.initState();
+    AdSuppression.notifier.addListener(_onSuppressionChanged);
+  }
+
+  // Hide during an ad-free window; request a fresh banner when it ends.
+  void _onSuppressionChanged() {
+    if (_disposed) return;
+    if (AdSuppression.isActive) {
+      _readyAd?.dispose();
+      _readyAd = null;
+    } else {
+      _requested = false;
+      _retryCount = 0;
+    }
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (AdSuppression.isActive) return const SizedBox.shrink();
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth.isFinite && constraints.maxWidth > 0) {

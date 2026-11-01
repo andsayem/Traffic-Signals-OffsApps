@@ -14,15 +14,17 @@ import '../core/admob_logger.dart';
 class BannerAdManager {
   BannerAdManager._();
 
-  /// Creates and loads a fixed 320x50 banner ad.
+  /// Creates and loads a fixed-size banner ad ([size] defaults to 320x50;
+  /// pass `AdSize.mediumRectangle` for an in-content 300x250).
   static void loadStandardBanner({
     required void Function(BannerAd ad) onLoaded,
     required void Function(Object error) onFailed,
+    AdSize size = AdSize.banner,
   }) {
-    AdMobLogger.log('Banner loading');
+    AdMobLogger.log('Banner loading (${size.width}x${size.height})');
     BannerAd(
       adUnitId: AdMobConfig.bannerId,
-      size: AdSize.banner,
+      size: size,
       request: const AdRequest(),
       listener: BannerAdListener(
         onAdLoaded: (ad) {
@@ -48,10 +50,15 @@ class BannerAdManager {
   /// wider than the ad's true render width causes the ad to overflow its
   /// layout. Fails via [onFailed] if AdMob can't determine a size for
   /// this width.
+  ///
+  /// [collapsible] requests Google's collapsible banner ('bottom'): it opens
+  /// larger once and collapses to a normal banner, which usually earns more
+  /// than a plain banner. Use it on at most one or two key screens.
   static Future<void> loadAdaptiveBanner({
     required int width,
     required void Function(BannerAd ad) onLoaded,
     required void Function(Object error) onFailed,
+    bool collapsible = false,
   }) async {
     final AnchoredAdaptiveBannerAdSize? size =
         await AdSize.getLargeAnchoredAdaptiveBannerAdSize(width);
@@ -67,7 +74,7 @@ class BannerAdManager {
     BannerAd(
       adUnitId: AdMobConfig.adaptiveBannerId,
       size: size,
-      request: const AdRequest(),
+      request: collapsible ? const AdRequest(extras: {'collapsible': 'bottom'}) : const AdRequest(),
       listener: BannerAdListener(
         onAdLoaded: (ad) {
           AdMobLogger.log('Adaptive banner loaded');

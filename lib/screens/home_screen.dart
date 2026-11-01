@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:traffic_signal_symbols/ads/adaptive_banner_ad_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../ads/ad_service.dart';
-import '../ads/native_ad_widget.dart';
 import '../models/country_model.dart';
 import '../models/traffic_sign_model.dart';
 import '../game/car_assembly_game.dart';
@@ -386,12 +384,6 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
 
-                const SliverToBoxAdapter(
-                  child: NativeAdWidget(
-                    padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  ),
-                ),
-
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
                   sliver: SliverToBoxAdapter(
@@ -559,16 +551,13 @@ class HomeScreen extends StatelessWidget {
 
   void _openCountryDetails(BuildContext context, CountryModel country) {
     context.read<TrafficDataProvider>().addRecentCountry(country.id);
-    AdService.instance.showInterstitial(
-      onDismissed: () {
-        if (!context.mounted) return;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CountryDetailsScreen(country: country),
-          ),
-        );
-      },
+    // Opening a country is a natural break (counted by InterstitialBreak
+    // inside CountryDetailsScreen); navigation is never gated on an ad.
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CountryDetailsScreen(country: country),
+      ),
     );
   }
 }
