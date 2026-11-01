@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:admob_kit/admob_kit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
@@ -85,6 +86,9 @@ class PurchaseService {
       onPurchaseUpdate?.call();
       return;
     }
+    // Coming back from the Play billing sheet must not land on an App Open
+    // ad (or an interstitial) on top of the paywall.
+    AdSuppression.suppressFor(const Duration(minutes: 10));
     await _iap.buyNonConsumable(
       purchaseParam: PurchaseParam(productDetails: product),
     );

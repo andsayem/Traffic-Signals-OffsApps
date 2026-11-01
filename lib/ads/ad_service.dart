@@ -23,7 +23,9 @@ import 'ad_break_notice.dart';
 /// * One full-screen ad after the first-run onboarding ([showAfterOnboarding]).
 /// * Rewarded / rewarded interstitial only when the user opts in (unlock a
 ///   level, 30 ad-free minutes).
-/// * No sticky banner, no native ads, no App Open.
+/// * App Open only on returning to the app after 30 s+ away (never on cold
+///   start), at most once every 2 minutes.
+/// * No sticky banner, no native ads.
 ///
 /// Ads are hidden when the user is **Pro** or inside a **rewarded ad-free
 /// window** (see [adsHidden]); nothing is even requested while it is `true`.
@@ -74,9 +76,14 @@ class AdService {
   void _refreshAdsHidden() {
     final wasHidden = adsHidden.value;
     adsHidden.value = shouldHideAds;
+    // The kit's own App Open (on-resume) and interstitial checks read this.
+    AdSuppression.setPermanent(shouldHideAds);
     // Ads just came back (ad-free window ended / Pro lapsed): warm the
     // interstitial so the next placement has something to show.
-    if (_initialized && wasHidden && !adsHidden.value) loadInterstitial();
+    if (_initialized && wasHidden && !adsHidden.value) {
+      loadInterstitial();
+      AppOpenAdManager.initialize();
+    }
   }
 
   /// Delay before the interstitial is preloaded, so quick-bounce sessions
@@ -101,8 +108,14 @@ class AdService {
     _isProUser = StorageService.isPro();
     _restoreAdFreeWindow();
     adsHidden.value = shouldHideAds;
+    AdSuppression.setPermanent(shouldHideAds);
 
-    AdMobSettings.enableAppOpen = false;
+    // App Open only when the user comes back to the app after a real
+    // break (30 s+ away), at most once every 2 minutes; never on cold
+    // start, where consent, splash, onboarding and the paywall already
+    // compete for the screen.
+    AdMobSettings.appOpenMinBackgroundSeconds = 30;
+    AdMobSettings.appOpenCooldownSeconds = 120;
     AdMobSettings.enableAdaptiveBanner = false;
     AdMobSettings.enableNative = false;
     AdMobSettings.interstitialActionInterval = 2;
@@ -118,6 +131,9 @@ class AdService {
     // them (see preloadRewarded / preloadRewardedInterstitial).
     if (shouldHideAds) return;
 
+    // Attaches the on-resume trigger and preloads; the kit skips the
+    // cold-start resume itself.
+    AppOpenAdManager.initialize();
     Timer(_interstitialPreloadDelay, loadInterstitial);
   }
 
@@ -257,5 +273,6 @@ class AdService {
     InterstitialAdManager.dispose();
     RewardedAdManager.dispose();
     RewardedInterstitialAdManager.dispose();
+    AppOpenAdManager.instance.dispose();
   }
 }
