@@ -33,6 +33,8 @@ class SubscriptionProvider with ChangeNotifier {
       _service.productFor(SubscriptionIds.monthly);
   ProductDetails? get yearlyProduct =>
       _service.productFor(SubscriptionIds.yearly);
+  ProductDetails? get lifetimeProduct =>
+      _service.productFor(SubscriptionIds.lifetime);
 
   Future<void> _init() async {
     await _service.init();

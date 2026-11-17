@@ -37,27 +37,17 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   bool _hasClosedForSuccess = false;
 
   static const _features = [
+    ('No ads', 'Anywhere', Icons.block_rounded, ThemeConstants.signalRed),
+    ('No breaks', 'Smooth play', Icons.bolt_rounded, _gold),
     (
-      'No ads',
-      'Anywhere in the app',
-      Icons.block_rounded,
-      ThemeConstants.signalRed,
-    ),
-    (
-      'All premium',
-      'Every feature unlocked',
-      Icons.workspace_premium_rounded,
-      _gold,
-    ),
-    (
-      'Unlimited',
-      'Learn without limits',
+      'Pay once',
+      'Lifetime plan',
       Icons.all_inclusive_rounded,
       ThemeConstants.signalBlue,
     ),
     (
-      'Cancel anytime',
-      'From Google Play',
+      'Cancel',
+      'Anytime',
       Icons.event_available_rounded,
       ThemeConstants.signalGreen,
     ),
@@ -197,9 +187,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     SubscriptionProvider provider,
     bool isDark,
   ) {
-    final selectedProduct = _selectedPlan == SubscriptionIds.yearly
-        ? provider.yearlyProduct
-        : provider.monthlyProduct;
+    final selectedProduct = switch (_selectedPlan) {
+      SubscriptionIds.yearly => provider.yearlyProduct,
+      SubscriptionIds.lifetime => provider.lifetimeProduct,
+      _ => provider.monthlyProduct,
+    };
+    final isLifetime = _selectedPlan == SubscriptionIds.lifetime;
     final secondary = isDark
         ? ThemeConstants.darkTextSecondary
         : ThemeConstants.lightTextSecondary;
@@ -307,6 +300,22 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 12),
+                  FadeSlideIn(
+                    index: 7,
+                    child: _PlanCard(
+                      label: 'Lifetime',
+                      badge: 'PAY ONCE',
+                      product: provider.lifetimeProduct,
+                      periodSuffix: 'one time',
+                      perMonth: 'No ads forever, no renewals',
+                      selected: _selectedPlan == SubscriptionIds.lifetime,
+                      isDark: isDark,
+                      onTap: () => setState(
+                        () => _selectedPlan = SubscriptionIds.lifetime,
+                      ),
+                    ),
+                  ),
                 ],
 
                 if (provider.error != null) ...[
@@ -354,10 +363,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       style: TextStyle(fontSize: 11, color: secondary),
                     ),
                     const SizedBox(width: 10),
-                    Icon(Icons.autorenew_rounded, size: 13, color: secondary),
+                    Icon(
+                      isLifetime
+                          ? Icons.all_inclusive_rounded
+                          : Icons.autorenew_rounded,
+                      size: 13,
+                      color: secondary,
+                    ),
                     const SizedBox(width: 4),
                     Text(
-                      'Cancel anytime',
+                      isLifetime ? 'One-time payment' : 'Cancel anytime',
                       style: TextStyle(fontSize: 11, color: secondary),
                     ),
                   ],
@@ -365,7 +380,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                'Auto-renewable subscription. Manage it in your Play Store account.',
+                isLifetime
+                    ? 'One-time purchase. Ads stay off for good on this Google account.'
+                    : 'Auto-renewable subscription. Manage it in your Play Store account.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 10,
@@ -632,125 +649,135 @@ class _PlanCard extends StatelessWidget {
     final available = product != null;
     final muted = isDark ? Colors.white54 : Colors.black45;
 
-    return GestureDetector(
-      onTap: available ? onTap : null,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-        padding: const EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(22),
-          gradient: selected
-              ? const LinearGradient(colors: [_gold, _goldDeep])
-              : null,
-          color: selected ? null : (isDark ? Colors.white12 : Colors.black12),
-          boxShadow: selected
-              ? [
-                  BoxShadow(
-                    color: _gold.withValues(alpha: 0.3),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                ]
-              : null,
-        ),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+    return Opacity(
+      // A plan Play didn't return (inactive or not set up) can't be bought,
+      // so it must not look tappable.
+      opacity: available ? 1 : 0.45,
+      child: GestureDetector(
+        onTap: available ? onTap : null,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+          padding: const EdgeInsets.all(2),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: isDark ? const Color(0xFF111A2E) : Colors.white,
+            borderRadius: BorderRadius.circular(22),
+            gradient: selected
+                ? const LinearGradient(colors: [_gold, _goldDeep])
+                : null,
+            color: selected ? null : (isDark ? Colors.white12 : Colors.black12),
+            boxShadow: selected
+                ? [
+                    BoxShadow(
+                      color: _gold.withValues(alpha: 0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ]
+                : null,
           ),
-          child: Row(
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: selected ? _goldDeep : Colors.transparent,
-                  border: Border.all(
-                    color: selected ? _goldDeep : muted,
-                    width: 2,
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: isDark ? const Color(0xFF111A2E) : Colors.white,
+            ),
+            child: Row(
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: selected ? _goldDeep : Colors.transparent,
+                    border: Border.all(
+                      color: selected ? _goldDeep : muted,
+                      width: 2,
+                    ),
+                  ),
+                  child: selected
+                      ? const Icon(
+                          Icons.check_rounded,
+                          size: 16,
+                          color: Colors.white,
+                        )
+                      : null,
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Wrap, not Row: on narrow phones with a long local
+                      // price the badge moves under the label instead of
+                      // overlapping the price.
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text(
+                            label,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
+                            ),
+                          ),
+                          if (badge != null) ...[
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    ThemeConstants.signalRed,
+                                    ThemeConstants.signalOrange,
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                badge!,
+                                style: const TextStyle(
+                                  fontSize: 9.5,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        available ? perMonth : 'Not available right now',
+                        style: TextStyle(fontSize: 11.5, color: muted),
+                      ),
+                    ],
                   ),
                 ),
-                child: selected
-                    ? const Icon(
-                        Icons.check_rounded,
-                        size: 16,
-                        color: Colors.white,
-                      )
-                    : null,
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          label,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w900,
-                            fontSize: 16,
-                          ),
-                        ),
-                        if (badge != null) ...[
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  ThemeConstants.signalRed,
-                                  ThemeConstants.signalOrange,
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              badge!,
-                              style: const TextStyle(
-                                fontSize: 9.5,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                    const SizedBox(height: 3),
                     Text(
-                      available ? perMonth : 'Not available on this device',
-                      style: TextStyle(fontSize: 11.5, color: muted),
+                      available ? product!.price : '—',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 17,
+                        color: available ? null : muted,
+                      ),
+                    ),
+                    Text(
+                      periodSuffix,
+                      style: TextStyle(fontSize: 11, color: muted),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    available ? product!.price : '—',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 17,
-                      color: available ? null : muted,
-                    ),
-                  ),
-                  Text(
-                    periodSuffix,
-                    style: TextStyle(fontSize: 11, color: muted),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
