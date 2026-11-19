@@ -3,6 +3,7 @@ import '../data/local_json_data.dart';
 import '../models/country_model.dart';
 import '../models/traffic_sign_model.dart';
 import '../models/traffic_tip_model.dart';
+import '../services/review_service.dart';
 import '../services/storage_service.dart';
 
 class TrafficDataProvider with ChangeNotifier {
@@ -69,6 +70,7 @@ class TrafficDataProvider with ChangeNotifier {
     await StorageService.incrementQuizzesDone();
     _quizzesDone = StorageService.getQuizzesDone();
     notifyListeners();
+    ReviewService.maybeAskAfterQuiz(_quizzesDone);
   }
 
   /// The next sign to study, following [categoryOrder]; `null` when all

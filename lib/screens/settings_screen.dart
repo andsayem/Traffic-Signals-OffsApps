@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:admob_kit/admob_kit.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../services/review_service.dart';
 import '../providers/app_provider.dart';
 import '../providers/subscription_provider.dart';
 import '../providers/traffic_provider.dart';
@@ -213,6 +215,52 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
 
+              const SizedBox(height: 16),
+
+              // Rate & Share Card
+              GlassCard(
+                borderRadius: 18,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
+                child: Column(
+                  children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(
+                        Icons.star_rounded,
+                        color: ThemeConstants.signalYellow,
+                      ),
+                      title: Text(
+                        context.tr('rate_app'),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      onTap: ReviewService.openStore,
+                    ),
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(
+                        Icons.share_rounded,
+                        color: ThemeConstants.signalGreen,
+                      ),
+                      title: Text(
+                        context.tr('share_app'),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      onTap: () =>
+                          ReviewService.shareApp(context.tr('share_message')),
+                    ),
+                  ],
+                ),
+              ),
+
               const _PrivacyOptionsCard(),
 
               const SizedBox(height: 16),
@@ -268,11 +316,14 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      "${context.tr('version')}: 1.0.0+1",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: isDark ? Colors.white54 : Colors.black54,
+                    FutureBuilder<PackageInfo>(
+                      future: PackageInfo.fromPlatform(),
+                      builder: (context, snap) => Text(
+                        "${context.tr('version')}: ${snap.data?.version ?? ''}",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: isDark ? Colors.white54 : Colors.black54,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 12),

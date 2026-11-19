@@ -26,12 +26,13 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
-        signingConfigs {
+    // Signing secrets live in android/key.properties, which git ignores.
+    signingConfigs {
         create("release") {
-            storeFile = file("keystore.jks")
-            storePassword = "AS@sayem"
-            keyAlias = "upload"
-            keyPassword = "AS@sayem"
+            storeFile = file(keystoreProperties.getProperty("storeFile") ?: "keystore.jks")
+            storePassword = keystoreProperties.getProperty("storePassword")
+            keyAlias = keystoreProperties.getProperty("keyAlias")
+            keyPassword = keystoreProperties.getProperty("keyPassword")
         }
     }
 
@@ -48,9 +49,15 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("release")
+
+            // Full R8 optimization (Play vitals flags builds without it).
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }
