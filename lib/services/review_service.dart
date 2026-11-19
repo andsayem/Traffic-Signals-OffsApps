@@ -1,3 +1,4 @@
+import 'package:admob_kit/admob_kit.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,12 +35,14 @@ class ReviewService {
   }
 
   static Future<void> openStore() async {
+    AppOpenAdManager.skipNextResume = true;
     try {
       await InAppReview.instance.openStoreListing();
     } catch (_) {}
   }
 
   static Future<void> shareApp(String message) async {
+    AppOpenAdManager.skipNextResume = true;
     await Share.share('$message\n$playUrl');
   }
 }
