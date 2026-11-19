@@ -26,6 +26,10 @@ class AppOpenAdManager with WidgetsBindingObserver {
 
   static final AppOpenAdManager instance = AppOpenAdManager._();
 
+  /// Set before sending the user to another app on purpose (share sheet,
+  /// Play Store). The next return to the app then shows no App Open ad.
+  static bool skipNextResume = false;
+
   AppOpenAd? _ad;
   bool _isLoading = false;
   bool _isShowingAd = false;
@@ -207,6 +211,11 @@ class AppOpenAdManager with WidgetsBindingObserver {
       // the host app's own splash/init flow is already handling - skip it
       // so this doesn't race with that.
       _hasSeenFirstResume = true;
+      return;
+    }
+
+    if (skipNextResume) {
+      skipNextResume = false;
       return;
     }
 
