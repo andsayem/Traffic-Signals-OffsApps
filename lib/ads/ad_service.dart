@@ -118,8 +118,11 @@ class AdService {
     AdMobSettings.appOpenCooldownSeconds = 120;
     AdMobSettings.enableAdaptiveBanner = false;
     AdMobSettings.enableNative = false;
-    AdMobSettings.interstitialActionInterval = 2;
-    AdMobSettings.interstitialCooldownSeconds = 60;
+    // Every 3rd break, at most once every 2 minutes. (Was every 2nd / 60s
+    // with breaks on screen open: interstitial CTR hit 42%, accidental
+    // clicks that can get the AdMob account limited.)
+    AdMobSettings.interstitialActionInterval = 3;
+    AdMobSettings.interstitialCooldownSeconds = 120;
     // A short countdown before every interstitial, so it never lands mid-tap.
     AdMobSettings.beforeInterstitial = AdBreakNotice.show;
 
@@ -171,8 +174,8 @@ class AdService {
 
   bool get isInterstitialReady => AdManager.isInterstitialReady;
 
-  /// Counts one natural break (opening a country or sign, "Next sign",
-  /// finishing a quiz or a build). Every 2nd break may show an interstitial,
+  /// Counts one natural break (leaving a country or sign screen, finishing
+  /// a quiz or a build). Every 3rd break may show an interstitial,
   /// behind the countdown and subject to the kit's cooldown. Never call it
   /// right before navigation as a gate: navigate first, then count.
   void registerBreak() {
@@ -180,30 +183,9 @@ class AdService {
     AdManager.registerAction();
   }
 
-  Future<void> _onboardingAd = Future<void>.value();
-
-  /// Completes once the post-onboarding ad (if any) is over, so the Home
-  /// guided tour never starts underneath it.
-  Future<void> get onboardingAdDone => _onboardingAd;
-
-  /// Starts the one full-screen ad shown when a first-time user taps
-  /// "Get Started"; the caller navigates on without waiting for it.
-  void startOnboardingAd() => _onboardingAd = _showAfterOnboarding();
-
-  /// Never blocks the flow when no ad is ready.
-  Future<void> _showAfterOnboarding() async {
-    await whenReady();
-    if (shouldHideAds || !_initialized) return;
-    // The first interstitial is usually still loading this early; give it
-    // a short bounded window instead of skipping straight away.
-    InterstitialAdManager.load();
-    final deadline = DateTime.now().add(const Duration(seconds: 4));
-    while (!AdManager.isInterstitialReady &&
-        DateTime.now().isBefore(deadline)) {
-      await Future<void>.delayed(const Duration(milliseconds: 250));
-    }
-    await AdManager.showInterstitial();
-  }
+  /// No ad follows onboarding any more; kept so the Home tour's wait stays
+  /// valid. Always complete.
+  Future<void> get onboardingAdDone => Future<void>.value();
 
   // ---------------- REWARDED ----------------
 

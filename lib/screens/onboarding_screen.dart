@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../ads/ad_service.dart';
 import '../providers/app_provider.dart';
 import '../utils/translations.dart';
 import '../utils/theme_constants.dart';
@@ -359,9 +358,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   void _completeOnboarding() {
     final appProvider = Provider.of<AppProvider>(context, listen: false);
     appProvider.completeOnboarding();
-    // One full-screen ad after "Get Started" (behind the countdown); the
-    // app opens underneath right away and the Home tour waits for it.
-    AdService.instance.startOnboardingAd();
+    // No full-screen ad after "Get Started": a new user is still tapping
+    // around and it drew accidental clicks.
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const MainNavigationWrapper()),
